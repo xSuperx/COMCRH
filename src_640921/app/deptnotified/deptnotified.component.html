@@ -1,0 +1,570 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <i class="fa fa-inbox"></i>
+          บันทึกการแจ้งปัญหาใช้งานระบบคอมฯ
+        </h3>
+      </div>
+      <div class="card-content">
+
+        <div class="row">
+          <form  class="form" action="">
+            <div class="form-body">
+              <div class="col-sm-12">
+                <div class="row m-2">
+                  <label class="searchdate text-right">วันที่</label>
+                  <form #SearchForm="ngForm" class="form-inline">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input ngbDatepicker class="form-control round"
+                        id="dt" name="dt" [(ngModel)]="SearchDate" #dt="ngbDatepicker"
+                        (ngModelChange)="OnChangeDatePicker($event)"/>
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary btn-success round"
+                            (click)="dt.toggle();" type="button">
+                            <i class="icon icon-calendar"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  &nbsp;
+                  <button type="button"
+                    class="btn btn-raised btn-info round"
+                    (click)="GetDbNotifiedByDate();">
+                    <i class="icon icon-magnifier"></i>&nbsp;ค้นหา
+                  </button>&nbsp; &nbsp;
+                  <button *ngIf="!CheckIsHoliday" type="button"
+                    class="btn btn-raised btn-primary round"
+                    (click)="NewNotified(NotifiedForm)">
+                    <i class="icon icon-speech"></i>&nbsp;แจ้งปัญหาการใช้งาน
+                  </button>
+                  <span *ngIf="CheckIsHoliday" style="font-weight: bold; color: red;">
+                    ระบบงดการบันทึกกิจกรรมใด ๆ ในช่วงวันหยุด และนอกเวลาราชการ !!
+                  </span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div style="padding: 5px;">
+          <ngb-tabset #t="ngbTabset">
+            <ngb-tab id="tab-Yesterday">
+              <ng-template ngbTabTitle>
+                <h5><i class="ft ft-bell mr-1"></i>รายการรอแก้ไข</h5>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr class="text-center">
+                        <th style="width:5%;">ลำดับ</th>
+                        <th style="width:12%;">วันเวลารับแจ้ง</th>
+                        <th style="width:20%;">หน่วยงาน</th>
+                        <th style="width:7%;">เบอร์ติดต่อ</th>
+                        <th style="width:10%;">ผู้แจ้ง</th>
+                        <th style="width:17%;">ปัญหาที่พบ</th>
+                        <th style="width:17%;">จุดที่พบปัญหา</th>
+                        <th style="width:12%;">ผู้รับแจ้ง</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="TxtCap" *ngFor="let Y of DbListNotifiedYesterday |
+                        slice:(NotiPagesYet-1)*RowPerPage:(NotiPagesYet-1)*RowPerPage+RowPerPage; let i=index">
+                        <td class="text-center">{{i+1}}</td>
+                        <td class="text-center">{{Y.SevDateSave | Custom:"fDate"}}-{{ Y.SevTimeReqTel }}</td>
+                        <td class="text-left">&nbsp;{{ Y.SevReqDeptName }}</td>
+                        <td class="text-center">{{ Y.SevReqCallBack }}</td>
+                        <td class="text-left">&nbsp;{{ Y.SevReqUser }}</td>
+                        <td class="text-left">&nbsp;{{ Y.SevReqProblem }}</td>
+                        <td class="text-left">&nbsp;{{ Y.SevReqProblemPoint }}</td>
+                        <td class="text-left">&nbsp;
+                          <span *ngIf="Y.UserNotifyName!='-'">{{ Y.UserNotifyName }}</span>
+                          <span *ngIf="Y.UserNotifyName=='-'">หน่วยงานแจ้งเอง</span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbListNotifiedYesterday.length == 0">
+                        <td colspan="8" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการแจ้งเหตุคงค้างในวันที่ผ่านมา..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="8">
+                          <div class="row">
+                            <div class="col-sm-6 text-left">
+                              <span class="TxtCap">จำนวนทั้งหมด </span>
+                              <span class="TxtValue">{{DbListNotifiedYesterday.length}}</span>
+                              <span class="TxtCap">รายการ</span>
+                            </div>
+                            <div class="col-sm-6">
+                              <ngb-pagination
+                                class="d-flex justify-content-end"
+                                [(page)]="NotiPagesYet"
+                                [pageSize]="RowPerPage"
+                                [collectionSize]="DbListNotifiedYesterday.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-Today">
+              <ng-template ngbTabTitle>
+                <h5><i class="ft ft-flag mr-1"></i>รายการแก้ไขวันนี้</h5>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr class="text-center">
+                        <th>สถานะ</th>
+                        <th>วันเวลารับแจ้ง</th>
+                        <th>หน่วยงานผู้แจ้งปัญหา</th>
+                        <th>ผู้แจ้ง-เบอร์ภายใน</th>
+                        <th>ปัญหาที่พบ / จุดที่พบปัญหา / การแก้ไข</th>
+                        <th>ผู้แก้ไข</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let D of DbListNotified |
+                        slice:(NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage"
+                        [style.background-color]="D.SevTimeTotal=='0'?'yellow':''" >
+                        <td class="text-center align-middle">
+                          <i *ngIf="D.SevTimeTotal=='0'" class="fa fa-tag fa-2x" title="รอการแก้ไข"></i>
+                          <i *ngIf="D.SevTimeTotal!='0'" class="fa fa-list-alt fa-2x" title="แก้ไขแล้ว"></i>
+                        </td>
+                        <td class="text-left">&nbsp;{{D.SevDateSave | Custom: "fDate"}}-
+                          <span *ngIf="D.SevTimeReqTel!='-'">{{D.SevTimeReqTel}}</span>
+                          <span *ngIf="D.SevTimeReqTel=='-'&&D.SevTimeAtDept!='-'">{{D.SevTimeAtDept}}</span>
+                        </td>
+                        <td class="text-left">&nbsp;{{ D.SevReqDeptName }}</td>
+                        <td class="text-left">&nbsp;{{ D.SevReqUser }}-{{ D.SevReqCallBack }}</td>
+                        <td class="text-left">&nbsp;
+                          <span *ngIf="D.SevReqProblem !='-'">{{ D.SevReqProblem }}</span>
+                          <span *ngIf="D.SevReqProblemPoint !='-'">/ {{ D.SevReqProblemPoint }}</span>
+                          <span *ngIf="D.SevReqMend !='-'">/ {{ D.SevReqMend }}</span>
+                        </td>
+                        <td class="text-left">&nbsp;{{ D.UserMendName }}</td>
+                        <!--
+                          <td class="text-left">
+                            <span class="TxtCap">วันที่:</span>
+                            <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span>
+                            <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span>
+                            <span *ngIf="D.SevTimeTotal=='0'">
+                              <span class="TxtCap">เวลารับแจ้ง:</span>
+                              <span class="TxtValue">{{ D.SevTimeReqTel }}</span>
+                            </span>
+                            <span *ngIf="D.SevTimeTotal!='0'">
+                              <span class="TxtCap">เวลา:</span>
+                              <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                              <span class="TxtCap">เวลารวม:</span>
+                              <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                              <span class="TxtCap">นาที</span>
+                            </span>
+                            <span class="TxtCap">กิจกรรม:</span>
+                            <span class="TxtValue">{{D.SevTypeTXT}}</span>
+                            <span class="TxtCap">หน่วยงานประสาน:</span>
+                            <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                            <span class="TxtCap">ผู้ประสาน:</span>
+                            <span class="TxtValue">{{ D.SevReqUser }}</span>
+                            <span class="TxtCap">โทรกลับ:</span>
+                            <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                            <span *ngIf="D.SevTimeTotal!='0'">
+                              <span class="TxtCap">ผู้บันทึก:</span>
+                              <span class="TxtValue">{{ D.UserMendName }}</span>
+                              <br />
+                              <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                              <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+                              <br />
+                              <span class="TxtCap">กิจกรรมบริการ:</span>
+                              <span class="TxtValue">{{ D.ActGrpName }}</span>
+                              <span class="TxtValue">, {{ D.ActHName }}</span>
+                              <span class="TxtValue">, {{ D.ActDName }}</span>
+                            </span>
+                          </td>
+                        -->
+                      </tr>
+                      <tr *ngIf="DbListNotified.length == 0">
+                        <td colspan="6" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="6">
+                          <div class="row">
+                            <div class="col-sm-6 text-left">
+                              <span class="TxtCap">จำนวนทั้งหมด </span>
+                              <span class="TxtValue">{{DbListNotified.length}}</span>
+                              <span class="TxtCap">รายการ</span>
+                            </div>
+                            <div class="col-sm-6">
+                              <ngb-pagination
+                                class="d-flex justify-content-end"
+                                [(page)]="NotiPages"
+                                [pageSize]="RowPerPage"
+                                [collectionSize]="DbListNotified.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #NotifiedUpdate let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp;
+      บันทึกข้อมูลการรับแจ้งปัญหาจากหน่วยงาน
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-body">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="NofCode">เลขรายการ</label>
+            <input id="NofCode" name="NofCode" class="form-control border-success text-center"
+              type="text" readonly [(ngModel)]="NotifModel.NofCode" #NofCode="ngModel">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="NofReqDateTime">วันเวลาที่บันทึก</label>
+            <input id="NofReqDateTime" name="NofReqDateTime" class="form-control border-success text-center"
+              type="text" readonly [(ngModel)]="NotifModel.NofReqDateTime" #NofReqDateTime="ngModel">
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label for="NofUserName">ผู้บันทึกข้อมูล</label>
+            <input id="NofUserName" name="NofUserName" class="form-control border-success text-center"
+              type="text" readonly [(ngModel)]="NotifModel.NofUserName" #NofUserName="ngModel">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="NofReqDept">หน่วยงานที่แจ้งปัญหา</label>
+            <ng-select
+              id="NofReqDept" name="NofReqDept" [items]="DbDeptINV"
+              bindValue="id" bindLabel="name" (change)="GetPhoneByDept3(NotifModel.NofReqDept);"
+              placeholder="เลือกหน่วยงานที่แจ้งปัญหา" [(ngModel)]="NotifModel.NofReqDept">
+            </ng-select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="NofReqCallBack">เบอร์ภายใน</label>
+            <input id="NofReqCallBack" name="NofReqCallBack" type="text"
+              class="form-control border-success text-center" maxlength="10"
+              [(ngModel)]="NotifModel.NofReqCallBack" #NofReqCallBack="ngModel">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="NofReqUser">ชื่อผู้แจ้งปัญหา</label>
+            <input id="NofReqUser" name="NofReqUser" type="text"
+              class="form-control border-success text-center" maxlength="30"
+              [(ngModel)]="NotifModel.NofReqUser" #NofReqUser="ngModel">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="NofReqProblem">รายละเอียดปัญหาที่ได้รับแจ้ง</label>
+            <input type="text" class="form-control border-primary text-center"
+              id="NofReqProblem" name="NofReqProblem" maxlength="250"
+              [(ngModel)]="NotifModel.NofReqProblem" #NofReqProblem="ngModel">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="NofReqProblemPoint">จุดที่พบปัญหา</label>
+            <input type="text" class="form-control border-primary text-center"
+              id="NofReqProblemPoint" name="NofReqProblemPoint" maxlength="100"
+              [(ngModel)]="NotifModel.NofReqProblemPoint" #NofReqProblemPoint="ngModel">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-6 text-left">
+      <div *ngIf="NotifModel.NofValidation!='-'" class="text-danger font-medium-2">
+        {{NotifModel.NofValidation}}
+      </div>
+    </div>
+    <div class="col-6 text-right">
+      <button type="button" (click)="SaveNotified();"
+        class="btn btn-raised btn-primary">
+        <i class="icon icon-check"></i>&nbsp;
+        บันทึกข้อมูลการรับแจ้ง
+      </button>
+      <button type="button" (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-outline-dark">
+        <i class="icon icon-close"></i>&nbsp;
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #NotifiedForm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp;
+      บันทึกข้อมูลการรับแจ้งปัญหาจากหน่วยงาน
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <aw-wizard #wizard navBarLayout="large-empty-symbols">
+      <aw-wizard-step [stepTitle]="'ยืนยันตัวตน'"
+        [navigationSymbol]="{symbol:'&#xf007;',fontFamily:'FontAwesome'}">
+        <br>&nbsp;
+        <h4 class="head text-center">โปรดยืนยันตัวตนด้วยรหัสผู้ใช้งานและรหัสผ่านอินเตอร์เน็ต.</h4>
+        <br/>
+        <div class='row'>
+          <div class='col-12'>
+            <div class="row">
+              <div class='col-12 col-sm-6'>
+                <div class="form-group">
+                  <label class="form-control-label" for="DeptUsCode">รหัสใช้งาน (Username)</label>
+                  <input class="form-control input-md text-center"
+                    type="text" (blur)="getFormValidate('DeptUsCode');"
+                    [(ngModel)]="NtfModel.DeptUsCode" #DeptUsCode="ngModel">
+                  <small class="form-text text-muted danger"
+                    *ngIf="NtfModel.FormValidate=='DeptUsCode'">
+                    {{NtfModel.FormError}}
+                  </small>
+                </div>
+              </div>
+              <div class='col-12 col-sm-6'>
+                <div class="form-group">
+                  <label class="form-control-label" for="DeptUsPass">รหัสผ่าน (Password)</label>
+                  <input class="form-control input-md text-center"
+                    type="password" (blur)="getFormValidate('DeptUsPass');"
+                    [(ngModel)]="NtfModel.DeptUsPass" #DeptUsPass="ngModel">
+                  <small class="form-text text-muted danger"
+                    *ngIf="NtfModel.FormValidate=='DeptUsPass'">
+                    {{NtfModel.FormError}}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="form-group text-center">
+              <button type="button" class="btn btn-danger btn-raised" (click)="c('Cancel-click')">
+                <span style="margin-right:10px;"><i class="icon-close"></i></span>
+                ยกเลิก, ปิดฟอร์ม
+              </button>
+              &nbsp;
+              <button type="button" uiSref="work" class="btn btn-primary btn-raised" awNextStep
+                [disabled]="NtfModel.FormError!='-'" (click)="GetUserLogin();">
+                ขั้นตอนต่อไป
+                <span style="margin-left:10px;"><i class="ft-chevron-right"></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </aw-wizard-step>
+      <aw-wizard-step  [stepTitle]="'บันทึกปัญหาใช้งาน'"
+        [navigationSymbol]="{symbol:'&#xf0b1;',fontFamily:'FontAwesome'}">
+        <br>&nbsp;
+        <h4 class="head text-center">แจ้งปัญหาการใช้งานที่พบเจอ</h4>
+        <br/>
+        <div class='col-12'>
+          <div class="row">
+            <div class='col-sm-3'>
+              <div class="form-group">
+                <label class="form-control-label">
+                  รหัสผู้ใช้งาน
+                </label>
+                <input class="form-control input-md text-center"
+                  type="text" id="DeptUsCode" name="DeptUsCode" readonly
+                  [(ngModel)]="NtfModel.DeptUsCode" #DeptUsCode="ngModel">
+              </div>
+            </div>
+            <div class='col-sm-5'>
+              <div class="form-group">
+                <label class="form-control-label">
+                  ชื่อผู้แจ้งปัญหา
+                </label>
+                <input class="form-control input-md text-center"
+                  type="text" id="DeptUsFName" name="DeptUsFName" readonly
+                  [(ngModel)]="NtfModel.DeptUsFName" #DeptUsFName="ngModel">
+              </div>
+            </div>
+            <div class='col-sm-4'>
+              <div class="form-group">
+                <label class="form-control-label">
+                  ตำแหน่งงาน
+                </label>
+                <input class="form-control input-md text-center"
+                  type="text" id="DeptUsPosi" name="DeptUsPosi" readonly
+                  [(ngModel)]="NtfModel.DeptUsPosi" #DeptUsPosi="ngModel">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class='col-12 col-sm-9'>
+              <div class="form-group">
+                <label class="form-control-label" for="DeptCode">
+                  หน่วยงานผู้แจ้งปัญหา [ รหัสหน่วยงาน: {{NtfModel.DeptCode}} ]
+                </label>
+                <ng-select [items]="DbDeptINV" name="deptname"
+                  id="deptname" placeholder="เลือกหน่วยงานที่แจ้งปัญหา"
+                  bindValue="id" bindLabel="name"
+                  (blur)="getFormValidate('DeptCode')"
+                  [(ngModel)]="NtfModel.DeptCode">
+                </ng-select>
+                <small class="form-text text-muted danger"
+                  *ngIf="NtfModel.FormValidate=='DeptCode'">
+                  {{NtfModel.FormError}}
+                </small>
+              </div>
+            </div>
+            <div class='col-12 col-sm-3'>
+              <div class="form-group">
+                <label class="form-control-label" for="DeptPhone">
+                  เบอร์ภายใน
+                </label>
+                <input class="form-control input-md text-center"
+                  type="text" id="DeptPhone" name="DeptPhone"
+                  (blur)="getFormValidate('DeptPhone')"
+                  [(ngModel)]="NtfModel.DeptPhone" #DeptPhone="ngModel">
+                <small class="form-text text-muted danger"
+                  *ngIf="NtfModel.FormValidate=='DeptPhone'">
+                  {{NtfModel.FormError}}
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class='col-12 col-sm-8'>
+              <div class="form-group">
+                <label class="form-control-label" for="DeptProblem">
+                  ปัญหาที่พบ
+                </label>
+                <input class="form-control input-md text-center"
+                  type="text" id="DeptProblem" name="DeptProblem"
+                  (blur)="getFormValidate('DeptProblem')"
+                  [(ngModel)]="NtfModel.DeptProblem" #DeptProblem="ngModel">
+                <small class="form-text text-muted danger"
+                  *ngIf="NtfModel.FormValidate=='DeptProblem'">
+                  {{NtfModel.FormError}}
+                </small>
+              </div>
+            </div>
+            <div class='col-12 col-sm-4'>
+              <div class="form-group">
+                <label class="form-control-label" for="DeptProblemPoint">
+                  จุดที่พบปัญหา
+                </label>
+                <input class="form-control input-md text-center"
+                  type="text" id="DeptProblemPoint" name="DeptProblemPoint"
+                  (blur)="getFormValidate('DeptProblemPoint')"
+                  [(ngModel)]="NtfModel.DeptProblemPoint" #DeptProblemPoint="ngModel">
+                <small class="form-text text-muted danger"
+                  *ngIf="NtfModel.FormValidate=='DeptProblemPoint'">
+                  {{NtfModel.FormError}}
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group text-center">
+            <button uiSref="personal" type="button" class="btn btn-raised btn-secondary mr-1" awPreviousStep>
+              <span style="margin-right:10px;"><i class="ft-chevron-left"></i></span>
+              ขั้นตอนก่อนหน้า
+            </button>
+            <button uiSref="address" type="button" class="btn btn-raised btn-info"
+              [disabled]="NtfModel.FormError!='-'" awNextStep (click)="SaveNotified();">
+              ขั้นตอนต่อไป
+              <span style="margin-left:10px;"><i class="ft-chevron-right"></i></span>
+            </button>
+          </div>
+        </div>
+      </aw-wizard-step>
+      <aw-wizard-step [stepTitle]="'ผลบันทึกและภาพรวม'"
+        [navigationSymbol]="{ symbol:'&#xf0ac;',fontFamily:'FontAwesome'}">
+        <br>&nbsp;
+        <h4 class="head text-center">ภาพรวมรายละเอียดการแจ้งปัญหา</h4>
+        <br/>
+        <div class='row'>
+          <div class='col-sm-3'>
+            <label class="TxtCap">รหัสผู้ใช้งาน</label><br>
+            <span class="TxtValue">{{NtfModel.DeptUsCode}}</span>
+          </div>
+          <div class='col-sm-5'>
+            <label class="TxtCap">ชื่อผู้แจ้งปัญหา</label><br>
+            <span class="TxtValue">{{NtfModel.DeptUsFName}}</span>
+          </div>
+          <div class='col-sm-4'>
+            <label class="TxtCap">ตำแหน่งงาน</label><br>
+            <span class="TxtValue">{{NtfModel.DeptUsPosi}}</span>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='col-sm-8'>
+            <label class="TxtCap">หน่วยงานผู้แจ้งปัญหา</label>:
+            <span class="TxtValue">{{NtfModel.DeptName}}</span>
+          </div>
+          <div class='col-sm-4'>
+            <label class="TxtCap">เบอร์ภายใน</label>:
+            <span class="TxtValue">{{NtfModel.DeptPhone}}</span>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='col-sm-8'>
+            <label class="TxtCap">ปัญหาที่พบ</label>:
+            <span class="TxtValue">{{NtfModel.DeptProblem}}</span>
+          </div>
+          <div class='col-sm-4'>
+            <label class="TxtCap">จุดที่พบปัญหา</label>:
+            <span class="TxtValue">{{NtfModel.DeptProblemPoint}}</span>
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-sm-12 text-center">
+            <button uiSref="personal" type="button"
+              class="btn btn-raised btn-secondary mr-1"
+              (click)="c('Cancel-click')">
+              <span style="margin-right:10px;">
+                <i class="icon icon-close"></i>
+              </span>
+              ตกลง.. และปิดฟอร์ม
+            </button>
+          </div>
+        </div>
+      </aw-wizard-step>
+    </aw-wizard>
+  </div>
+</ng-template>

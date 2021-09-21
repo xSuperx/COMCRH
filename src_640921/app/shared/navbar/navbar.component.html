@@ -1,0 +1,68 @@
+<!-- Navbar (Header) Starts -->
+    <nav class="header-navbar navbar navbar-expand-lg navbar-light bg-faded navbarbackgroup" style="padding: 0.2rem 1.0rem;">
+        <div class="container-fluid">
+            <div class="navbar-header navbartopic">
+                <span>ระบบบันทึกกิจกรรมและการให้บริการ - ศูนย์เทคโนโลยีสารสนเทศ</span>
+            </div>
+            <div class="navbar-container">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
+                    <ul class="navbar-nav">
+                        <li *ngIf="UserInfo.UsLogin != '1'" class="nav-item mr-2  d-none d-lg-block"
+                          title="เข้าสู่ระบบ">
+                            <a href="javascript:;" class="nav-link" id="navbar-fullscreen" (click)="UserLogin()">
+                                <i class="icon icon-login font-medium-3 white darken-4"></i>
+                                <p class="d-none">เข้าสู่ระบบ</p>
+                            </a>
+                        </li>
+                        <li *ngIf="UserInfo.UsLogin == '1'" class="nav-item mr-2  d-none d-lg-block"
+                          title="ออกจากระบบ">
+                            <a href="javascript:;" class="nav-link" id="navbar-fullscreen" (click)="UserLogout()">
+                                <i class="icon icon-logout font-medium-3 white darken-4"></i>
+                                <p class="d-none">ออกจากระบบ</p>
+                            </a>
+                        </li>
+                        <li class="nav-item mr-2  d-none d-lg-block" title="แสดงเต็มจอภาพ">
+                            <a href="javascript:;" class="nav-link" id="navbar-fullscreen" appToggleFullscreen (click)="ToggleClass()">
+                                <i class="{{toggleClass}} font-medium-3 white darken-4"></i>
+                                <p class="d-none">แสดงเต็มจอภาพ</p>
+                            </a>
+                        </li>
+                        <!--
+                            <li class="nav-item" ngbDropdown [placement]="placement" title="ข้อมูลผู้ใช้งาน">
+                                <a class="nav-link position-relative" id="dropdownBasic3" ngbDropdownToggle>
+                                    <i class="ft-user font-medium-3 white darken-4"></i>
+                                    <p class="d-none">ข้อมูลผู้ใช้งาน</p>
+                                </a>
+                                <div ngbDropdownMenu aria-labelledby="dropdownBasic3" class="text-left">
+                                    <a class="dropdown-item py-1" routerLink="/pages/profile">
+                                        <i class="ft-edit mr-2"></i>
+                                        <span>My Profile</span>
+                                    </a>
+                                    <a class="dropdown-item py-1" routerLink="/inbox">
+                                        <i class="ft-mail mr-2"></i>
+                                        <span>My Inbox</span>
+                                    </a>
+                                    <a class="dropdown-item py-1" href="javascript:;">
+                                        <i class="ft-settings mr-2"></i>
+                                        <span>Settings</span>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="javascript:;">
+                                        <i class="ft-power mr-2"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="nav-item d-none d-lg-block" title="เส้นเวลากิจกรรมประจำวัน">
+                                <a class="nav-link position-relative notification-sidebar-toggle" (click)="toggleNotificationSidebar();">
+                                    <i class="ft-align-left font-medium-3 white darken-4"></i>
+                                    <p class="d-none">เส้นเวลากิจกรรมประจำวัน</p>
+                                </a>
+                            </li>
+                        -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+<!-- Navbar (Header) Ends -->

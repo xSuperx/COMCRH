@@ -1,0 +1,209 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="ft-alert-triangle"></i> ข้อมูลความเสี่ยงด้านระบบสารสนเทศ</h3>
+      </div>
+      <div class="card-content">
+        <div class="row">
+          <div class="col-md-2 text-right mt-2">
+            <h5>ปีงบประมาณ</h5>
+          </div>
+          <div class="col-md-2">
+            <ng-select
+              id="SelectYear" name="SelectYear"
+              bindValue="id" bindLabel="name"
+              placeholder="เลือกปีงบประมาณ" [items]="DbYear"
+              (change)="OnYearChange($event);"
+              [(ngModel)]="YearSelect" >
+            </ng-select>
+          </div>
+          <div class="col-md-2">
+            <button type="button" (click)="NewRiskEvent(RiskForm);"
+              class="btn btn-raised btn-primary round btn-block">
+              <i class="ft ft-plus-circle"></i>&nbsp;เพิ่มเหตุการณ์ใหม่
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="Export_Risk()"
+              class="btn btn-raised btn-info round btn-block">
+              <i class="ft ft-save"></i>&nbsp;Excel
+            </button>
+          </div>
+          <div class="col-md-5">&nbsp;</div>
+        </div>
+        <div class="col-md-12">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr class="bg-warning">
+                <th class="text-center align-middle">ลำดับ</th>
+                <th class="text-center align-middle">รายละเอียดเหตุการณ์ความเสี่ยง จำนวน  <b>{{DbRisk.length}}</b>  รายการ</th>
+                <th class="text-center align-middle">จัดการข้อมูล</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let R of DbRisk | slice:(Pages-1)*RowPerPage:(Pages-1)*RowPerPage+RowPerPage; let r=index">
+                <td class="text-center align-top">
+                  <span class="text-muted">{{r+((RowPerPage*Pages)-RowPerPage)+1}}</span>
+                </td>
+                <td class="text-left align-top">
+                  <span class="text-info mr-1">หัวข้อ:</span><span class="text-primary mr-2">{{R.RiskTopic}}</span>
+                  <br>
+                  <span class="text-info mr-1">สาเหตุหรือการแก้ไข:</span><span class="text-primary mr-2">{{R.RiskSolution}}</span>
+                  <br>
+                  <span class="text-info mr-1">แหล่งที่มา:</span><span class="text-primary mr-2">{{R.RiskSource}}</span>
+                  <span class="text-info mr-1">ประเภท:</span><span class="text-primary mr-2">{{R.RiskDes}}</span>
+                  <span class="text-info mr-1">ระดับผลกระทบ:</span><span class="text-primary mr-2">{{R.Impact}}</span>
+                  <span class="text-info mr-1">บันทึกวันที่:</span><span class="text-primary mr-2">{{R.RiskDate | Custom:'fDate'}}</span>
+                  <span class="text-info mr-1">รหัสผู้บันทึก:</span><span class="text-primary mr-2">{{R.RiskUser}}</span>
+                </td>
+                <td class="text-left align-middle">
+                  <button type="button" (click)="UpdateRisk(R,RiskForm);"
+                    class="btn btn-raised btn-warning round btn-block mb-1">
+                    <i class="ft ft-edit"></i>&nbsp;แก้ไข
+                  </button>
+                  <button type="button" (click)="DeleteRisk(R);"
+                    class="btn btn-raised btn-danger round btn-block mb-1">
+                    <i class="ft ft-trash-2"></i>&nbsp;ลบทิ้ง
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="DbRisk.length==0">
+                <td colspan="3" class="text-center align-middle text-muted">
+                  <h5>ไม่พบข้อมูลความเสี่ยงในปีงบประมาณ {{YearSelect}} !!</h5>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4">
+                  <div class="row">
+                    <div class="col-sm-12 text-center">
+                      <ngb-pagination
+                        [(page)]="Pages"
+                        [pageSize]="RowPerPage"
+                        class="d-flex justify-content-center"
+                        [collectionSize]="DbRisk.length">
+                      </ngb-pagination>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #RiskForm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-warning">
+      <h5 class="modal-title" id="modal-basic-title">
+          <i class="ft-alert-triangle"></i>&nbsp; ฟอร์มบันทึกข้อมูลความเสี่ยง
+      </h5>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-1 text-right m-0 mt-1">
+        <span class="TxtCap">ลำดับ</span>
+      </div>
+      <div class="col-md-3">
+        <input id="RiskID" name="RiskID"
+          class="form-control border-success text-center"
+          type="text" readonly required
+          [(ngModel)]="RiskModel.RiskID"
+          #RiskID="ngModel"/>
+      </div>
+      <div class="col-md-1 text-right m-0 mt-1">
+        <span class="TxtCap">วันที่</span>
+      </div>
+      <div class="col-md-3">
+        <input id="RiskDate" name="RiskDate" required
+          type="date" class="form-control border-success"
+          [(ngModel)]="RiskModel.RiskDate"
+          #RiskDate="ngModel" />
+      </div>
+      <div class="col-md-1 text-right m-0 mt-1">
+        <span class="TxtCap">ปีงบ</span>
+      </div>
+      <div class="col-md-3">
+        <ng-select
+          id="eyear" name="eyear"
+          bindValue="id" bindLabel="name" required
+          placeholder="เลือกปีงบประมาณ" [items]="DbYear"
+          (change)="OnYearChange($event);"
+          [(ngModel)]="RiskModel.RiskYear" >
+        </ng-select>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="col-md-12">
+        <span class="TxtCap">รายละเอียดเหตุการณ์ความเสี่ยง</span>
+      </div>
+      <div class="col-md-12">
+        <textarea class="form-control" id="RiskTopic"
+          rows="5" required
+          [(ngModel)]="RiskModel.RiskTopic" #RiskTopic="ngModel">
+        </textarea>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="col-md-12">
+        <span class="TxtCap">การแก้ไขหรือการประสานงาน</span>
+      </div>
+      <div class="col-md-12">
+        <textarea class="form-control" id="RiskSolution"
+          rows="3" maxlength="200" required
+          [(ngModel)]="RiskModel.RiskSolution" #RiskSolution="ngModel">
+        </textarea>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="col-md-4 text-left">
+        <span class="TxtCap">แหล่งที่มา</span>
+        <ng-select
+          id="RiskSource" name="RiskSource"
+          bindValue="id" bindLabel="name" required
+          placeholder="เลือกแหล่งที่มา" [items]="DbRiskSource"
+          (change)="OnRiskSourceChange($event);"
+          [(ngModel)]="RiskModel.RiskSource" >
+        </ng-select>
+      </div>
+      <div class="col-md-8 text-left">
+        <span class="TxtCap">ประเภทความเสี่ยง</span>
+        <ng-select
+          id="RiskCode" name="RiskCode"
+          bindValue="id" bindLabel="name" required
+          placeholder="เลือกประเภทความเสี่ยง" [items]="DbRiskType"
+          (change)="OnRiskCodeChange($event);"
+          [(ngModel)]="RiskModel.RiskCode" >
+        </ng-select>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="col-md-12 text-left">
+        <span class="TxtCap">หมายเหตุ/ข้อความเพิ่มเติม</span>
+        <input id="RiskRemark" name="RiskRemark" required
+          class="form-control border-success text-center"
+          type="text" [(ngModel)]="RiskModel.RiskRemark"
+          #RiskRemark="ngModel" maxlength="100"/>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <span>บันทึกข้อมูลโดย :</span><span class="TxtTitle">{{RiskModel.RiskUser}}</span>
+    <span style="width: 410px;">&nbsp; </span>
+    <button type="button" (click)="SaveRisk()" class="btn btn-raised btn-primary">
+      <i class="icon icon-check"></i>&nbsp;
+      <span *ngIf="RiskModel.SevAction == 'N'">บันทึก</span>
+      <span *ngIf="RiskModel.SevAction == 'E'">ปรับปรุง</span>
+    </button>
+    <button type="button" (click)="CloseForm();" class="btn btn-raised btn-danger">
+      <i class="icon icon-close"></i>&nbsp; ยกเลิก
+    </button>
+  </div>
+</ng-template>

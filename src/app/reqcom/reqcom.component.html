@@ -1,0 +1,183 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header p-0">
+        <div class="row">
+          <div class="col-md-6 mt-3">
+            <h5>
+              <i class="icon icon-screen-desktop ml-3 mr-2"></i>
+              <span>ข้อมูลการขอสนับสนุนคอมพิวเตอร์และอุปกรณ์ต่อพ่วง</span>
+            </h5>
+          </div>
+          <div class="col-md-6 text-right">
+            <div class="row p-2">
+              <div class="col-md-9 p-0 pr-1">
+                <ngb-pagination
+                  [(page)]="PageCom"
+                  [pageSize]="RowPerPage"
+                  class="d-flex justify-content-end"
+                  [collectionSize]="DbRegCom.length">
+                </ngb-pagination>
+              </div>
+              <div class="col-md-3 pl-0">
+                <button type="button"
+                  class="btn btn-raised btn-block btn-warning"
+                  (click)="NewCompDialog(NewCompReq)">
+                  <i class="icon icon-screen-desktop mr-1"></i>
+                  คำขอใหม่
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-content m-2">
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table table-bordered table-striped table-sm">
+              <thead class="TxtTableHead text-center bg-warning text-navi">
+                <th style="width:5%;">ลำดับ</th>
+                <th >รายการคอมฯหรืออุปกรณ์ต่อพ่วง</th>
+                <th style="width:25%;">กลุ่มงาน/ฝ่ายงาน/หน่วยงาน</th>
+                <th style="width:15%;">วันที่ลงทะเบียน</th>
+                <th style="width:15%;">สถานะดำเนินการ</th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let C of DbRegCom|slice:(PageCom-1)*RowPerPage
+                  :(PageCom-1)*RowPerPage+RowPerPage; let i=index"
+                  class="TxtTableRow">
+                  <td class="text-center">{{i+1}}</td>
+                  <td class="text-left">{{C.ReqTitle}}</td>
+                  <td class="text-left">{{C.ReqUsrContact}}</td>
+                  <td class="text-center">{{C.ReqNbr|Custom:"fDateTime2"}}</td>
+                  <td class="text-center">
+                    <span *ngIf="C.ChkDupState=='-'">
+                      รอตรวจสอบ
+                    </span>
+                    <span *ngIf="C.ChkDupState!='-'&&C.reqAprRes=='-'">
+                      ตรวจสอบแล้ว/รอพิจารณา
+                    </span>
+                    <span *ngIf="C.ChkDupState!='-'&&C.reqAprRes!='-'&&C.ReqAprTOR=='-'">
+                      อนุมัติแล้ว/จัดทำ TOR
+                    </span>
+                  </td>
+                </tr>
+                <tr *ngIf="DbRegCom.length==0">
+                  <td colspan="5" class="text-center text-danger font-medium-2">
+                    ไม่พบรายการรับแจ้งปัญหาจากหน่วยงานในวันที่ระบุ..!!
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #NewCompReq let-c="close" let-d="dismiss">
+  <div class="modal-header bg-warning">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-screen-desktop"></i>&nbsp;
+      ลงทะเบียนขอคอมพิวเตอร์และอุปกรณ์ต่อพวง
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [formGroup]="RequestFrm">
+      <div class="row">
+        <div class="col-md-2">
+          <span class="TxtCap">เลขที่คำขอ</span>
+          <input type="text" name="ReqNbr"
+            id="ReqNbr" readonly
+            maxlength="30"
+            class="form-control text-center"
+            formControlName="ReqNbr">
+        </div>
+        <div class="col-md-4">
+          <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+          <input type="text" maxlength="80"
+            name="ReqUser" id="ReqUser"
+            class="form-control text-center"
+            formControlName="ReqUser">
+        </div>
+        <div class="col-md-4">
+          <span class="TxtCap">กลุ่มงาน/ฝ่ายงาน/หน่วยงาน</span>
+          <input type="text" maxlength="60"
+            name="ReqUsrContact" id="ReqUsrContact"
+            class="form-control text-center"
+            formControlName="ReqUsrContact">
+        </div>
+        <div class="col-md-2">
+          <span class="TxtCap">เบอร์ภายใน</span>
+          <input type="text" maxlength="15"
+            name="ReqUsrContactTel"
+            id="ReqUsrContactTel"
+            class="form-control text-center"
+            formControlName="ReqUsrContactTel">
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <span class="TxtCap">ชื่อคอมพิวเตอร์หรืออุปกรณ์ต่อพ่วงที่ต้องการ</span>
+          <input type="text" maxlength="200"
+            name="ReqTitle" id="ReqTitle"
+            class="form-control text-center"
+            formControlName="ReqTitle">
+        </div>
+        <div class="col-md-6">
+          <span class="TxtCap">เหตุผลความต้องการ</span>
+          <input type="text" maxlength="200"
+            name="ReqReason" id="ReqReason"
+            class="form-control text-center"
+            formControlName="ReqReason">
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <span class="TxtCap">ทรัพยากรที่ต้องใช้เพิ่มเติม</span>
+          <input type="text" maxlength="200"
+            name="ReqResource" id="ReqResource"
+            class="form-control text-center"
+            formControlName="ReqResource">
+        </div>
+        <div class="col-md-6">
+          <span class="TxtCap">ผลที่คาดว่าจะได้รับ</span>
+          <input type="text" maxlength="200"
+            name="ReqReturn" id="ReqReturn"
+            class="form-control text-center"
+            formControlName="ReqReturn">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+      <span *ngIf="RequestFrm.invalid" class="TxtMyWay">
+        โปรดกรอกข้อมูลให้ครบทุกช่อง ก่อนกดปุ่ม "บันทึกคำขอใหม่"..!!
+      </span>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        [disabled]="RequestFrm.invalid"
+        (click)="SaveNewComp();"
+        class="btn btn-raised btn-primary btn-block mr-2">
+        <i class="icon icon-check mr-1"></i>
+        บันทึกคำขอ
+      </button>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>

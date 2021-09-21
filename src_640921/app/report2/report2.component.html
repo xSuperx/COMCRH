@@ -1,0 +1,1914 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h3>
+          <i class="icon-pie-chart"></i>
+          รายงานและสถิติ
+        </h3>
+      </div>
+      <div class="card-content">
+        <!--
+          <div class="row">
+            <div class="col-sm-1 font-medium-1 text-right">
+              เดือนปี
+            </div>
+            <div class="col-sm-2">
+              <ng-select
+                [items]="ListMonth" placeholder="เลือกเดือน"
+                bindValue="id" bindLabel="name"
+                [(ngModel)]="SelectMonth">
+              </ng-select>
+            </div>
+            <div class="col-sm-2">
+              <ng-select
+                [items]="ListYear" placeholder="เลือกปี"
+                bindValue="id" bindLabel="name"
+                [(ngModel)]="SelectYear">
+              </ng-select>
+            </div>
+            <div class="col-sm-7">
+              <button type="button"
+                (click)="GetReport();"
+                class="btn btn-raised btn-success round">
+                <i class="icon icon-magnifier"></i>&nbsp;ค้นหา
+              </button>
+            </div>
+          </div>
+        -->
+        <form [formGroup]="SearchFrm" (ngSubmit)="GetReport()">
+          <div class="row">
+            <div class="col-1 text-right mt-1">จากวันที่</div>
+            <div class="col-2">
+              <my-date-picker [locale]="'th'"
+                formControlName="dStart"
+                aria-readonly="true">
+              </my-date-picker>
+            </div>
+            <div class="col-1 text-right mt-1">ถึงวันที่</div>
+            <div class="col-2">
+              <my-date-picker [locale]="'th'"
+                formControlName="dStop"
+                aria-readonly="true">
+              </my-date-picker>
+            </div>
+            <div class="col-6">
+              <button type="submit" class="btn btn-raised btn-info round">
+                <i class="ft ft-loader"></i>&nbsp;ประมวลผล
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-raised btn-success ml-2 mr-1"
+              (click)="ReportTypeF();">
+              <i class="icon icon-support mr-1"></i>กิจกรรมประจำวัน
+            </button>
+            <button type="button" class="btn btn-raised btn-info mr-1"
+              (click)="ReportTypeD();">
+              <i class="icon icon-hourglass mr-1"></i>ประกันเวลา (SLA)
+            </button>
+            <button type="button" class="btn btn-raised btn-primary mr-1"
+              (click)="ReportTypeB();">
+              <i class="ft ft-bar-chart mr-1"></i>ประเภทบริการ
+            </button>
+            <button type="button" class="btn btn-raised btn-danger mr-1"
+              (click)="ReportTypeC();">
+              <i class="ft ft-clock mr-1"></i>ความทันเวลา
+            </button>
+            <button type="button" class="btn btn-raised btn-danger mr-1"
+              (click)="ReportTypeG();">
+              <i class="icon icon-link mr-1"></i>ระบบแม่ข่ายล่ม
+            </button>
+            <button type="button" class="btn btn-raised btn-warning mr-1"
+              (click)="ReportTypeH();">
+              <i class="fa fa-list-alt mr-1"></i>ข้อมูลความเสี่ยง
+            </button>
+            <button type="button" class="btn btn-raised btn-warning mr-1"
+              (click)="ReportTypeA();">
+              <i class="ft ft-pie-chart mr-1"></i>P4P
+            </button>
+            <button type="button" class="btn btn-raised btn-warning mr-1"
+              (click)="ReportTypeE();">
+              <i class="icon icon-users mr-1"></i>FTE
+            </button>
+            <!--
+              <button type="button" class="btn btn-raised btn-info mr-1">
+                <i class="ft ft-bar-chart-2 mr-1"></i>สถิติการพัฒนาระบบ
+              </button>
+              <button type="button" class="btn btn-raised btn-info mr-1">
+                <i class="ft ft-bar-chart-2 mr-1"></i>สถิติการพัฒนาระบบใหม่
+              </button>
+            -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='A'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <h4>
+              <i class="ft ft-pie-chart"></i>
+              สถิติการปฏิบัติงานรายบุคคล (P4P)
+            </h4>
+          </div>
+          <div class="col-sm-6 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}report_p4pnv_excel.php?db={{DateBegin}}&de={{DateEnd}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-3"><span class="font-small-3">Gf: ปิยะธิดา วัชระภาสร</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Ni: เทพนิมิตร มหาวรรณ์</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Oh: ศิริชัย จินะไชย</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Lk: รังสรรค์ สาริกา</span></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"><span class="font-small-3">Tm: ยุทธนา ท้าวคำหล่อ</span></div>
+            <div class="col-sm-3"><span class="font-small-3">By: วิศรุต คำโต</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Ms: ถิรวัฒน์ ขยันขาย</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Sk: สมศักดิ์ พรมสี</span></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"><span class="font-small-3">Pg: จิรวุฒิ แสงสุวรรณ</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Nu: ชาญกฤษณ์ แก้วคำแดง</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Jg: อภิชาติ สิงห์สุข</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Mm: ดำรงพล โจ่ยสา</span></div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3"><span class="font-small-3">Aa: นงคราญ ประมูล</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Ph: เยาวภา มหิตธิ</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Bs: กัญญา สมประสงค์</span></div>
+            <div class="col-sm-3"><span class="font-small-3">Mw: พชรพรรณ บุณยพรรค</span></div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr class="text-center bg-success">
+                <th>กิจกรรมบริการ</th>
+                <th>เกณฑ์ประเมิน</th>
+                <th title="น.ส.ปิยะธิดา วัชระภาสร">Gf</th>
+                <th title="นายเทพนิมิตร มหาวรรณ์">Ni</th>
+                <th title="นายศิริชัย จินะไชย">Oh</th>
+                <th title="นายรังสรรค์ สาริกา">Lk</th>
+                <th title="นายยุทธนา ท้าวคำหล่อ">Tm</th>
+                <th title="นายวิศรุต คำโต">By</th>
+                <th title="นายถิรวัฒน์ ขยันขาย">Ms</th>
+                <th title="นายสมศักดิ์ พรมสี">Sk</th>
+                <th title="นายจิรวุฒิ แสงสุวรรณ">Pg</th>
+                <th title="นายชาญกฤษณ์ แก้วคำแดง">Nu</th>
+                <th title="นายอภิชาติ สิงห์สุข">Jg</th>
+                <th title="นายดำรงพล โจ่ยสา">Mm</th>
+                <th title="น.ส.นงคราญ ประมูล">Aa</th>
+                <th title="น.ส.เยาวภา มหิตธิ">Ph</th>
+                <th title="น.ส.กัญญา สมประสงค์">Bs</th>
+                <th title="น.ส.พชรพรรณ บุณยพรรค">Mw</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let A of RepTypeA | slice:(RepPage-1)*42:(RepPage-1)*42+42; let a=index">                <td class="text-left">
+                  <span *ngIf="A.ActName!='-'" class="font-small-3">{{a+1}}. {{A.ActName}}</span>
+                </td>
+                <td class="text-center">
+                  <span *ngIf="A.TimeP4P!='-'" class="font-small-3">{{A.TimeP4P}}&nbsp;</span>
+                  <span class="font-small-3">{{A.TimeP4PUnit}}</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Golf_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'golf', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Golf}}/</span>
+                    <span class="font-small-3">{{A.Golf_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Golf_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Nid_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'nid', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Nid}}/</span>
+                    <span class="font-small-3">{{A.Nid_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Nid_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Oh_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'sirichai', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Oh}}/</span>
+                    <span class="font-small-3">{{A.Oh_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Oh_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Lek_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'rangsan_sar', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Lek}}/</span>
+                    <span class="font-small-3">{{A.Lek_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Lek_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Tum_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 't_yuttana', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Tum}}/</span>
+                    <span class="font-small-3">{{A.Tum_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Tum_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Boy_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'unlimit3d', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Boy}}/</span>
+                    <span class="font-small-3">{{A.Boy_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Boy_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Mos_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'kayunkay', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Mos}}/</span>
+                    <span class="font-small-3">{{A.Mos_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Mos_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Sak_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'sak999', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Sak}}/</span>
+                    <span class="font-small-3">{{A.Sak_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Sak_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Pong_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'pong', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Pong}}/</span>
+                    <span class="font-small-3">{{A.Pong_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Pong_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Nui_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'chankit', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Nui}}/</span>
+                    <span class="font-small-3">{{A.Nui_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Nui_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Jeng_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'jeng', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Jeng}}/</span>
+                    <span class="font-small-3">{{A.Jeng_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Jeng_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Mm_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'damrongpon', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Mm}}/</span>
+                    <span class="font-small-3">{{A.Mm_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Mm_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Aa_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'a_aec', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Aa}}/</span>
+                    <span class="font-small-3">{{A.Aa_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Aa_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Phueng_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'namphueng', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Phueng}}/</span>
+                    <span class="font-small-3">{{A.Phueng_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Phueng_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Bas_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'kanya', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Bas}}/</span>
+                    <span class="font-small-3">{{A.Bas_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Bas_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+                <td class="text-center">
+                  <a *ngIf="A.Meaw_Time!='0'" href="javascript:void(0)" style="cursor:pointer;"
+                    (click)="ShowActivitieInfo( ActivitieInfo, 'slybabymeaw', A.ActCode );">
+                    <span *ngIf="A.TimeP4PUnit!='P4PTotal'" class="font-small-3">{{A.Meaw}}/</span>
+                    <span class="font-small-3">{{A.Meaw_Time|Custom:"fZero"}}</span>
+                  </a>
+                  <span *ngIf="A.Meaw_Time=='0'" class="font-small-3">0/0</span>
+                </td>
+              </tr>
+              <tr *ngIf="RepTypeA.length==0">
+                <td colspan="18" class="text-center text-danger font-medium-2">
+                  ไม่พบข้อมูลกิจกรรมบริการในช่วงเวลาที่กำหนด..!!
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='B'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <h4>
+              <i class="ft ft-bar-chart"></i>
+              สถิติการดำเนินงานจำแนกตามประเภทการให้บริการ
+            </h4>
+          </div>
+          <div class="col-sm-6 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}report_plopblemNv_excel.php?db={{DateBegin}}&de={{DateEnd}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-sm-12">
+          <ngb-tabset #t="ngbTabset">
+            <ngb-tab id="tab-SrvPlopb">
+              <ng-template ngbTabTitle>
+                <h6><i class="ft ft-list mr-1"></i>สถิติตามกลุ่มปัญหา</h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <tr class="bg-success">
+                      <th class="text-center">เดือนปี</th>
+                      <th class="text-center">HardWare</th>
+                      <th class="text-center">SoftWare</th>
+                      <th class="text-center">Deverloper</th>
+                      <th class="text-center">NetWork</th>
+                      <th class="text-center">Server</th>
+                      <th class="text-center">Information</th>
+                      <th class="text-center">Spicail</th>
+                      <th class="text-center">Manage</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let B of RepTypeB | slice:(RepPage-1)*30:(RepPage-1)*30+30; let b=index">
+                      <td class="text-right font-medium-1 text-bold-300">{{B.YearMonthName}}&nbsp;</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.HardWare}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.SoftWare}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.Deverloper}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.NetWork}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.Server}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.Information}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.Spicail}}</td>
+                      <td class="text-right font-medium-2 text-bold-400">{{B.Manage}}</td>
+                    </tr>
+                    <tr *ngIf="RepTypeB.length==0">
+                      <td colspan="9" class="text-center text-danger font-medium-2">
+                        ไม่พบรายการรับแจ้งปัญหาจากหน่วยงานในวันที่ระบุ..!!
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-SrvChart">
+              <ng-template ngbTabTitle>
+                <h6><i class="ft ft-pie-chart mr-1"></i>กราฟสถิติบริการ</h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5>กราฟสถิติ- 5 หน่วยงานสูงสุด</h5>
+                    <canvas baseChart
+                      [data]="pieChartRepTop5Dept"
+                      [labels]="pieChartLabelsTop5Dept"
+                      [chartType]="pieChartType"
+                      [options]="pieChartOptions"
+                      [plugins]="pieChartPlugins"
+                      [legend]="pieChartLegend">
+                    </canvas>
+                    <table class="table table-bordered table-striped table-sm m-2">
+                      <thead>
+                        <th class="text-center" style="width:10%;">ลำดับ</th>
+                        <th class="text-center" style="width:70%;">รายหน่วยงานที่แจ้งปัญหาสูงสุด</th>
+                        <th class="text-center" style="width:20%;">จำนวน</th>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let D of pieChartLabelsTop5Dept; let i=index">
+                          <td class="text-center">{{i+1}}</td>
+                          <td class="text-left">&nbsp;{{pieChartLabelsTop5Dept[i]}}</td>
+                          <td class="text-center">{{pieChartRepTop5Dept[i]}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-6">
+                    <h5>กราฟสถิติ-จำแนกตามกลุ่มปัญหา</h5>
+                    <canvas baseChart
+                      [data]="pieChartRepByPlopb"
+                      [labels]="pieChartLabelsRepByPlopb"
+                      [chartType]="pieChartType"
+                      [options]="pieChartOptions"
+                      [plugins]="pieChartPlugins"
+                      [legend]="pieChartLegend">
+                    </canvas>
+                    <table class="table table-bordered table-striped table-sm m-2">
+                      <thead>
+                        <th class="text-center" style="width:10%;">ลำดับ</th>
+                        <th class="text-center" style="width:70%;">รายการกลุ่มปัญหา</th>
+                        <th class="text-center" style="width:20%;">จำนวน</th>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let P of pieChartLabelsRepByPlopb; let i=index">
+                          <td class="text-center">{{i+1}}</td>
+                          <td class="text-left">&nbsp;{{pieChartLabelsRepByPlopb[i]}}</td>
+                          <td class="text-center">{{pieChartRepByPlopb[i]}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='C'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <h4>
+              <i class="ft ft-clock"></i>
+              สถิติความทันเวลาในการปฏิบัติงาน
+            </h4>
+          </div>
+          <div class="col-sm-6 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}Report_TimeCheckNv_excel.php?db={{DateBegin}}&de={{DateEnd}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-sm-12">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr class="bg-info">
+                <th rowspan="2" class="text-center">ลำดับ</th>
+                <th rowspan="2" class="text-center">รายชื่อเจ้าหน้าที่</th>
+                <th colspan="2" class="text-center">รวมจำนวนงาน</th>
+                <th colspan="4" class="text-center">ผลดำเนินงาน</th>
+              </tr>
+              <tr class="bg-primary text-white">
+                <th class="text-center">จำนวนครั้ง</th>
+                <th class="text-center">เวลารวม(นาที)</th>
+                <th class="text-center">ทันเวลา(ครั้ง)</th>
+                <th class="text-center">ร้อยละ</th>
+                <th class="text-center">เกินเวลา(ครั้ง)</th>
+                <th class="text-center">ร้อยละ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let C of RepTypeC | slice:(RepPage-1)*30:(RepPage-1)*30+30; let c=index">
+                <td class="text-center font-medium-1 text-bold-300">{{c+1}}&nbsp;</td>
+                <td class="text-left font-medium-1 text-bold-300">{{C.UsName}}&nbsp;</td>
+                <td class="text-right font-medium-2 text-bold-400">{{C.WkTotalCase}}&nbsp;</td>
+                <td class="text-right font-medium-2 text-bold-400">{{C.WkTotalTime|number:'1.0-3'}}&nbsp;</td>
+                <td class="text-right font-medium-2 text-bold-400">{{C.WkOnTimeCase}}&nbsp;</td>
+                <td class="text-right font-medium-2 text-bold-400">{{C.WkOnTimeCal}}%&nbsp;</td>
+                <td class="text-right font-medium-2 text-bold-400">{{C.WkOverTimeCase}}&nbsp;</td>
+                <td class="text-right font-medium-2 text-bold-400">{{C.WkOverTimeCal}}%&nbsp;</td>
+              </tr>
+              <tr *ngIf="RepTypeC.length==0">
+                <td colspan="8" class="text-center text-danger font-medium-2">
+                  ไม่พบสถิติความทันเวลาในการปฏิบัติงานในช่วงเวลาที่ระบุ..!!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='D'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-8 text-left">
+            <h4>
+              <i class="icon icon-hourglass"></i>
+              ค่าคะแนนการให้บริการตามข้อตกลง (Service Level Agreement: SLA)
+            </h4>
+          </div>
+          <div class="col-sm-4 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}Report_SLANv_Excel.php?db={{DateBegin}}&de={{DateEnd}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-sm-12">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr class="bg-success">
+                <th class="text-center" rowspan="2">ข้อตกลงการให้บริการ (Service Level Agreement)</th>
+                <th class="text-center" colspan="5">สถิติผลดำเนินการ</th>
+                <th class="text-center" colspan="3">ค่าเฉลี่ยเวลาดำเนินการ (นาที)</th>
+              </tr>
+              <tr class="bg-success">
+                <th class="text-center">ทั้งหมด</th>
+                <th class="text-center">ทันเวลา</th>
+                <th class="text-center">ร้อยละ</th>
+                <th class="text-center">ไม่ทันเวลา</th>
+                <th class="text-center">ร้อยละ</th>
+                <th class="text-center">น้อยที่สุด</th>
+                <th class="text-center">มากที่สุด</th>
+                <th class="text-center">เฉลี่ย</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let D of RepTypeD | slice:(RepPage-1)*30:(RepPage-1)*30+30; let d=index">
+                <td *ngIf="D.SlaID!='7'" class="text-left font-medium-2 text-bold-400" style="cursor: pointer;"
+                 (click)="ShowActivitieInfoBySLA(ActivitieBySLA,D);">
+                  {{D.SlaID}}.{{D.SlaName}}
+                </td>
+                <td *ngIf="D.SlaID=='7'" class="text-right font-medium-2 text-bold-400">
+                  {{D.SlaName}}&nbsp;
+                </td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TotalCase}}</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeOK}}</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeOKAv}}%</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeNo}}</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeNoAv}}%</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeMin}}</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeMax}}</td>
+                <td class="text-center font-medium-2 text-bold-400">{{D.TimeAvg}}</td>
+              </tr>
+              <tr *ngIf="RepTypeD.length==0">
+                <td colspan="11" class="text-center text-danger font-medium-2">
+                  ไม่พบสถิติค่าคะแนนการให้บริการตามข้อตกลง ในช่วงเวลาที่ระบุ..!!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='E'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <h4>
+              <i class="icon icon-users"></i>
+              ค่าคำนวณอัตรากำลัง (Full time Equivalent: FTE)
+            </h4>
+          </div>
+          <div class="col-sm-6 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}Report_FTENv_Excel.php?db={{DateBegin}}&de={{DateEnd}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-sm-12">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr class="bg-success">
+                <th rowspan="2" class="text-center">กิจกรรมบริการ</th>
+                <th colspan="3" class="text-center">นักวิชาการคอมพิวเตอร์</th>
+                <th colspan="3" class="text-center">เจ้าพนักงานช่างคอมพิวเตอร์</th>
+                <th colspan="3" class="text-center">นักวิชาการสถิติ</th>
+                <th colspan="3" class="text-center">นักวิชาการสาธารณสุข</th>
+                <th colspan="3" class="text-center">เจ้าพนักงานธุรการ</th>
+              </tr>
+              <tr class="bg-success">
+                <th class="text-center">ครั้ง</th>
+                <th class="text-center">เวลา(นาที)</th>
+                <th class="text-center">FTE</th>
+                <th class="text-center">ครั้ง</th>
+                <th class="text-center">เวลา(นาที)</th>
+                <th class="text-center">FTE</th>
+                <th class="text-center">ครั้ง</th>
+                <th class="text-center">เวลา(นาที)</th>
+                <th class="text-center">FTE</th>
+                <th class="text-center">ครั้ง</th>
+                <th class="text-center">เวลา(นาที)</th>
+                <th class="text-center">FTE</th>
+                <th class="text-center">ครั้ง</th>
+                <th class="text-center">เวลา(นาที)</th>
+                <th class="text-center">FTE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let E of RepTypeE | slice:(RepPage-1)*50:(RepPage-1)*50+50; let e=index">
+                <td class="text-left font-medium-1 text-bold-300">{{e+1}}. {{E.ActName}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.PrmTime}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.PrmWork}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.PrmFTE}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.TchTime}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.TchWork}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.TchFTE}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.InfTime}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.InfWork}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.InfFTE}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.HlhTime}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.HlhWork}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.HlhFTE}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.AdmTime}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.AdmWork}}</td>
+                <td class="text-right font-medium-2 text-bold-400">{{E.AdmFTE}}</td>
+              </tr>
+              <tr><td colspan="18">&nbsp;</td></tr>
+              <tr>
+                <td colspan="2" class="text-right">กรอบอัตรากำลังของกระทรวง&nbsp;</td>
+                <td colspan="2" class="text-right">14&nbsp;</td>
+                <td colspan="14">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-right">กรอบอัตรากำลังของศูนย์คอมพิวเตอร ์&nbsp;</td>
+                <td colspan="2" class="text-right">17&nbsp;</td>
+                <td colspan="14">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-right">กรอบอัตรากำลังของคำนวณจาก FTE&nbsp;</td>
+                <td colspan="2" class="text-right">{{SumFTE | number:'1.2-3'}}&nbsp;</td>
+                <td colspan="14">&nbsp;</td>
+              </tr>
+              <tr *ngIf="RepTypeE.length==0">
+                <td colspan="16" class="text-center text-danger font-medium-2">
+                  ไม่พบสถิติความพึ่งพอใจของผู้รับบริการในช่วงเวลาที่ระบุ..!!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='F'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>
+          <i class="icon icon-user-following"></i>
+          รายงานกิจกรรมบริการ ตามช่วงวันที่ {{DateBegin|Custom:'fDate'}} - {{DateEnd|Custom:'fDate'}}
+        </h4>
+      </div>
+      <div class="card-content">
+        <div class="row m-2">
+          <div class="col-md-12">
+            <ngb-tabset #t="ngbTabset">
+              <ngb-tab id="tab-ListAll">
+                <ng-template ngbTabTitle>
+                  <h6><i class="ft ft-clipboard mr-1"></i>สถิติกิจกรรมบริการ</h6>
+                </ng-template>
+                <ng-template ngbTabContent>
+                  <!-- เริ่มต้น - ตารางแสดงข้อมูลรวมของหน่วยงาน -->
+                  <div class="row">
+                    <table class="table table-bordered table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th rowspan="2" class="text-center" style="width:250px;">
+                            รายการข้อมูลสถิติของหน่วยงาน
+                          </th>
+                          <th colspan="1" class="text-center bg-green">เวลาทำงาน</th>
+                          <th colspan="3" class="text-center bg-info">งานตามตำแหน่ง (Activitie)</th>
+                          <th colspan="3" class="text-center bg-danger">งานแก้ไขปัญหา (Incedent)</th>
+                          <th colspan="3" class="text-center bg-warning">งานพัฒนา (Develop)</th>
+                          <th colspan="3" class="text-center bg-primary">งานอื่นๆ (Other)</th>
+                        </tr>
+                        <tr>
+                          <!-- <th class="text-center bg-green" style="width:100px;">ครั้ง</th> -->
+                          <th class="text-center bg-green" style="width:100px;">รวม (นาที)</th>
+                          <th class="text-center bg-info" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-info" style="width:70px;">นาที</th>
+                          <th class="text-center bg-info" style="width:70px;">ร้อยละ</th>
+                          <th class="text-center bg-danger" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-danger" style="width:70px;">นาที</th>
+                          <th class="text-center bg-danger" style="width:70px;">ร้อยละ</th>
+                          <th class="text-center bg-warning" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-warning" style="width:70px;">นาที</th>
+                          <th class="text-center bg-warning" style="width:70px;">ร้อยละ</th>
+                          <th class="text-center bg-primary" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-primary" style="width:70px;">นาที</th>
+                          <th class="text-center bg-primary" style="width:70px;">ร้อยละ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="cursor: pointer;" (click)="ShowChartDeptService(ChartService);">
+                          <td class="text-left ml-1">
+                            1. สถิติการทำงานตามช่วงเวลาทั้งหมด ({{HaItInfo.SumWorkDay}} วันทำการ)
+                          </td>
+                          <!-- <td class="text-right mr-1">{{HaItInfo.SumAllCase|number:'0.0-0'}}</td> -->
+                          <td class="text-right mr-1 bg-green">{{HaItInfo.SumAllTime|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-info">{{HaItInfo.SumActeCase|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-info">{{HaItInfo.SumActeTime|number:'0.0-0'}}</td>
+                          <td rowspan="2" class="text-right mr-1 pt-2 bg-info">
+                            {{((100/HaItInfo.SumAllTime)*HaItInfo.SumActeTime)|number:'0.0-2'}}%
+                          </td>
+                          <td class="text-right mr-1 bg-danger">{{HaItInfo.SumIncdCase|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-danger">{{HaItInfo.SumIncdTime|number:'0.0-0'}}</td>
+                          <td rowspan="2" class="text-right mr-1 pt-2 bg-danger">
+                            {{((100/HaItInfo.SumAllTime)*HaItInfo.SumIncdTime)|number:'0.0-2'}}%
+                          </td>
+                          <td class="text-right mr-1 bg-warning">{{HaItInfo.SumDeveCase|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-warning">{{HaItInfo.SumDeveTime|number:'0.0-0'}}</td>
+                          <td rowspan="2" class="text-right mr-1 pt-2 bg-warning">
+                            {{((100/HaItInfo.SumAllTime)*HaItInfo.SumDeveTime)|number:'0.0-2'}}%
+                          </td>
+                          <td class="text-right mr-1 bg-primary">{{HaItInfo.SumOthrCase|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-primary">{{HaItInfo.SumOthrTime|number:'0.0-0'}}</td>
+                          <td rowspan="2" class="text-right mr-1 pt-2 bg-primary">
+                            {{((100/HaItInfo.SumAllTime)*HaItInfo.SumOthrTime)|number:'0.0-2'}}%
+                          </td>
+                        </tr>
+                        <tr *ngIf="HaItInfo.SumWorkDay>1" style="cursor: pointer;" (click)="ShowChartDeptService(ChartService);">
+                          <td class="text-left ml-1">2. สถิติการทำงานโดยเฉลี่ยใน 1 วันทำการ</td>
+                          <!-- <td class="text-right mr-1">{{HaItInfo.SumAllCaseAvg|number:'0.0-0'}}</td> -->
+                          <td class="text-right mr-1 bg-green">{{HaItInfo.SumAllTimeAvg|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-info">{{HaItInfo.SumActeCaseAvg|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-info">{{HaItInfo.SumActeTimeAvg|number:'0.0-0'}}</td>
+                          <!-- <td class="text-right mr-1">{{((100/HaItInfo.SumAllTimeAvg)*HaItInfo.SumActeTimeAvg)|number:'0.0-2'}}</td> -->
+                          <td class="text-right mr-1 bg-danger">{{HaItInfo.SumIncdCaseAvg|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-danger">{{HaItInfo.SumIncdTimeAvg|number:'0.0-0'}}</td>
+                          <!-- <td class="text-right mr-1">{{((100/HaItInfo.SumAllTimeAvg)*HaItInfo.SumIncdTimeAvg)|number:'0.0-2'}}</td> -->
+                          <td class="text-right mr-1 bg-warning">{{HaItInfo.SumDeveCaseAvg|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-warning">{{HaItInfo.SumDeveTimeAvg|number:'0.0-0'}}</td>
+                          <!-- <td class="text-right mr-1">{{((100/HaItInfo.SumAllTimeAvg)*HaItInfo.SumDeveTimeAvg)|number:'0.0-2'}}</td> -->
+                          <td class="text-right mr-1 bg-primary">{{HaItInfo.SumOthrCaseAvg|number:'0.0-0'}}</td>
+                          <td class="text-right mr-1 bg-primary">{{HaItInfo.SumOthrTimeAvg|number:'0.0-0'}}</td>
+                          <!-- <td class="text-right mr-1">{{((100/HaItInfo.SumAllTimeAvg)*HaItInfo.SumOthrTimeAvg)|number:'0.0-2'}}</td> -->
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- สิ้นสุด - ตารางแสดงข้อมูลรวมของหน่วยงาน -->
+                  <!-- เริ่มต้น - ตารางแสดงข้อมูลรายบุคคล -->
+                  <div class="row">
+                    <table class="table table-bordered table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th class="text-center" style="width:250px;">
+                            บุคลากรในหน่วยงาน <br>
+                            ({{HaItInfo.SumWorkDay}} วันทำการ)
+                          </th>
+                          <th colspan="1" class="text-center bg-green">เวลาทำงาน</th>
+                          <th colspan="3" class="text-center bg-info">งานตามตำแหน่ง (Activitie)</th>
+                          <th colspan="3" class="text-center bg-danger">งานแก้ปัญหา (Incedent)</th>
+                          <th colspan="3" class="text-center bg-warning">งานพัฒนา (Develop)</th>
+                          <th colspan="3" class="text-center bg-primary">งานอื่นๆ (Other)</th>
+                        </tr>
+                        <tr>
+                          <th class="text-center" style="width:200px;">ชื่อ-สกุล/ตำแหน่งงาน</th>
+                          <!-- <th class="text-center" style="width:70px;">ครั้ง</th> -->
+                          <th class="text-center bg-green" style="width:100px;">รวม (นาที)</th>
+                          <th class="text-center bg-info" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-info" style="width:70px;">นาที</th>
+                          <th class="text-center bg-info" style="width:70px;">ร้อยละ</th>
+                          <th class="text-center bg-danger" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-danger" style="width:70px;">นาที</th>
+                          <th class="text-center bg-danger" style="width:70px;">ร้อยละ</th>
+                          <th class="text-center bg-warning" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-warning" style="width:70px;">นาที</th>
+                          <th class="text-center bg-warning" style="width:70px;">ร้อยละ</th>
+                          <th class="text-center bg-primary" style="width:70px;">ครั้ง</th>
+                          <th class="text-center bg-primary" style="width:70px;">นาที</th>
+                          <th class="text-center bg-primary" style="width:70px;">ร้อยละ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let H of DbHAType; let z=index" style="cursor:pointer;"
+                          (click)="ShowChartService(ChartService,H);">
+                          <td class="text-left ml-1">
+                            <span>{{z+1}}. {{H.UsName}}</span><br>
+                            <span class="ml-2">{{H.UsTypeName}}</span>
+                          </td>
+                          <!-- <td class="text-right mr-1">{{H.AllCase|number:'1.0-1'}}</td> -->
+                          <td class="text-right mr-1 bg-green">{{H.AllTime|number:'1.0-1'}}</td>
+                          <td class="text-right mr-1 bg-info">{{H.ActivitieCase}}</td>
+                          <td class="text-right mr-1 bg-info">{{H.ActivitieTime|number:'1.0-1'}}</td>
+                          <td class="text-right mr-1 bg-info">{{H.ActivitieAvg|number:'1.0-1'}}%</td>
+                          <td class="text-right mr-1 bg-danger">{{H.IncedentCase}}</td>
+                          <td class="text-right mr-1 bg-danger">{{H.IncedentTime|number:'1.0-1'}}</td>
+                          <td class="text-right mr-1 bg-danger">{{H.IncedentAvg|number:'1.0-1'}}%</td>
+                          <td class="text-right mr-1 bg-warning">{{H.DevelopCase}}</td>
+                          <td class="text-right mr-1 bg-warning">{{H.DevelopTime|number:'1.0-1'}}</td>
+                          <td class="text-right mr-1 bg-warning">{{H.DevelopAvg|number:'1.0-1'}}%</td>
+                          <td class="text-right mr-1 bg-primary">{{H.OthterCase}}</td>
+                          <td class="text-right mr-1 bg-primary">{{H.OthterTime|number:'1.0-1'}}</td>
+                          <td class="text-right mr-1 bg-primary">{{H.OthterAvg|number:'1.0-1'}}%</td>
+                        </tr>
+                        <tr *ngIf="DbHAType.length == 0">
+                          <td colspan="15" class="text-center text-danger font-medium-2">
+                            ไม่พบรายการกิจกรรมในช่วงวันที่ตามที่ระบุ..!!
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- สิ้นสุด - ตารางแสดงข้อมูลรายบุคคล -->
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab id="tab-ChartAll">
+                <ng-template ngbTabTitle>
+                  <h6><i class="ft ft-pie-chart mr-1"></i>กราฟสถิติ</h6>
+                </ng-template>
+                <ng-template ngbTabContent>
+                  <div class="row">
+                    <div class="col-md-6 text-center">
+                      <h5>กราฟสถิติ-งานศูนย์คอมพิวเตอร์</h5>
+                      <canvas baseChart
+                        [data]="pieChartDataAllDept"
+                        [labels]="pieChartRep"
+                        [chartType]="pieChartType"
+                        [options]="pieChartOptions"
+                        [plugins]="pieChartPlugins"
+                        [legend]="pieChartLegend">
+                      </canvas>
+                    </div>
+                    <div class="col-md-6 text-center">
+                      <h5>กราฟสถิติ-นักวิชาการคอมพิวเตอร์</h5>
+                      <canvas baseChart
+                        [data]="pieChartDataProgramer"
+                        [labels]="pieChartRep"
+                        [chartType]="pieChartType"
+                        [options]="pieChartOptions"
+                        [plugins]="pieChartPlugins"
+                        [legend]="pieChartLegend">
+                      </canvas>
+                    </div>
+                  </div>
+                  <div class="row pt-5">
+                    <div class="col-md-6 text-center">
+                      <h5>กราฟสถิติ-ช่างเทคนิคคอมพิวเตอร์</h5>
+                      <canvas baseChart
+                        [data]="pieChartDataTechnincal"
+                        [labels]="pieChartRep"
+                        [chartType]="pieChartType"
+                        [options]="pieChartOptions"
+                        [plugins]="pieChartPlugins"
+                        [legend]="pieChartLegend">
+                      </canvas>
+                    </div>
+                    <div class="col-md-6 text-center">
+                      <h5>กราฟสถิติ-ทีมแก้ไขปัญหา (HelpDesk)</h5>
+                      <canvas baseChart
+                        [data]="pieChartDataPublicHealth"
+                        [labels]="pieChartRep"
+                        [chartType]="pieChartType"
+                        [options]="pieChartOptions"
+                        [plugins]="pieChartPlugins"
+                        [legend]="pieChartLegend">
+                      </canvas>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab id="tab-List">
+                <ng-template ngbTabTitle>
+                  <h6><i class="ft ft-list mr-1"></i>รายการแก้ปัญหา</h6>
+                </ng-template>
+                <ng-template ngbTabContent>
+                  <div class="row">
+                    <div class="col-md-3 p-0 pr-1">
+                      <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                          <th class="text-center">รายชื่อบุคลากร</th>
+                          <th class="text-center">จำนวน</th>
+                        </thead>
+                        <tbody>
+                          <tr style="cursor: pointer;" (click)="ReportIncedentByUserBetweenDate('*');">
+                            <td class="text-left">แสดงรายการทั้งหมด</td>
+                            <td class="text-center">-</td>
+                          </tr>
+                          <tr *ngFor="let ID of DbGrpUsrIncedent let i=index" style="cursor: pointer;"
+                            (click)="ReportIncedentByUserBetweenDate(ID.SevUserMend);" >
+                            <td class="text-left">
+                              <span>{{i+1}}. {{ID.UsName}}</span>
+                            </td>
+                            <td class="text-center">
+                              <span>{{ID.TotalWork}}</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-md-9 p-0">
+                      <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                          <tr>
+                            <th class="text-center" style="width:15%;">วันที่/ช่วงเวลา</th>
+                            <!-- <th class="text-center" style="width:10%;">ช่วงเวลา</th> -->
+                            <th class="text-center" style="width:20%;">หน่วยงาน-ผู้ประสาน</th>
+                            <th class="text-center">ปัญหาที่รับแจ้ง/ผู้แก้ไข</th>
+                            <!-- <th class="text-center" style="width:10%;">กลุ่มกิจกรรม</th> -->
+                            <!-- <th class="text-center" style="width:10%;">ผู้บันทึก</th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let D of DbDaily|slice:(NotiPages-1)*ACTRowPerPage:(NotiPages-1)*ACTRowPerPage+ACTRowPerPage"
+                            (click)="ShowActivitieInfo2(ActivitieInfo2,D);" style="cursor: pointer;">
+                            <td class="text-center">
+                              {{D.SevDateSave | Custom: "fDate"}}<br>
+                              {{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}
+                            </td>
+                            <!-- <td class="text-center">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</td> -->
+                            <td class="text-left">
+                              {{ D.SevReqDeptName }}<br>
+                              {{ D.SevReqUser }}-{{ D.SevReqCallBack }}
+                            </td>
+                            <td class="text-left">
+                              <span class="TxtValue">{{ D.SevReqMend }}</span>
+                              <span class="TxtValue">, {{ D.ActDName }}</span>
+                              <!--
+                                <span class="TxtValue">{{ D.ActGrpName }}</span>
+                                <span class="TxtValue">, {{ D.ActHName }}</span>
+                              -->
+                              <br><span class="TxtValue">/ {{ D.UserMendName }}</span>
+                            </td>
+                            <!-- <td class="text-center">{{ D.SevTypeHA }}</td> -->
+                            <!-- <td class="text-center">{{ D.UserMendName }}</td> -->
+                            <!--
+                              <td class="text-left">
+                                <span class="TxtCap">วันที่:</span>
+                                <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span>
+                                <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span>
+                                <span class="TxtCap">เวลาดำเนินการ:</span>
+                                <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                                <span class="TxtCap">เวลารวม:</span>
+                                <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                                <span class="TxtCap">นาที</span>
+                                <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span>
+                                <span class="TxtCap">หน่วยงานประสาน:</span>
+                                <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                                <br />
+                                <span class="TxtCap">ผู้ประสาน:</span>
+                                <span class="TxtValue">{{ D.SevReqUser }}</span>
+                                <span class="TxtCap">โทรกลับ:</span>
+                                <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                                <span class="TxtCap">ผู้บันทึก:</span>
+                                <span class="TxtValue">{{ D.UserMendName }}</span>
+                                <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                                <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+                                <br />
+                                <span class="TxtCap">กิจกรรมบริการ:</span>
+                                <span class="TxtValue">{{ D.ActGrpName }}</span>
+                                <span class="TxtValue">, {{ D.ActHName }}</span>
+                                <span class="TxtValue">, {{ D.ActDName }}</span>
+                              </td>
+                            -->
+                          </tr>
+                          <tr *ngIf="DbDaily.length == 0">
+                            <td colspan="3" class="text-center text-danger font-medium-2">
+                              ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="3">
+                              <div class="row">
+                                <div class="col-sm-6 text-left">
+                                  <span class="TxtCap">จำนวนทั้งหมด </span>
+                                  <span class="TxtValue">{{DbDaily.length}}</span>
+                                  <span class="TxtCap">รายการ</span>
+                                </div>
+                                <div class="col-sm-6">
+                                  <ngb-pagination
+                                    class="d-flex justify-content-end"
+                                    [(page)]="NotiPages"
+                                    [pageSize]="ACTRowPerPage"
+                                    [collectionSize]="DbDaily.length">
+                                  </ngb-pagination>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab id="tab-Action">
+                <ng-template ngbTabTitle>
+                  <h6><i class="ft ft-codepen mr-1"></i>กิจกรรมตามตำแหน่ง</h6>
+                </ng-template>
+                <ng-template ngbTabContent>
+                  <div class="row">
+                    <div class="col-md-3 p-0 pr-1">
+                      <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                          <th class="text-center">รายชื่อบุคลากร</th>
+                          <th class="text-center">จำนวน</th>
+                        </thead>
+                        <tbody>
+                          <tr style="cursor: pointer;"
+                            (click)="ReportActivitieByUserBetweenDate('*');">
+                            <td class="text-left">แสดงรายการทั้งหมด</td>
+                            <td class="text-center">-</td>
+                          </tr>
+                          <tr *ngFor="let AC of DbGrpUsrActivitie let i=index" style="cursor: pointer;"
+                            (click)="ReportActivitieByUserBetweenDate(AC.SevUserMend);" >
+                            <td class="text-left">
+                              <span>{{i+1}}. {{AC.UsName}}</span>
+                            </td>
+                            <td class="text-center">
+                              <span>{{AC.TotalWork}}</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-md-9 p-0">
+                      <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                          <tr>
+                            <th class="text-center" style="width:15%;">วันที่/ช่วงเวลา</th>
+                            <!-- <th class="text-center" style="width:10%;">ช่วงเวลา</th> -->
+                            <th class="text-center" style="width:20%;">หน่วยงาน-ผู้ประสาน</th>
+                            <th class="text-center">ปัญหาที่รับแจ้ง/ผู้แก้ไข</th>
+                            <!-- <th class="text-center" style="width:10%;">กลุ่มกิจกรรม</th> -->
+                            <!-- <th class="text-center" style="width:10%;">ผู้บันทึก</th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let AT of DbActivitie|slice:(ActivitiePages-1)*ACTRowPerPage:(ActivitiePages-1)*ACTRowPerPage+ACTRowPerPage"
+                            (click)="ShowActivitieInfo2(ActivitieInfo2,AT);" style="cursor: pointer;">
+                            <td class="text-center">
+                              {{AT.SevDateSave | Custom: "fDate"}}<br>
+                              {{AT.SevTimeAtDept}}-{{AT.SevTimeDoFinish}}
+                            </td>
+                            <!-- <td class="text-center">{{ AT.SevTimeAtDept }}-{{ AT.SevTimeDoFinish }}</td> -->
+                            <td class="text-left">
+                              {{ AT.SevReqDeptName }}<br>
+                              {{ AT.SevReqUser }}-{{ AT.SevReqCallBack }}
+                            </td>
+                            <td class="text-left">
+                              <span class="TxtValue">{{ AT.SevReqMend }}</span>
+                              <span class="TxtValue">, {{ AT.ActDName }}</span>
+                              <!-- <span class="TxtValue">{{ AT.ActGrpName }}</span>
+                              <span class="TxtValue">, {{ AT.ActHName }}</span>
+                              -->
+                              <br><span class="TxtValue">/ {{ AT.UserMendName }}</span>
+                            </td>
+                            <!-- <td class="text-center">{{ AT.SevTypeHA }}</td> -->
+                            <!-- <td class="text-center">{{ AT.UserMendName }}</td> -->
+                            <!--
+                              <td class="text-left">
+                                <span class="TxtCap">วันที่:</span>
+                                <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span>
+                                <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span>
+                                <span class="TxtCap">เวลาดำเนินการ:</span>
+                                <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                                <span class="TxtCap">เวลารวม:</span>
+                                <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                                <span class="TxtCap">นาที</span>
+                                <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span>
+                                <span class="TxtCap">หน่วยงานประสาน:</span>
+                                <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                                <br />
+                                <span class="TxtCap">ผู้ประสาน:</span>
+                                <span class="TxtValue">{{ D.SevReqUser }}</span>
+                                <span class="TxtCap">โทรกลับ:</span>
+                                <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                                <span class="TxtCap">ผู้บันทึก:</span>
+                                <span class="TxtValue">{{ D.UserMendName }}</span>
+                                <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                                <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+                                <br />
+                                <span class="TxtCap">กิจกรรมบริการ:</span>
+                                <span class="TxtValue">{{ D.ActGrpName }}</span>
+                                <span class="TxtValue">, {{ D.ActHName }}</span>
+                                <span class="TxtValue">, {{ D.ActDName }}</span>
+                              </td>
+                            -->
+                          </tr>
+                          <tr *ngIf="DbActivitie.length==0">
+                            <td colspan="3" class="text-center text-danger font-medium-2">
+                              ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="3">
+                              <div class="row">
+                                <div class="col-sm-6 text-left">
+                                  <span class="TxtCap">จำนวนทั้งหมด </span>
+                                  <span class="TxtValue">{{DbActivitie.length}}</span>
+                                  <span class="TxtCap">รายการ</span>
+                                </div>
+                                <div class="col-sm-6">
+                                  <ngb-pagination
+                                    class="d-flex justify-content-end"
+                                    [(page)]="ActivitiePages"
+                                    [pageSize]="ACTRowPerPage"
+                                    [collectionSize]="DbActivitie.length">
+                                  </ngb-pagination>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </ng-template>
+              </ngb-tab>
+            </ngb-tabset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='G'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-8 text-left">
+            <h4>
+              <i class="icon icon-hourglass"></i>
+              สถิติการล่มของเครื่องแม่ข่าย
+            </h4>
+          </div>
+          <div class="col-sm-4 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}Report_DownTimeNv_Excel.php?db={{DateBegin}}&de={{DateEnd}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-sm-12">
+          <table class="table table-bordered table-striped table-sm">
+            <!-- <thead>
+              <tr>
+                <th class="text-center">&nbsp;</th>
+                <th class="text-center">&nbsp;</th>
+                <th class="text-center">&nbsp;</th>
+                <th class="text-center">&nbsp;</th>
+              </tr>
+            </thead> -->
+            <tbody>
+              <tr *ngFor="let G of DbDownTime |
+                slice:(RepPage-1)*30:(RepPage-1)*30+30; let g=index">
+                <td *ngIf="G.topic==''" colspan="4" class="font-medium-2 text-bold-500 text-left">&nbsp;{{G.id}}</td>
+                <td *ngIf="G.topic!=''"  class="text-center font-medium-2 text-bold-400">{{G.id}}</td>
+                <td *ngIf="G.topic!=''"  class="text-left font-medium-2 text-bold-400">{{G.topic}}</td>
+                <td *ngIf="G.topic!=''"  class="text-center font-medium-2 text-bold-400">{{G.unit}}</td>
+                <td *ngIf="G.topic!=''"  class="text-right font-medium-2 text-bold-400">
+                  <span *ngIf="G.ty=='B'&&G.id=='3'">
+                    <span *ngIf="G.amt=='จำนวน'">{{G.amt}}%</span>
+                    <span *ngIf="G.amt!='จำนวน'&&G.amt!='>0.01'">{{G.amt|number:'1.0-3'}}%</span>
+                    <span *ngIf="G.amt=='>0.01'">{{G.amt}}%</span>
+                  </span>
+                  <span *ngIf="G.ty!='B'||G.id!='3'">{{G.amt}}</span>
+                </td>
+              </tr>
+              <tr *ngIf="DbDownTime.length==0">
+                <td colspan="5" class="text-center text-danger font-medium-2">
+                  ไม่พบสถิติการล่มของเครื่องแม่ข่าย ในช่วงเวลาที่ระบุ..!!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="SelectRepType=='H'">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-sm-8 text-left">
+            <h4>
+              <i class="fa fa-list-alt"></i>
+              รายงานสถิติความเสี่ยง
+            </h4>
+          </div>
+          <!--
+          <div class="col-sm-4 text-right">
+            <a type="button" class="btn btn-raised btn-success" target="_blank"
+              href="{{appConfig.urlApi}}Report_DownTime_Excel.php?yy={{SelectYear}}">
+              <i class="fa fa-th"></i>&nbsp;ส่งออก-Excel
+            </a>
+          </div>
+          -->
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="col-md-12 m-1">
+          <ngb-tabset #t="ngbTabset">
+            <ngb-tab id="tab-riskfromationn">
+              <ng-template ngbTabTitle>
+                <h6>
+                  <i class="ft ft-users mr-1"></i>
+                  ความเสี่ยง-จากงานบริการประจำวัน
+                </h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <th class="text-center" style="width:100px;">วันที่-ช่วงเวลา</th>
+                      <th class="text-center" style="width:180px;">หน่วยงาน-ผู้ประสาน</th>
+                      <th class="text-center">กิจกรรมบริการและรายละเอียด</th>
+                      <th class="text-center" style="width:100px;">กลุ่มประเภทกิจกรรม</th>
+                      <th class="text-center" style="width:160px;">ผู้บันทึก</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let D of DbRiskByDate|slice:(NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage"
+                        (click)="ShowActivitieInfo2(ActivitieInfo2,D);" style="cursor: pointer;">
+                        <td class="text-center">
+                          {{D.SevDateSave | Custom: "fDate"}}<br>
+                          {{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}
+                        </td>
+                        <td class="text-left">
+                          {{ D.SevReqDeptName }}<br>{{ D.SevReqUser }}-{{ D.SevReqCallBack }}
+                        </td>
+                        <td class="text-left">
+                          <span class="TxtValue">{{ D.ActGrpName }}</span>
+                          <span class="TxtValue">, {{ D.ActHName }}</span>
+                          <span class="TxtValue">, {{ D.ActDName }}</span>
+                          <span class="TxtValue">/ {{ D.SevReqMend }}</span>
+                        </td>
+                        <td class="text-center">{{ D.SevTypeHA }}</td>
+                        <td class="text-center">{{ D.UserMendName }}</td>
+                        <!--
+                          <td class="text-left">
+                            <span class="TxtCap">วันที่:</span>
+                            <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span>
+                            <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span>
+                            <span class="TxtCap">เวลาดำเนินการ:</span>
+                            <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                            <span class="TxtCap">เวลารวม:</span>
+                            <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                            <span class="TxtCap">นาที</span>
+                            <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span>
+                            <span class="TxtCap">หน่วยงานประสาน:</span>
+                            <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                            <br />
+                            <span class="TxtCap">ผู้ประสาน:</span>
+                            <span class="TxtValue">{{ D.SevReqUser }}</span>
+                            <span class="TxtCap">โทรกลับ:</span>
+                            <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                            <span class="TxtCap">ผู้บันทึก:</span>
+                            <span class="TxtValue">{{ D.UserMendName }}</span>
+                            <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                            <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+                            <br />
+                            <span class="TxtCap">กิจกรรมบริการ:</span>
+                            <span class="TxtValue">{{ D.ActGrpName }}</span>
+                            <span class="TxtValue">, {{ D.ActHName }}</span>
+                            <span class="TxtValue">, {{ D.ActDName }}</span>
+                          </td>
+                        -->
+                      </tr>
+                      <tr *ngIf="DbRiskByDate.length == 0">
+                        <td colspan="5" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการกิจกรรมที่มีความเสี่ยงในช่วงวันที่ตามที่ระบุ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="5">
+                          <div class="row">
+                            <div class="col-sm-6 text-left">
+                              <span class="TxtCap">จำนวนทั้งหมด </span>
+                              <span class="TxtValue">{{DbRiskByDate.length}}</span>
+                              <span class="TxtCap">รายการ</span>
+                            </div>
+                            <div class="col-sm-6">
+                              <ngb-pagination [(page)]="NotiPages"
+                                [pageSize]="RowPerPage" class="d-flex justify-content-end"
+                                [collectionSize]="DbRiskByDate.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-riskmonth">
+              <ng-template ngbTabTitle>
+                <h6>
+                  <i class="ft ft-calendar"></i>
+                  ความเสี่ยง-รายงานรายเดือน
+                </h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr class="bg-warning">
+                        <th class="text-center align-middle">ลำดับ</th>
+                        <th class="text-center align-middle">
+                          รายละเอียดเหตุการณ์ความเสี่ยง จำนวน &nbsp; <b>{{DbRiskByYear.length}}</b> &nbsp; รายการ
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let H of DbRiskByYear |
+                        slice:(RepPage-1)*30:(RepPage-1)*30+30; let h=index">
+                        <td class="text-center align-top">
+                          <span class="text-muted">{{h+((RowPerPage*RepPage)-RowPerPage)+1}}</span>
+                        </td>
+                        <td class="text-left align-top">
+                          <span class="text-info mr-1">หัวข้อ:</span><span class="text-primary mr-2">{{H.RiskTopic}}</span>
+                          <br>
+                          <span class="text-info mr-1">สาเหตุหรือการแก้ไข:</span><span class="text-primary mr-2">{{H.RiskSolution}}</span>
+                          <span class="text-info mr-1">หมายเหตุเพิ่มเติม:</span><span class="text-primary mr-2">{{H.RiskRemark}}</span>
+                          <br>
+                          <span class="text-info mr-1">แหล่งที่มา:</span><span class="text-primary mr-2">{{H.RiskSource}}</span>
+                          <span class="text-info mr-1">ประเภท:</span><span class="text-primary mr-2">{{H.RiskDes}}</span>
+                          <span class="text-info mr-1">ระดับผลกระทบ:</span><span class="text-primary mr-2">{{H.Impact}}</span>
+                          <span class="text-info mr-1">บันทึกวันที่:</span><span class="text-primary mr-2">{{H.RiskDate | Custom:'fDate'}}</span>
+                          <span class="text-info mr-1">รหัสผู้บันทึก:</span><span class="text-primary mr-2">{{H.RiskUser}}</span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbRiskByYear.length==0">
+                        <td colspan="3" class="text-center align-middle text-muted">
+                          <h6>ไม่พบข้อมูลความเสี่ยงในปีงบประมาณ {{YearSelect}} !!</h6>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="4">
+                          <div class="row">
+                            <div class="col-sm-12 text-center">
+                              <ngb-pagination
+                                [(page)]="Pages"
+                                [pageSize]="RowPerPage"
+                                class="d-flex justify-content-center"
+                                [collectionSize]="DbRiskByYear.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-riskyear">
+              <ng-template ngbTabTitle>
+                <h6>
+                  <i class="ft ft-layers"></i>
+                  เหตุการณ์ความเสี่ยง-รายปีงบประมาณ
+                </h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <div class="col-md-6">
+                    <table class="table table-bordered table-hover">
+                      <thead class="bg-primary">
+                        <tr class="text-center">
+                          <th colspan="3">สถิติข้อมูลตามแหล่งที่รับแจ้งในปี {{ SelectYear }}</th>
+                        </tr>
+                        <tr>
+                          <th class="text-center">ลำดับ</th>
+                          <th class="text-center">แหล่งที่รับแจ้งความเสี่ยง</th>
+                          <th class="text-center">จำนวนครั้ง</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let H1 of DbRiskBySource |
+                          slice:(RepPage-1)*30:(RepPage-1)*30+30; let h1=index">
+                          <td class="text-center">{{h1+1}}</td>
+                          <td class="text-left">&nbsp;{{H1.RiskSource}}</td>
+                          <td class="text-center">{{H1.Total}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-6">
+                    <table class="table table-bordered table-hover">
+                      <thead class="bg-danger">
+                        <tr class="text-center">
+                          <th colspan="3">สถิติข้อมูลความเสี่ยงมากที่สุด 5 อันดับ ในปี {{ SelectYear }}</th>
+                        </tr>
+                        <tr>
+                          <th class="text-center">ลำดับ</th>
+                          <th class="text-center">แหล่งที่รับแจ้งความเสี่ยง</th>
+                          <th class="text-center">จำนวนครั้ง</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let H2 of DbRiskByType |
+                          slice:(RepPage-1)*30:(RepPage-1)*30+30; let h2=index">
+                          <td class="text-center">{{h2+1}}</td>
+                          <td class="text-left">&nbsp;{{H2.RiskDes}}</td>
+                          <td class="text-center">{{H2.Total}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr class="bg-success">
+                        <th colspan="5" class="text-center">
+                          สถิติทะเบียนความเสี่ยง-ตามรายการประจำปี {{ SelectYear }}
+                        </th>
+                      </tr>
+                      <tr class="bg-primary">
+                        <th class="text-center align-middle">รหัส</th>
+                        <th class="text-center align-middle">หัวข้อความเสี่ยง</th>
+                        <th class="text-center align-middle">ความหน้าจะเป็น</th>
+                        <th class="text-center align-middle">ผลกระทบ</th>
+                        <th class="text-center align-middle">คะแนนความเสี่ยง</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let H3 of DBRiskByOptionType |
+                        slice:(RepPage-1)*30:(RepPage-1)*30+30; let h3=index"
+                        title="เกณฑ์1={{H3.g1}}, เกณฑ์2={{H3.g2}}, เกณฑ์3={{H3.g3}}, เกณฑ์4={{H3.g4}}, เกณฑ์5={{H3.g5}}">
+                        <td class="text-center">{{H3.RiskID}}</td>
+                        <td *ngIf="H3.Impact=='-'" class="text-left" colspan="4">&nbsp;{{H3.RiskDes}}</td>
+                        <td *ngIf="H3.Impact!='-'" class="text-left text-muted">&nbsp;{{H3.RiskDes}}</td>
+                        <td *ngIf="H3.Impact!='-'" class="text-right text-muted">{{H3.Probability}}&nbsp;</td>
+                        <td *ngIf="H3.Impact!='-'" class="text-right text-muted">{{H3.Impact}}&nbsp;</td>
+                        <td *ngIf="H3.Impact!='-'" class="text-right text-muted">{{H3.RiskScore}}&nbsp;</td>
+                      </tr>
+                      <tr *ngIf="DBRiskByOptionType.length==0">
+                        <td colspan="5" class="text-center align-middle text-muted">
+                          <h5>ไม่พบข้อมูลความเสี่ยงในปี {{YearSelect}} !!</h5>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="5">
+                          <div class="row">
+                            <div class="col-sm-12 text-center">
+                              <ngb-pagination
+                                [(page)]="RepPage"
+                                [pageSize]="30"
+                                class="d-flex justify-content-center"
+                                [collectionSize]="DBRiskByOptionType.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #ActivitieInfo let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp; รายละเอียดข้อมูลกิจกรรม
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-body">
+      <div class="table-responesive">
+        <table class="table table-bordered table-striped table-sm">
+          <thead><th>รายละเอียดกิจกรรม</th></thead>
+          <tbody>
+            <tr *ngFor="let D of DbListActionManActn|slice:
+              (NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage">
+              <td class="text-left">
+                <span class="TxtCap">วันที่:</span>
+                <!-- <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span> -->
+                <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span>
+                <span class="TxtCap">เวลาดำเนินการ:</span>
+                <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                <span class="TxtCap">เวลารวม:</span>
+                <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                <span class="TxtCap">นาที</span>
+                <span class="TxtValue">{{ D.SevTotalCase }}</span>
+                <span class="TxtCap">ครั้ง</span>
+                <!-- <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span> -->
+                <br />
+                <span class="TxtCap">หน่วยงานประสาน:</span>
+                <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                <span class="TxtCap">ผู้ประสาน:</span>
+                <span class="TxtValue">{{ D.SevReqUser }}</span>
+                <span class="TxtCap">โทรกลับ:</span>
+                <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                <span class="TxtCap">ผู้บันทึก:</span>
+                <span class="TxtValue">{{ D.UserMendName }}</span>
+                <br />
+                <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+                <br />
+                <span class="TxtCap">กิจกรรมบริการ:</span>
+                <span class="TxtValue">{{ D.ActGrpName }}</span>
+                <span class="TxtValue">, {{ D.ActHName }}</span>
+                <span class="TxtValue">, {{ D.ActDName }}</span>
+              </td>
+            </tr>
+            <tr *ngIf="DbListActionManActn.length == 0">
+              <td class="text-center text-danger font-medium-2">
+                ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <div class="row">
+                  <div class="col-sm-6 text-left">
+                    <span class="TxtCap">จำนวนทั้งหมด </span>
+                    <span class="TxtValue">{{DbListActionManActn.length}}</span>
+                    <span class="TxtCap">รายการ</span>
+                  </div>
+                  <div class="col-sm-6">
+                    <ngb-pagination
+                      [(page)]="NotiPages"
+                      [pageSize]="RowPerPage"
+                      class="d-flex justify-content-end"
+                      [collectionSize]="DbListActionManActn.length">
+                    </ngb-pagination>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="c('Save click')"
+      class="btn btn-raised btn-success btn-outline-dark">
+      <i class="icon icon-close"></i>&nbsp; ตกลง
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ActivitieBySLA let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp; รายการกิจกรรมจำแนกตามหัวข้อ SLA
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-body">
+      <div class="table-responesive">
+        <table class="table table-bordered table-striped table-sm">
+          <thead><th>รายละเอียดกิจกรรม</th></thead>
+          <tbody>
+            <tr *ngFor="let D of DbListActionSLA|slice:
+              (NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage">
+              <td class="text-left">
+                <span class="TxtCap">วันที่:</span>
+                <!-- <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span> -->
+                <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span>
+                <span class="TxtCap">เวลาดำเนินการ:</span>
+                <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                <span class="TxtCap">เวลารวม:</span>
+                <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                <span class="TxtCap">นาที</span>
+                <span class="TxtValue">{{ D.SevTotalCase }}</span>
+                <span class="TxtCap">งาน</span>
+                <span class="TxtCap">เวลาเฉลี่ย:</span>
+                <span class="TxtValue">{{ D.SevTimeAvg }}</span>
+                <span class="TxtCap">นาที</span>
+                <!-- <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span> -->
+                <br />
+                <span class="TxtCap">หน่วยงานประสาน:</span>
+                <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                <span class="TxtCap">ผู้ประสาน:</span>
+                <span class="TxtValue">{{ D.SevReqUser }}</span>
+                <span class="TxtCap">โทรกลับ:</span>
+                <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                <span class="TxtCap">ผู้บันทึก:</span>
+                <span class="TxtValue">{{ D.UserMendName }}</span>
+                <br />
+                <span class="TxtCap">กิจกรรมบริการ:</span>
+                <span class="TxtValue">{{ D.ActGrpName }}</span>
+                <span class="TxtValue">, {{ D.ActHName }}</span>
+                <span class="TxtValue">, {{ D.ActDName }}</span>
+                <br />
+                <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+              </td>
+            </tr>
+            <tr *ngIf="DbListActionSLA.length == 0">
+              <td class="text-center text-danger font-medium-2">
+                ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <div class="row">
+                  <div class="col-sm-6 text-left">
+                    <span class="TxtCap">จำนวนทั้งหมด </span>
+                    <span class="TxtValue">{{DbListActionSLA.length}}</span>
+                    <span class="TxtCap">รายการ</span>
+                  </div>
+                  <div class="col-sm-6">
+                    <ngb-pagination
+                      [(page)]="NotiPages"
+                      [pageSize]="RowPerPage"
+                      class="d-flex justify-content-end"
+                      [collectionSize]="DbListActionSLA.length">
+                    </ngb-pagination>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="c('Save click')"
+      class="btn btn-raised btn-success btn-outline-dark">
+      <i class="icon icon-close"></i>&nbsp; ตกลง
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ActivitieInfo2 let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp; รายละเอียดข้อมูลกิจกรรม
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-body">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="font-small-3 text-primary">รายการ</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.SevCode }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="font-small-3 text-primary">วันเวลา</label>:
+          <span class="font-medium-1 text-info">{{ServInfo.SevReqDateTime}}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="font-small-3 text-primary">ผู้ประสาน</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.SevReqUser }}</span>
+        </div>
+        <div class="col-md-3">
+          <label class="font-small-3 text-primary">เบอร์ติดต่อ</label>:
+          <span class="font-medium-1 text-info">{{ServInfo.SevReqCallBack}}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <label class="font-small-3 text-primary">หน่วยงาน</label>:
+          <span class="font-medium-1 text-info">{{ServInfo.SevReqDeptName}}</span>
+        </div>
+        <div class="col-md-7">
+          <label class="font-small-3 text-primary">กิจกรรมหลัก</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.ActGrpName }}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label class="font-small-3 text-primary">กิจกรรมรอง</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.ActHName }}</span>
+        </div>
+        <div class="col-md-6">
+          <label class="font-small-3 text-primary">กิจกรรมย่อย</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.ActDName }}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label class="font-small-3 text-primary">การดำเนินกิจกรรม</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.SevReqMend }}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <label class="font-small-3 text-primary">เวลารับแจ้ง</label><br>
+          <span class="font-medium-1 text-info">{{ServInfo.SevTimeReqTel}}</span>
+        </div>
+        <div class="col-md-2">
+          <label class="font-small-3 text-primary">เวลาเริ่ม</label><br>
+          <span class="font-medium-1 text-info">{{ServInfo.SevTimeAtDept}}</span>
+        </div>
+        <div class="col-md-2">
+          <label class="font-small-3 text-primary">เวลาเสร็จ</label><br>
+          <span class="font-medium-1 text-info">{{ServInfo.SevTimeDoFinish}}</span>
+        </div>
+        <div class="col-md-2">
+          <label class="font-small-3 text-primary">เวลาส่งมอบ</label><br>
+          <span class="font-medium-1 text-info">{{ServInfo.SevTimeSdWork}}</span>
+        </div>
+        <div class="col-md-2">
+          <label class="font-small-3 text-primary">รวมเวลา(นาที)</label><br>
+          <span class="font-medium-1 text-info">{{ServInfo.SevTimeTotal}}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+            <label class="font-small-3 text-primary">จำนวนกิจกรรม</label>:
+            <span class="font-medium-1 text-info">{{ServInfo.SevTotalCase}}</span>
+            <label class="font-small-4 text-primary">&nbsp; รายการ</label>
+        </div>
+        <div class="col-md-4">
+          <label class="font-small-3 text-primary">เวลา-ประกัน</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.TimeInsure }}</span>
+          <span class="font-small-4 text-primary">&nbsp;{{ ServInfo.TimeInsureUnit }}</span>
+        </div>
+        <div class="col-md-4">
+          <label class="font-small-3 text-primary">เวลา-P4P</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.TimeP4P }}</span>
+          <span class="font-small-4 text-primary">&nbsp;{{ ServInfo.TimeP4PUnit }}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <label class="font-small-3 text-primary">ผู้บันทึก</label>:
+          <span class="font-medium-1 text-info">{{ServInfo.UserMendName}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="c('Save click')"
+      class="btn btn-raised btn-success btn-outline-dark">
+      <i class="icon icon-close"></i>&nbsp; ตกลง
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ChartService let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open mr-2"></i>
+      สถิติกิจกรรมบริการ ในช่วงวันที่ {{DateBegin|Custom:'fDate'}} - {{DateEnd|Custom:'fDate'}}
+      ({{HaItInfo.SumWorkDay}} วันทำการ)
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-body">
+      <div style="display: block;">
+        <ngb-tabset>
+          <ngb-tab id="tab-Chart">
+            <ng-template ngbTabTitle>
+              <h6><i class="ft ft-bar-chart mr-1"></i>กราฟสถิติ</h6>
+            </ng-template>
+            <ng-template ngbTabContent>
+              <div class="row">
+                <canvas baseChart
+                  [data]="pieChartData"
+                  [labels]="pieChartLabels"
+                  [chartType]="pieChartType"
+                  [options]="pieChartOptions"
+                  [plugins]="pieChartPlugins"
+                  [legend]="pieChartLegend">
+                </canvas>
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="tab-List">
+            <ng-template ngbTabTitle>
+              <h6><i class="ft ft-check-square mr-1"></i>รายละเอียด</h6>
+            </ng-template>
+            <ng-template ngbTabContent>
+              <div class="row">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th class="text-center" style="width:10%;">วันที่และช่วงเวลา</th>
+                      <th class="text-center" style="width:15%;">หน่วยงาน-ผู้ประสาน</th>
+                      <th class="text-center">กิจกรรมบริการและรายละเอียด</th>
+                      <th class="text-center" style="width:10%;">กลุ่มประเภทกิจกรรม</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let D of DbRepPerson|slice:(RepManPage-1)*RepManRowPerPage:(RepManPage-1)*RepManRowPerPage+RepManRowPerPage"
+                      (click)="ShowActivitieInfo2(ActivitieInfo2,D);" style="cursor: pointer;">
+                      <td class="text-center">
+                        {{D.SevDateSave | Custom: "fDate"}}<br/>
+                        {{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}
+                      </td>
+                      <td class="text-left">{{ D.SevReqDeptName }}<br>{{ D.SevReqUser }}-{{ D.SevReqCallBack }}</td>
+                      <td class="text-left">
+                        <span class="TxtValue">{{ D.ActGrpName }}</span>
+                        <span class="TxtValue">, {{ D.ActHName }}</span>
+                        <span class="TxtValue">, {{ D.ActDName }}</span>
+                        <span class="TxtValue">/ {{ D.SevReqMend }}</span>
+                      </td>
+                      <td class="text-center">{{ D.SevTypeHA }}</td>
+                    </tr>
+                    <tr *ngIf="DbRepPerson.length == 0">
+                      <td colspan="5" class="text-center text-danger font-medium-2">
+                        ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="6">
+                        <div class="row">
+                          <div class="col-sm-6 text-left">
+                            <span class="TxtCap">จำนวนทั้งหมด </span>
+                            <span class="TxtValue">{{DbRepPerson.length}}</span>
+                            <span class="TxtCap">รายการ</span>
+                          </div>
+                          <div class="col-sm-6">
+                            <ngb-pagination
+                              class="d-flex justify-content-end"
+                              [(page)]="RepManPage"
+                              [pageSize]="RepManRowPerPage"
+                              [collectionSize]="DbRepPerson.length">
+                            </ngb-pagination>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </ng-template>
+          </ngb-tab>
+        </ngb-tabset>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="c('Close click')"
+      class="btn btn-raised btn-success btn-outline-dark">
+      <i class="icon icon-close mr-2"></i>ตกลง
+    </button>
+  </div>
+</ng-template>

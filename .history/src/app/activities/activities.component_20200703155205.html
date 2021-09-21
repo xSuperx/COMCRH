@@ -1,0 +1,1206 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="ft ft-calendar"></i> ข้อมูลบันทึกเหตุการณ์ประจำวัน</h3>
+            </div>
+            <div class="card-content">
+                <form class="form" action="">
+                    <div class="form-body">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <label class="searchdate text-right">
+                  วันที่
+                </label>
+                                <form #SearchForm="ngForm" class="form-inline">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input ngbDatepicker class="form-control round" id="dt" name="dt" [(ngModel)]="SearchDate" #dt="ngbDatepicker" />
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary btn-success round" (click)="dt.toggle()" type="button">
+                          <i class="icon icon-calendar"></i>
+                        </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                &nbsp;
+                                <button type="button" (click)="GetDbNotifiedByDate()" class="btn btn-raised btn-info round">
+                  <i class="icon icon-magnifier"></i>&nbsp;ค้นหา</button
+                >&nbsp; &nbsp;
+                <button
+                  type="button"
+                  (click)="t.select('tab-notified'); NewNotified(NotifiedForm)"
+                  class="btn btn-raised btn-info round"
+                >
+                  <i class="ft ft-phone-incoming"></i
+                  >&nbsp;เพิ่มรับแจ้งปัญหา</button
+                >&nbsp;
+                <button
+                  type="button"
+                  (click)="t.select('tab-service'); NewService(ServiceForm)"
+                  class="btn btn-raised btn-primary round"
+                >
+                  <i class="ft ft-grid"></i>&nbsp;เพิ่มการแก้ปัญหา</button
+                >&nbsp;
+                <button
+                  type="button"
+                  (click)="
+                    t.select('tab-activitie'); NewActivitie(ActivitieForm)
+                  "
+                  class="btn btn-raised btn-success round"
+                >
+                  <i class="ft ft-slack"></i>&nbsp;เพิ่มกิจกรรมประจำวัน
+                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div style="padding: 5px;">
+                    <ngb-tabset #t="ngbTabset">
+                        <ngb-tab id="tab-notified">
+                            <ng-template ngbTabTitle>
+                                <h6>
+                                    <i class="ft ft-phone-incoming"></i> รายการรับแจ้งจากหน่วยงาน
+                                </h6>
+                            </ng-template>
+                            <ng-template ngbTabContent>
+                                <div class="row">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>รายละเอียด</th>
+                                                <th>จัดการ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="
+                          let N of DbListNotified
+                            | slice
+                              : (NotiPages - 1) * RowPerPage
+                              : (NotiPages - 1) * RowPerPage + RowPerPage;
+                          let i = index
+                        ">
+                                                <td class="text-left">
+                                                    <span class="TxtCapHead">เวลารับแจ้ง:</span>
+                                                    <span class="TxtValue">{{
+                            N.SevCode | Custom: "fDateTime2"
+                          }}</span>
+                                                    <span class="TxtCap">ปัญหาที่รับแจ้ง:</span>
+                                                    <span class="TxtValue">{{ N.SevReqProblem }}</span>
+                                                    <span *ngIf="N.SevReqProblemPoint != '-'" class="TxtCap">จุดที่พบปัญหา:</span
+                          >
+                          <span
+                            *ngIf="N.SevReqProblemPoint != '-'"
+                            class="TxtValue"
+                            >{{ N.SevReqProblemPoint }}</span
+                          >
+                          <span class="TxtCap">ผู้แจ้ง:</span>
+                                                    <span class="TxtValue">{{ N.SevReqUser }}</span>
+                                                    <span class="TxtCap">โทรกลับ:</span>
+                                                    <span class="TxtValue">{{ N.SevReqCallBack }}</span>
+                                                    <br />
+                                                    <span class="TxtCapHead">หน่วยงาน:</span>
+                                                    <span class="TxtValue">{{ N.ServReqDeptName }}</span>
+                                                    <span class="TxtCap">ผู้รับแจ้ง:</span>
+                                                    <span class="TxtValue">{{
+                            N.SevUserNotifyName
+                          }}</span>
+                                                    <span *ngIf="N.SevOnMyWayName != '-'" class="TxtMyWay">ผู้จองแก้ไข:</span
+                          >
+                          <span
+                            *ngIf="N.SevOnMyWayName != '-'"
+                            class="TxtMyWay"
+                            >{{ N.SevOnMyWayName }}</span
+                          >
+                        </td>
+                        <td class="text-center">
+                          <button
+                            type="button"
+                            title="บันทึกการแก้ไข"
+                            *ngIf="
+                              N.SevOnMyWay == UsCode || N.SevOnMyWayName == '-'
+                            "
+                            class="btn btn-raised btn-primary"
+                            (click)="SaveServiceFromNotified(i, ServiceForm)"
+                          >
+                            <i class="icon icon-user-follow"></i>
+                          </button>
+                          &nbsp;
+                          <button
+                            type="button"
+                            title="จองแก้ไข"
+                            class="btn btn-raised btn-info"
+                            *ngIf="N.SevOnMyWayName == '-'"
+                            (click)="SetOnMyWay(i)"
+                          >
+                            <i class="icon icon-pin"></i>
+                          </button>
+                          &nbsp;
+                          <button
+                            type="button"
+                            title="ลบทิ้ง"
+                            class="btn btn-raised btn-success"
+                            *ngIf="
+                              N.SevUserNotify == UsCode &&
+                              N.SevOnMyWayName == '-'
+                            "
+                            (click)="DeleteNotified(i)"
+                          >
+                            <i class="icon icon-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbListNotified.length == 0">
+                        <td
+                          colspan="2"
+                          class="text-center text-danger font-medium-2"
+                        >
+                          ไม่พบรายการรับแจ้งปัญหาจากหน่วยงานในวันที่ระบุ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">
+                          <div class="row">
+                            <div class="col-sm-6 text-left">
+                              <span class="TxtCap">จำนวนทั้งหมด </span>
+                                                    <span class="TxtValue">{{
+                                DbListNotified.length
+                              }}</span>
+                                                    <span class="TxtCap">รายการ</span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <ngb-pagination [(page)]="NotiPages" [pageSize]="RowPerPage" class="d-flex justify-content-end" [collectionSize]="DbListNotified.length">
+                                    </ngb-pagination>
+                                </div>
+                </div>
+                </td>
+                </tr>
+                </tfoot>
+                </table>
+            </div>
+            </ng-template>
+            </ngb-tab>
+            <!-- <ngb-tab id="tab-service">
+              <ng-template ngbTabTitle>
+                <h6>
+                  <i class="ft ft-grid"></i>
+                  รายการแก้ไขปัญหา
+                </h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr>
+                        <th>รายละเอียด</th>
+                        <th>จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let S of DbListService | slice:(NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage;let s=index;">
+                        <td class="text-left">
+                          <span class="TxtCap">วันที่:</span>
+                          <span class="TxtValue">{{S.SevDateSave|Custom:"fDate"}}</span>
+                          <span class="TxtCap">ช่วงเวลา:</span>
+                          <span class="TxtValue">{{S.SevTimeAtDept}}-{{S.SevTimeDoFinish}}</span>
+                          <span class="TxtCap">รวม:</span>
+                          <span class="TxtValue">{{S.SevTimeTotal}}</span>
+                          <span class="TxtCap">นาที</span>
+                          <span class="TxtCap">ผู้แจ้ง:</span><span class="TxtValue">{{S.SevReqUser}}</span>
+                          <span class="TxtCap">โทรกลับ:</span><span class="TxtValue">{{S.SevReqCallBack}}</span>
+                          <span class="TxtCap">หน่วยงาน:</span><span class="TxtValue">{{S.SevReqDeptName}}</span>
+                          <br>
+                          <span class="TxtCap">ปัญหาที่รับแจ้ง:</span><span class="TxtValue">{{S.SevReqProblem}}</span>
+                          <span *ngIf="S.SevReqProblemPoint!='-'" class="TxtCap">จุดที่พบปัญหา:</span>
+                          <span *ngIf="S.SevReqProblemPoint!='-'" class="TxtValue">{{S.SevReqProblemPoint}}</span>
+                          <span class="TxtCap">ผู้แก้ไข:</span><span class="TxtValue">{{S.SevUserMend}}</span>
+                          <br>
+                          <span class="TxtCap">กิจกรรมบริการ:</span>
+                          <span class="TxtValue">{{S.ActGrpName}}</span>
+                          <span class="TxtValue">, {{S.ActHName}}</span>
+                          <span class="TxtValue">, {{S.ActDName}}</span>
+                        </td>
+                        <td class="text-center">
+                          <button type="button" class="btn btn-raised btn-info"
+                            title="ดูข้อมูลบริการ" (click)="ShowServiceInfo(ServiceInfo,s);">
+                            <i class="icon icon-screen-tablet"></i>
+                          </button>
+                          &nbsp;
+                          <button type="button" class="btn btn-raised btn-primary"
+                            title="แก้ไขข้อมูลบริการ" (click)="SetServiceUpdate(s,ServiceForm);">
+                            <i class="icon icon-note"></i>
+                          </button>
+                          &nbsp;
+                          <button type="button" class="btn btn-raised btn-danger"
+                            title="ลบข้อมูลบริการ" (click)="DeleteService(s);">
+                            <i class="icon icon-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbListService.length==0">
+                        <td colspan="2" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการแก้ไขปัญหาในวันที่ระบุ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">
+                          <div class="row">
+                            <div class="col-sm-6 text-left">
+                              <span class="TxtCap">จำนวนทั้งหมด </span>
+                              <span class="TxtValue">{{DbListService.length}}</span>
+                              <span class="TxtCap">รายการ</span>
+                            </div>
+                            <div class="col-sm-6">
+                              <ngb-pagination
+                                [(page)]="NotiPages"
+                                [pageSize]="RowPerPage"
+                                class="d-flex justify-content-end"
+                                [collectionSize]="DbListService.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-activitie">
+              <ng-template ngbTabTitle>
+                <h6>
+                  <i class="ft ft-slack"></i>
+                  รายการกิจกรรม
+                </h6>
+              </ng-template>
+              <ng-template ngbTabContent>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr>
+                        <th>รายละเอียด</th>
+                        <th>จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let A of DbListActivitie | slice:(NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage; let a=index">
+                        <td class="text-left">
+                          <span class="TxtCap">วันที่:</span>
+                          <span class="TxtValue">{{A.SevDateSave|Custom:"fDate"}}</span>
+                          <span class="TxtCap">เวลาดำเนินการ:</span>
+                          <span class="TxtValue">{{A.SevTimeAtDept}}-{{A.SevTimeDoFinish}}</span>
+                          <span class="TxtCap">เวลารวม:</span>
+                          <span class="TxtValue">{{A.SevTimeTotal}}</span>
+                          <span class="TxtCap">นาที</span>
+                          <span class="TxtCap">หน่วยงานประสาน:</span><span class="TxtValue">{{A.SevReqDeptName}}</span>
+                          <br>
+                          <span class="TxtCap">ผู้ประสาน:</span><span class="TxtValue">{{A.SevReqUser}}</span>
+                          <span class="TxtCap">โทรกลับ:</span><span class="TxtValue">{{A.SevReqCallBack}}</span>
+                          <span class="TxtCap">ผู้บันทึก:</span><span class="TxtValue">{{A.UserMendName}}</span>
+                          <span class="TxtCap">รายละเอียดกิจกรรม:</span><span class="TxtValue">{{A.SevReqMend}}</span>
+                          <br>
+                          <span class="TxtCap">กิจกรรมบริการ:</span>
+                          <span class="TxtValue">{{A.ActGrpName}}</span>
+                          <span class="TxtValue">, {{A.ActHName}}</span>
+                          <span class="TxtValue">, {{A.ActDName}}</span>
+                        </td>
+                        <td class="text-center">
+                          <button type="button" class="btn btn-raised btn-info"
+                            title="ดูข้อมูลกิจกรรม" (click)="ShowActivitieInfo(ActivitieInfo,a);">
+                            <i class="icon icon-screen-tablet"></i>
+                          </button>
+                          &nbsp;
+                          <button type="button" class="btn btn-raised btn-primary"
+                            title="แก้ไขข้อมูลกิจกรรม" (click)="SetActivitieUpdate(a,ActivitieForm);">
+                            <i class="icon icon-note"></i>
+                          </button>
+                          &nbsp;
+                          <button type="button" class="btn btn-raised btn-danger"
+                            title="ลบข้อมูลกิจกรรม" (click)="DeleteActivitie(a);">
+                            <i class="icon icon-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbListActivitie.length==0">
+                        <td colspan="2" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">
+                          <div class="row">
+                            <div class="col-sm-6 text-left">
+                              <span class="TxtCap">จำนวนทั้งหมด </span>
+                              <span class="TxtValue">{{DbListActivitie.length}}</span>
+                              <span class="TxtCap">รายการ</span>
+                            </div>
+                            <div class="col-sm-6">
+                              <ngb-pagination
+                                [(page)]="NotiPages"
+                                [pageSize]="RowPerPage"
+                                class="d-flex justify-content-end"
+                                [collectionSize]="DbListActivitie.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </ng-template>
+            </ngb-tab> -->
+            <ngb-tab id="tab-daily">
+                <ng-template ngbTabTitle>
+                    <h6><i class="fa fa-tags"></i> กิจกรรมประจำวัน</h6>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <div class="row">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>กิจกรรม</th>
+                                    <th>รายละเอียด</th>
+                                    <th>จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="
+                          let D of DbListDaily
+                            | slice
+                              : (NotiPages - 1) * RowPerPage
+                              : (NotiPages - 1) * RowPerPage + RowPerPage
+                        ">
+                                    <td class="text-center">
+                                        <span *ngIf="D.SevType == 'A'">
+                            <img
+                              src="assets/img/ActActivity.png"
+                              style="height: 60px;"
+                              title="{{ D.SevTypeTXT }}"
+                              alt="{{ D.SevTypeTXT }}"
+                            />
+                          </span>
+                                        <span *ngIf="D.SevType == 'S'">
+                            <img
+                              src="assets/img/ActService.jpg"
+                              style="height: 60px;"
+                              title="{{ D.SevTypeTXT }}"
+                              alt="{{ D.SevTypeTXT }}"
+                            />
+                          </span>
+                                    </td>
+                                    <td class="text-left">
+                                        <span class="TxtCap">วันที่:</span>
+                                        <!-- <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span> -->
+                                        <span class="TxtValue">{{
+                            D.SevDateSave | Custom: "fDate"
+                          }}</span>
+                                        <span class="TxtCap">เวลาดำเนินการ:</span>
+                                        <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span
+                          >
+                          <span class="TxtCap">เวลารวม:</span>
+                                        <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                                        <span class="TxtCap">นาที</span>
+                                        <!-- <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span> -->
+                                        <span class="TxtCap">หน่วยงานประสาน:</span
+                          ><span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                                        <br />
+                                        <span class="TxtCap">ผู้ประสาน:</span
+                          ><span class="TxtValue">{{ D.SevReqUser }}</span>
+                                        <span class="TxtCap">โทรกลับ:</span
+                          ><span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                                        <span class="TxtCap">ผู้บันทึก:</span
+                          ><span class="TxtValue">{{ D.UserMendName }}</span>
+                                        <span class="TxtCap">รายละเอียดกิจกรรม:</span
+                          ><span class="TxtValue">{{ D.SevReqMend }}</span>
+                                        <br />
+                                        <span class="TxtCap">กิจกรรมบริการ:</span>
+                                        <span class="TxtValue">{{ D.ActGrpName }}</span>
+                                        <span class="TxtValue">, {{ D.ActHName }}</span>
+                                        <span class="TxtValue">, {{ D.ActDName }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-raised btn-info" title="ดูข้อมูลกิจกรรม" (click)="ShowActivitieInfo(ActivitieInfo, D)">
+                            <i class="icon icon-screen-tablet"></i>
+                          </button>
+                                        <span *ngIf="D.SevType == 'A'">
+                            &nbsp;
+                            <button
+                              type="button"
+                              class="btn btn-raised btn-primary"
+                              title="แก้ไขข้อมูลกิจกรรม"
+                              (click)="SetActivitieUpdate2(D, ActivitieForm)"
+                            >
+                              <i class="icon icon-note"></i>
+                            </button>
+                          </span>
+                                        <span *ngIf="D.SevType == 'S'">
+                            &nbsp;
+                            <button
+                              type="button"
+                              class="btn btn-raised btn-warning"
+                              title="แก้ไขข้อมูลปัญหาประจำวัน"
+                              (click)="SetServiceUpdate2(D, ActivitieForm)"
+                            >
+                              <i class="ft ft-hash"></i>
+                            </button>
+                          </span> &nbsp;
+                                        <button type="button" class="btn btn-raised btn-danger" title="ลบข้อมูลกิจกรรม" (click)="DeleteActivitie(D)">
+                            <i class="icon icon-trash"></i>
+                          </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="DbListDaily.length == 0">
+                                    <td colspan="3" class="text-center text-danger font-medium-2">
+                                        ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="row">
+                                            <div class="col-sm-6 text-left">
+                                                <span class="TxtCap">จำนวนทั้งหมด </span>
+                                                <span class="TxtValue">{{
+                                DbListDaily.length
+                              }}</span>
+                                                <span class="TxtCap">รายการ</span>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <ngb-pagination [(page)]="NotiPages" [pageSize]="RowPerPage" class="d-flex justify-content-end" [collectionSize]="DbListDaily.length">
+                                                </ngb-pagination>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-daily">
+                <ng-template ngbTabTitle>
+                    <h6><i class="fa fa-signal"></i> Timeline</h6>
+                </ng-template>
+                <ng-template ngbTabContent>
+                    <app-time-line></app-time-line>
+                </ng-template>
+            </ngb-tab>
+            </ngb-tabset>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<ng-template #NotifiedForm let-c="close" let-d="dismiss">
+    <div class="modal-header bg-info">
+        <h5 class="modal-title" id="modal-basic-title">
+            <i class="icon icon-book-open"></i>&nbsp; บันทึกข้อมูลการรับแจ้งปัญหาจากหน่วยงาน
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="NofCode">เลขรายการ</label>
+                        <input id="NofCode" name="NofCode" class="form-control border-success text-center" type="text" readonly [(ngModel)]="NotifModel.NofCode" #NofCode="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="NofReqDateTime">วันเวลาที่บันทึก</label>
+                        <input id="NofReqDateTime" name="NofReqDateTime" class="form-control border-success text-center" type="text" readonly [(ngModel)]="NotifModel.NofReqDateTime" #NofReqDateTime="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="NofUserName">ผู้บันทึกข้อมูล</label>
+                        <input id="NofUserName" name="NofUserName" class="form-control border-success text-center" type="text" readonly [(ngModel)]="NotifModel.NofUserName" #NofUserName="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="NofReqDept">หน่วยงานที่แจ้งปัญหา</label>
+                        <ng-select id="NofReqDept" name="NofReqDept" [items]="DbDeptINV" bindValue="id" bindLabel="name" (change)="GetPhoneByDept3(NotifModel.NofReqDept)" placeholder="เลือกหน่วยงานที่แจ้งปัญหา" [(ngModel)]="NotifModel.NofReqDept">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="NofReqCallBack">เบอร์ภายใน</label>
+                        <input id="NofReqCallBack" name="NofReqCallBack" type="text" class="form-control border-success text-center" maxlength="10" [(ngModel)]="NotifModel.NofReqCallBack" #NofReqCallBack="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="NofReqUser">ชื่อผู้แจ้งปัญหา</label>
+                        <input id="NofReqUser" name="NofReqUser" type="text" class="form-control border-success text-center" maxlength="30" [(ngModel)]="NotifModel.NofReqUser" #NofReqUser="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="NofReqProblem">รายละเอียดปัญหาที่ได้รับแจ้ง</label>
+                        <input type="text" class="form-control border-primary text-center" id="NofReqProblem" name="NofReqProblem" maxlength="250" [(ngModel)]="NotifModel.NofReqProblem" #NofReqProblem="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="NofReqProblemPoint">จุดที่พบปัญหา</label>
+                        <input type="text" class="form-control border-primary text-center" id="NofReqProblemPoint" name="NofReqProblemPoint" maxlength="100" [(ngModel)]="NotifModel.NofReqProblemPoint" #NofReqProblemPoint="ngModel" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="col-6 text-left">
+            <div *ngIf="NotifModel.NofValidation != '-'" class="text-danger font-medium-2">
+                {{ NotifModel.NofValidation }}
+            </div>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" (click)="SaveNotified()" class="btn btn-raised btn-primary">
+        <i class="icon icon-check"></i>&nbsp; บันทึกข้อมูลการรับแจ้ง
+      </button>
+            <button type="button" (click)="c('Cancel-click')" class="btn btn-raised btn-danger btn-outline-dark">
+        <i class="icon icon-close"></i>&nbsp; ยกเลิก
+      </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #ServiceForm let-c="close" let-d="dismiss">
+    <div class="modal-header bg-primary">
+        <h5 class="modal-title" id="modal-basic-title">
+            <i class="icon icon-book-open"></i>&nbsp; บันทึกข้อมูลการแก้ไขปัญหาประจำวัน
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <!-- Begin Form -->
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevCode">เลขรายการ</label>
+                        <input id="SevCode" name="SevCode" class="form-control border-success text-center" type="text" readonly [(ngModel)]="SevModel.SevCode" #SevCode="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SevReqDateTime">วันเวลาที่บันทึก</label>
+                        <input id="SevReqDateTime" name="SevReqDateTime" class="form-control border-success text-center" type="date" [(ngModel)]="SevModel.SevReqDateTime" #SevReqDateTime="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="SevUserName">ผู้บันทึกข้อมูล</label>
+                        <ng-select id="SevUserName" name="SevUserName" [items]="DbComEmp" [closeOnSelect]="false" [multiple]="true" bindValue="id" bindLabel="name" placeholder="เลือกชื่อผู้บันทึกข้อมูล" [(ngModel)]="SevModel.SevUserMend">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqDept">หน่วยงานที่แจ้งปัญหา</label>
+                        <ng-select [items]="DbDeptINV" name="SevReqDept" id="SevReqDept" placeholder="เลือกหน่วยงานที่แจ้งปัญหา" bindValue="id" bindLabel="name" (change)="GetPhoneByDept(SevModel.SevReqDept)" [(ngModel)]="SevModel.SevReqDept">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="SevReqCallBack">เบอร์ภายใน</label>
+                        <input id="SevReqCallBack" name="SevReqCallBack" type="text" class="form-control border-success text-center" maxlength="10" [(ngModel)]="SevModel.SevReqCallBack" #SevReqCallBack="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SevReqUser">ชื่อผู้แจ้งปัญหา</label>
+                        <input id="SevReqUser" name="SevReqUser" type="text" class="form-control border-success text-center" maxlength="30" [(ngModel)]="SevModel.SevReqUser" #SevReqUser="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqProblem">รายละเอียดปัญหาที่ได้รับแจ้ง</label>
+                        <input type="text" class="form-control border-primary text-center" id="SevReqProblem" name="SevReqProblem" maxlength="250" [(ngModel)]="SevModel.SevReqProblem" #SevReqProblem="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevReqProblemPoint">จุดที่พบปัญหา</label>
+                        <input type="text" class="form-control border-primary text-center" id="SevReqProblemPoint" name="SevReqProblemPoint" maxlength="100" [(ngModel)]="SevModel.SevReqProblemPoint" #SevReqProblemPoint="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevProductCode">เลขครุภัณฑ์</label>
+                        <input type="text" class="form-control border-primary text-center" id="SevProductCode" name="SevProductCode" maxlength="30" [(ngModel)]="SevModel.SevProductCode" #SevProductCode="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="SevReqGrpCode">กิจกรรมบริการ</label>
+                        <ng-select id="SevReqGrpCode" name="SevReqGrpCode" [items]="DbService" bindValue="id" bindLabel="name" placeholder="เลือกกิจกรรมบริการ" (change)="
+                ActionHUser = '-'; GetActionHByActCode(SevModel.SevReqGrpCode)
+              " [(ngModel)]="SevModel.SevReqGrpCode">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqListCode">กิจกรรมรอง</label>
+                        <ng-select id="SevReqListCode" name="SevReqListCode" [items]="DbActionH" bindValue="id" bindLabel="name" placeholder="เลือกกิจกรรมรอง" (change)="GetActionDByActHCode(SevModel.SevReqListCode)" [(ngModel)]="SevModel.SevReqListCode">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqListSubCode">กิจกรรมย่อย</label>
+                        <ng-select id="SevReqListSubCode" name="SevReqListSubCode" bindValue="id" bindLabel="name" [items]="DbActionD" placeholder="เลือกกิจกรรมย่อย" [(ngModel)]="SevModel.SevReqListSubCode">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="SevReqMend">กลุ่มสาเหตุของปัญหา</label>
+                    <select name="SevProblemGroup" id="SevProblemGroup" class="form-control" [(ngModel)]="SevModel.SevProblemGroup" #SevProblemGroup="ngModel">
+            <option value="-">-</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Software">Software</option>
+            <option value="Peopleware">Peopleware</option>
+            <option value="Network">Network</option>
+            <option value="Server">Server</option>
+          </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqMend">รายละเอียดการแก้ไขปัญหา</label>
+                        <input type="text" class="form-control border-primary text-center" id="SevReqMend" name="SevReqMend" maxlength="250" [(ngModel)]="SevModel.SevReqMend" #SevReqMend="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTotalCase">จำนวนเคสปัญหา</label>
+                        <input type="number" class="form-control border-primary text-center" id="SevTotalCase" name="SevTotalCase" [(ngModel)]="SevModel.SevTotalCase" #SevTotalCase="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTimeReqTel">เวลาที่ได้รับแจ้ง</label>
+                        <input type="time" class="form-control border-primary text-center" id="SevTimeReqTel" name="SevTimeReqTel" [disabled]="SevModel.SevAction == 'E'" [(ngModel)]="SevModel.SevTimeReqTel" #SevTimeReqTel="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTimeAtDept">เวลาที่เดินทางไปถึง</label>
+                        <input type="time" class="form-control border-primary text-center" id="SevTimeAtDept" name="SevTimeAtDept" (change)="CalTimeServ()" [(ngModel)]="SevModel.SevTimeAtDept" #SevTimeAtDept="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTimeDoFinish">เวลาที่แก้ไขเสร็จ</label>
+                        <input type="time" class="form-control border-primary text-center" id="SevTimeDoFinish" name="SevTimeDoFinish" (change)="CalTimeServ()" [(ngModel)]="SevModel.SevTimeDoFinish" #SevTimeDoFinish="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="SevTimeTotal">รวมเวลาแก้ไข(นาที)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control border-primary text-center" id="SevTimeTotal" name="SevTimeTotal" aria-describedby="button-addon2" [(ngModel)]="SevModel.SevTimeTotal" #SevTimeTotal="ngModel" />
+                        <div class="input-group-append">
+                            <button class="btn btn-raised btn-info" type="button" (click)="CalTimeServ()">
+                <i class="ft ft-check-circle"></i>
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Form -->
+    </div>
+    <div class="modal-footer">
+        <div class="col-6 text-left">
+            <div *ngIf="SevModel.SevValidation != '-'" class="text-danger font-medium-2">
+                {{ SevModel.SevValidation }}
+            </div>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" (click)="SaveService()" class="btn btn-raised btn-primary">
+        <i class="icon icon-check"></i>&nbsp;
+        <span *ngIf="SevModel.SevAction == 'N'"
+          >บันทึกข้อมูลการให้บริการใหม่</span
+        >
+        <span *ngIf="SevModel.SevAction != 'N'"
+          >ปรับปรุงข้อมูลการให้บริการ</span
+        >
+      </button>
+            <button type="button" (click)="c('Cancle-click')" class="btn btn-raised btn-danger btn-outline-dark">
+        <i class="icon icon-close"></i>&nbsp; ยกเลิก
+      </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #ServiceInfo let-c="close" let-d="dismiss">
+    <div class="modal-header bg-info">
+        <h5 class="modal-title" id="modal-basic-title">
+            <i class="icon icon-book-open"></i>&nbsp; รายละเอียดข้อมูลการให้บริการ
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">รายการ</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.SevCode }}</span>
+                </div>
+                <div class="col-md-5">
+                    <label class="font-small-3 text-primary">วันเวลาบันทึก</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqDateTime
+          }}</span>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">ผู้รับแจ้ง</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.UserNotifyName
+          }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <label class="font-small-3 text-primary">หน่วยงานที่แจ้ง</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqDeptName
+          }}</span>
+                </div>
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เบอร์ติดต่อ</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqCallBack
+          }}</span>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">ชื่อผู้แจ้ง</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.SevReqUser }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="font-small-3 text-primary">กิจกรรมบริการ</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.ActGrpName }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">กิจกรรมรอง</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.ActHName }}</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">กิจกรรมย่อย</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.ActDName }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">รายละเอียดปัญหา</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqProblem
+          }}</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">จุดที่พบ</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqProblemPoint
+          }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">เลขครุภัณฑ์</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevProductCode
+          }}</span>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">จำนวนปัญหา</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTotalCase
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp; รายการ</label>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">ผู้แก้ไข</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.UserMendName
+          }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="font-small-3 text-primary">การแก้ไข</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.SevReqMend }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เวลารับแจ้ง</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeReqTel
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;น.</label>
+                </div>
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เวลาถึงหน้างาน</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeAtDept
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;น.</label>
+                </div>
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เวลาแก้ไขเสร็จ</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeDoFinish
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;น.</label>
+                </div>
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">รวมเวลา</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeTotal
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;นาที</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เวลา-ประกัน</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.TimeInsure }}</span>
+                    <span class="font-small-3 text-primary">&nbsp;{{ ServInfo.TimeInsureUnit }}</span
+          >
+        </div>
+        <div class="col-md-3">
+          <label class="font-small-3 text-primary">เวลา-P4P</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.TimeP4P }}</span>
+                    <span class="font-small-3 text-primary">&nbsp;{{ ServInfo.TimeP4PUnit }}</span
+          >
+        </div>
+        <div class="col-md-6">
+          <label
+            *ngIf="ServInfo.SevAccResult != '-'"
+            class="font-small-3 text-primary"
+            >ระดับความพอใจ:</label
+          >
+          <span
+            *ngIf="ServInfo.SevAccResult != '-'"
+            class="font-medium-1 text-info"
+            >{{ ServInfo.SevAccResult }}</span
+          >
+          <span
+            *ngIf="ServInfo.SevAccResult != '-'"
+            class="font-medium-1 text-primary"
+            >&nbsp;{{ ServInfo.SevAccUser }}</span
+          >
+          <!--
+            <span class="font-medium-1 text-primary">&nbsp;{{ServInfo.SevAccDates}}</span> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" (click)="c('Save click')" class="btn btn-raised btn-success btn-outline-dark">
+      <i class="icon icon-close"></i>&nbsp; ตกลง
+    </button>
+    </div>
+</ng-template>
+
+<ng-template #ActivitieForm let-c="close" let-d="dismiss">
+    <div class="modal-header bg-success">
+        <h5 class="modal-title" id="modal-basic-title">
+            <i class="icon icon-book-open"></i>&nbsp; ฟอร์มบันทึกกิจกรรมประจำวัน
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevCode">เลขรายการ</label>
+                        <input id="SevCode" name="SevCode" class="form-control border-success text-center" type="text" readonly [(ngModel)]="SevModel.SevCode" #SevCode="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SevReqDateTime">วันเวลาที่บันทึก</label>
+                        <input id="SevReqDateTime" name="SevReqDateTime" type="date" class="form-control border-success" [(ngModel)]="SevModel.SevReqDateTime" #SevReqDateTime="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="SevUserName">ผู้บันทึกข้อมูล</label>
+                        <ng-select id="SevUserName" name="SevUserName" [items]="DbComEmp" [closeOnSelect]="false" [multiple]="true" bindValue="id" bindLabel="name" placeholder="เลือกชื่อผู้บันทึกข้อมูล" [(ngModel)]="SevModel.SevUserMend">
+                        </ng-select>
+                        <!--
+              <input id="SevUserName" name="SevUserName" class="form-control border-success text-center"
+              type="text" readonly [(ngModel)]="SevModel.SevUserName" #SevUserName="ngModel">
+            -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqDept">หน่วยงานผู้ติดต่อ</label>
+                        <ng-select id="SevReqDept" name="SevReqDept" [items]="DbDeptINV" bindValue="id" bindLabel="name" (change)="GetPhoneByDept(SevModel.SevReqDept)" placeholder="เลือกหน่วยงานที่แจ้งปัญหา" [(ngModel)]="SevModel.SevReqDept">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="SevReqCallBack">เบอร์ภายใน</label>
+                        <input id="SevReqCallBack" name="SevReqCallBack" type="text" class="form-control border-success text-center" maxlength="10" [(ngModel)]="SevModel.SevReqCallBack" #SevReqCallBack="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SevReqUser">ชื่อผู้ประสานงาน</label>
+                        <input id="SevReqUser" name="SevReqUser" type="text" class="form-control border-success text-center" maxlength="30" [(ngModel)]="SevModel.SevReqUser" #SevReqUser="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqGrpCode">กิจกรรมบริการ</label>
+                        <ng-select id="SevReqGrpCode" name="SevReqGrpCode" [items]="DbActivitie" bindValue="id" bindLabel="name" placeholder="เลือกกิจกรรมบริการ" (change)="GetActionHByActCode(SevModel.SevReqGrpCode)" [(ngModel)]="SevModel.SevReqGrpCode">
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="SevReqListCode">กิจกรรมรอง</label>
+                        <ng-select id="SevReqListCode" name="SevReqListCode" [items]="DbActionH" bindValue="id" bindLabel="name" placeholder="เลือกกิจกรรมรอง" (change)="GetActionDByActHCode(SevModel.SevReqListCode)" [(ngModel)]="SevModel.SevReqListCode">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="SevReqListSubCode">กิจกรรมย่อย</label>
+                        <ng-select id="SevReqListSubCode" name="SevReqListSubCode" bindValue="id" bindLabel="name" [items]="DbActionD" placeholder="เลือกกิจกรรมย่อย" [(ngModel)]="SevModel.SevReqListSubCode">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="SevReqMend">รายละเอียดกิจกรรม</label>
+                        <input type="text" class="form-control border-primary text-center" id="SevReqMend" name="SevReqMend" maxlength="250" [(ngModel)]="SevModel.SevReqMend" #SevReqMend="ngModel" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTotalCase">จำนวนกิจกรรมในครั้งนี้</label>
+                        <input type="number" class="form-control border-primary text-center" id="SevTotalCase" name="SevTotalCase" [(ngModel)]="SevModel.SevTotalCase" #SevTotalCase="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTimeAtDept">เวลาเริ่ม</label>
+                        <input type="time" class="form-control border-primary text-center" id="SevTimeAtDept" name="SevTimeAtDept" (change)="CalTimeServ()" [(ngModel)]="SevModel.SevTimeAtDept" #SevTimeAtDept="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="SevTimeDoFinish">เวลาสิ้นสุด</label>
+                        <input type="time" class="form-control border-primary text-center" id="SevTimeDoFinish" name="SevTimeDoFinish" (change)="CalTimeServ()" [(ngModel)]="SevModel.SevTimeDoFinish" #SevTimeDoFinish="ngModel" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="SevTimeTotal">รวมเวลาแก้ไข(นาที)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control border-primary text-center" id="SevTimeTotal" name="SevTimeTotal" aria-describedby="button-addon2" [(ngModel)]="SevModel.SevTimeTotal" #SevTimeTotal="ngModel" />
+                        <div class="input-group-append">
+                            <button class="btn btn-raised btn-info" type="button" (click)="CalTimeServ()">
+                <i class="ft ft-check-circle"></i>
+              </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" (click)="SaveActivitie()" class="btn btn-raised btn-primary">
+      <i class="icon icon-check"></i>&nbsp;
+      <span *ngIf="SevModel.SevAction == 'N'">บันทึกข้อมูลกิจกรรม</span>
+      <span *ngIf="SevModel.SevAction == 'E'">ปรับปรุงข้อมูลกิจกรรม</span>
+    </button>
+        <button type="button" (click)="c('Cancel-click')" class="btn btn-raised btn-danger btn-outline-dark">
+      <i class="icon icon-close"></i>&nbsp; ยกเลิก
+    </button>
+    </div>
+</ng-template>
+
+<ng-template #ActivitieInfo let-c="close" let-d="dismiss">
+    <div class="modal-header bg-info">
+        <h5 class="modal-title" id="modal-basic-title">
+            <i class="icon icon-book-open"></i>&nbsp; รายละเอียดข้อมูลกิจกรรม
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">รายการ</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.SevCode }}</span>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">วันเวลา</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqDateTime
+          }}</span>
+                </div>
+                <div class="col-md-5">
+                    <label class="font-small-3 text-primary">หน่วยงาน</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqDeptName
+          }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">ผู้ประสาน</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.SevReqUser }}</span>
+                </div>
+                <div class="col-md-2">
+                    <label class="font-small-3 text-primary">เบอร์ติดต่อ</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevReqCallBack
+          }}</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">กิจกรรมหลัก</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.ActGrpName }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">กิจกรรมรอง</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.ActHName }}</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="font-small-3 text-primary">กิจกรรมย่อย</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.ActDName }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="font-small-3 text-primary">การดำเนินกิจกรรม</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.SevReqMend }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เวลาเริ่ม</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeAtDept
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;น.</label>
+                </div>
+                <div class="col-md-3">
+                    <label class="font-small-3 text-primary">เวลาเสร็จ</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeDoFinish
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;น.</label>
+                </div>
+                <div class="col-md-2">
+                    <label class="font-small-3 text-primary">รวมเวลา</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTimeTotal
+          }}</span>
+                    <label class="font-small-3 text-primary">&nbsp;นาที</label>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">ผู้บันทึก</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.UserMendName
+          }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">จำนวนกิจกรรม</label>:
+                    <span class="font-medium-1 text-info">{{
+            ServInfo.SevTotalCase
+          }}</span>
+                    <label class="font-small-4 text-primary">&nbsp; รายการ</label>
+                </div>
+                <div class="col-md-4">
+                    <label class="font-small-3 text-primary">เวลา-ประกัน</label>:
+                    <span class="font-medium-1 text-info">{{ ServInfo.TimeInsure }}</span>
+                    <span class="font-small-4 text-primary">&nbsp;{{ ServInfo.TimeInsureUnit }}</span
+          >
+        </div>
+        <div class="col-md-4">
+          <label class="font-small-3 text-primary">เวลา-P4P</label>:
+          <span class="font-medium-1 text-info">{{ ServInfo.TimeP4P }}</span>
+                    <span class="font-small-4 text-primary">&nbsp;{{ ServInfo.TimeP4PUnit }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      (click)="c('Save click')"
+      class="btn btn-raised btn-success btn-outline-dark"
+    >
+      <i class="icon icon-close"></i>&nbsp; ตกลง
+    </button>
+  </div>
+</ng-template>

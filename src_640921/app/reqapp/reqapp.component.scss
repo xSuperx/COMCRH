@@ -1,0 +1,117 @@
+.dark-modal .modal-content {
+  background-color: #292b2c;
+  color: white;
+}
+
+.dark-modal .close {
+  color: white;
+}
+
+.searchdate {
+  font-size: 1.0em;
+  vertical-align: middle;
+  padding:7px 10px 0px 10px;
+}
+
+.TxtTitle{
+  font-size: 1.1em;
+  color:darkblue;
+}
+
+.TxtCapHead{
+  font-size: 0.9em;
+  color: darkslategray;
+  // padding-left: 1.0em;
+}
+
+.TxtCap{
+  font-size: 0.9em;
+  color: rgb(84, 145, 145);
+  padding-left: 0.6em;
+}
+
+.TxtValue{
+  font-size: medium;
+  color: rgb(41, 35, 92);
+  padding-left: 0.3em;
+}
+
+.TxtMyWay{
+  font-size: 1.1em;
+  color: rgb(243, 125, 16);
+  padding-left: 0.3em;
+}
+
+.TableTitleHead{
+  font-size: 1.0em;
+}
+
+.TableTitleSub{
+  font-size: x-small;
+}
+
+.scroller{
+  overflow-x: hidden;
+  position:absolute;
+  left:0;
+}
+
+.TimeLineColor{
+  width: 2px;
+  background:red;
+  padding: 0;
+  margin: 0;
+  margin-right: -1px;
+  position: relative;
+  display: inline-block;
+  border: red;
+}
+
+.TimeLineNone{
+  width: 2px;
+  padding: 0;
+  margin: 0;
+  margin-right: -1px;
+  position: relative;
+  display: inline-block;
+}
+
+.BgTimeline{
+  background-color: transparent !important;
+}
+
+.progress {
+  height: 2rem;
+  background-color: transparent !important ;
+}
+
+::ng-deep .PaggnationUL ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-start: 5px;
+  margin-block-end: 5px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+}
+
+::ng-deep .ngx-pagination {
+  margin-left: 0;
+  margin-bottom: 3px !important;
+}
+
+::ng-deep .my-class .modal-dialog {
+  max-width: 70%;
+  width: 70%;
+}
+
+.TxtTableHead{
+  font-size: 1rem;
+  font-weight: bold;
+  // color: rgb(246, 245, 250);
+  // padding-left: 0.3em;
+}
+
+.TxtTableRow{
+  font-size: 1rem;
+}

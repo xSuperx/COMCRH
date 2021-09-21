@@ -1,0 +1,80 @@
+.TextLabelBegin{
+  font-size: larg;
+  color: navy;
+  padding-left: 0px;
+}
+
+.TextLabelContn{
+  font-size: larg;
+  color: navy;
+  padding-left: 10px;
+}
+
+.TextValue{
+  font-size: larg;
+  color: rgb(9, 9, 56);
+  // padding-left: 6px;
+}
+
+.TextValueP{
+  font-size: larg;
+  color: rgb(9, 9, 56);
+  padding-left: 6px;
+}
+
+.TextInfoLabelSmall{
+  font-size: larg;
+  color: rgb(21, 21, 61);
+}
+
+.TextInfoLabel{
+  font-size: larg;
+  color: rgb(21, 21, 61);
+}
+
+.TextInfoLabelBig{
+  font-size: larg;
+  color: rgb(21, 21, 61);
+}
+
+.TextInfoValueSmall{
+  font-size: larg;
+  font-weight: bolder;
+  color: rgb(23, 23, 170);
+}
+
+.TextInfoValue{
+  font-size: larg;
+  font-weight: bolder;
+  color: rgb(23, 23, 170);
+}
+
+.TextInfoValueBig{
+  font-size:larg;
+  font-weight: bolder;
+  color: rgb(23, 23, 170);
+}
+
+.TextInfoReport{
+  font-size: 1.5em;
+  font-weight: bolder;
+}
+
+.TextInfoLabelB{
+  font-size: larg;
+  color: rgb(21, 21, 61);
+  padding-left: 10px;
+}
+
+.TextInfoValueB{
+  font-size: larg;
+  font-weight: bolder;
+  color: rgb(23, 23, 170);
+  padding-left: 8px;
+}
+
+::ng-deep .my-class .modal-dialog {
+  max-width: 85%;
+  width: 85%;
+}
+

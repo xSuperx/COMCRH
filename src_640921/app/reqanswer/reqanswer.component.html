@@ -1,0 +1,1840 @@
+<div class="card">
+  <div class="card-content">
+    <ngb-tabset>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <span class="text-primary">
+            <i class="ft ft-pocket mr-1"></i>
+            คำเสนอแนะ/คำแนะนำ
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent pl-1 pr-1 pt-0 pb-0>
+
+          <div class="card mt-1 mb-0">
+            <div class="card-header m-0 p-1">
+              <div class="row p-0">
+                <span class="TxtCap mr-2 mt-1">ปี ค.ศ.</span>
+                <select name="inputYear" id="inputYear" class="form-control"
+                  style="width:90px;" [(ngModel)]="YearReg">
+                  <option *ngFor="let Y of YearList" value="{{Y.id}}">
+                    {{Y.name}}
+                  </option>
+                </select>
+                <span class="TxtCap mr-2 mt-1">ค้นหาตามหัวข้อ</span>
+                <input type="text" name="SearchTxt1" id="SearchTxt1"
+                  class="form-control text-center mr-2"
+                  [(ngModel)]="SearchTxt1" style="width:200px;">
+                <button type="button"
+                  (click)="SarchFeedBack()"
+                  class="btn btn-raised btn-info round mb-0 mr-2">
+                  <i class="icon icon-magnifier mr-1"></i>
+                </button>
+                <a *ngIf="DbFeedback.length!=0" type="button"
+                  class="btn btn-raised btn-success round mb-0 mr-2"
+                  href="{{appConfig.urlApi}}report_reqanswer_excel.php?txt={{SearchTxt1}}&yer={{YearReg}}">
+                  <i class="icon icon-grid mr-1"></i>
+                  Excel
+                </a>
+                <ngb-pagination
+                  class="mr-2"
+                  [(page)]="T1PageNbr"
+                  [pageSize]="T1RowPerPage"
+                  [collectionSize]="DbFeedback.length">
+                </ngb-pagination>
+              </div>
+            </div>
+            <div class="card-content p-1">
+              <div class="row">
+                <div class="col-md-12 p-0">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead class="TxtTableHead text-center bg-info text-white">
+                      <th>ข้อคำแนะนำ  ทั้งหมด {{DbFeedback.length|number:'1.0-2'}} รายการ</th>
+                      <th style="width:20%;">สถานะดำเนินการ</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let F of DbFeedback|slice:(T1PageNbr-1)*T1RowPerPage
+                        :(T1PageNbr-1)*T1RowPerPage+T1RowPerPage; let i=index"
+                        class="TxtTableRow">
+                        <td class="text-left">
+                          <span class="TxtCap">ข้อเสนอแนะ:</span>
+                          <span class="TxtValue">{{F.FdText}}</span>
+                          <br>
+                          <span class="TxtCapSubTxt ml-2 mr-1">เลขรายการ:</span>
+                          <span class="TxtValueSubTxt mr-1">{{F.FdText}}</span>
+                          <span class="TxtCapSubTxt mr-1">ระบบ/โปรแกรม:</span>
+                          <span class="TxtValueSubTxt mr-1">{{F.FdApp}}</span>
+                          <span class="TxtCapSubTxt mr-1">วันเวลาเสนอแนะ:</span>
+                          <span class="TxtValueSubTxt mr-1">{{F.FdDatetime}}</span>
+                        </td>
+                        <td class="text-center">
+                          <span *ngIf="F.RcDatetime=='-'">
+                            <button type="button"
+                              class="btn btn-raised btn-info round mb-0"
+                              (click)="FeedbackAccept(F,FeedbackAcceptFrm);">
+                              <i class="icon icon-flag mr-1"></i>
+                              รับทราบ
+                            </button>
+                          </span>
+                          <span *ngIf="F.RcDatetime!='-'">
+                            {{F.RcProc}}<br>
+                            {{F.RcDatetime}}
+                          </span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbFeedback.length==0">
+                        <td colspan="5" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการคำขอสนับสนุนรายงานสถิติ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <span class="text-primary">
+            <i class="ft ft-server mr-2"></i>
+            คำขอสนับสนุนคอมฯ
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent pl-1 pr-1 pt-0 pb-0>
+
+          <div class="card mt-1 mb-0">
+            <div class="card-header m-0 p-1">
+              <div class="row p-0">
+                <span class="TxtCap mr-2 mt-1">ปี ค.ศ.</span>
+                <select name="inputYear" id="inputYear" class="form-control"
+                  style="width:90px;" [(ngModel)]="YearReg">
+                  <option *ngFor="let Y of YearList" value="{{Y.id}}">
+                    {{Y.name}}
+                  </option>
+                </select>
+                <span class="TxtCap mr-2 mt-1">ค้นหาตามหัวข้อ</span>
+                <input type="text" name="SearchTxt2" id="SearchTxt2"
+                  class="form-control text-center mr-2"
+                  [(ngModel)]="SearchTxt2" style="width:200px;">
+                <button type="button" (click)="SarchReqCom()"
+                  class="btn btn-raised btn-info round mb-0 mr-2">
+                  <i class="icon icon-magnifier mr-1"></i>
+                </button>
+                <a *ngIf="DbFeedback.length!=0" type="button"
+                  class="btn btn-raised btn-success round mb-0 mr-2"
+                  href="{{appConfig.urlApi}}report_reqcom_excel.php?txt={{SearchTxt2}}&yer={{YearReg}}">
+                  <i class="icon icon-grid mr-1"></i>
+                  Excel
+                </a>
+                <ngb-pagination
+                  class="mr-2"
+                  [(page)]="T2PageNbr"
+                  [pageSize]="T2RowPerPage"
+                  [collectionSize]="DbReqCom.length">
+                </ngb-pagination>
+              </div>
+            </div>
+            <div class="card-content p-1">
+              <div class="row">
+                <div class="col-md-12 p-0">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead class="TxtTableHead text-center bg-info text-white">
+                      <th>รายละเอียดคำขอสนับสนุน</th>
+                      <th style="width:12%;">สถานะดำเนินการ</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let A of DbReqCom|slice:(T2PageNbr-1)*T2RowPerPage
+                        :(T2PageNbr-1)*T2RowPerPage+T2RowPerPage; let i=index" class="TxtTableRow"
+                        (click)="ReqComAcceptInfo(A,ReqComAcceptDbInfo);" style="cursor: pointer;">
+                        <td class="text-left">
+                          <span class="TxtCap">คำขอสนับสนุน:</span>
+                          <span class="TxtValue">{{A.ReqTitle}}</span>
+                          <span class="TxtCap">หน่วยงาน:</span>
+                          <span class="TxtValue">{{A.ReqUsrContact}}</span>
+                          <span class="TxtCap">เบอร์ภายใน:</span>
+                          <span class="TxtValue">{{A.ReqUsrContactTel}}</span>
+                          <br>
+                          <span class="TxtCapSubTxt ml-2 mr-1">เลขรายการ:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqNbr}}</span>
+                          <span class="TxtCapSubTxt mr-1">ผู้แจ้งขอสนับสนุน:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqUser}}</span>
+                          <span class="TxtCapSubTxt mr-1">เหตุผลและความจำเป็น:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqReason}}</span>
+                        </td>
+                        <td class="text-center">
+                          <span *ngIf="A.ChkDupState=='-'">
+                            <button type="button"
+                              class="btn btn-raised btn-info round mb-0"
+                              (click)="ReqComAccept(A,ReqComAcceptFrm);">
+                              <i class="icon icon-flag mr-1"></i>
+                              รับทราบ
+                            </button>
+                          </span>
+                          <span *ngIf="A.ChkDupState!='-'">
+                            <span *ngIf="A.ChkDupState=='Y'">ซ้ำซ้อน</span>
+                            <span *ngIf="A.ChkDupState=='N'&&A.ReqAprRes=='-'">
+                              <!-- รอพิจารณา -->
+                              <button type="button"
+                                class="btn btn-raised btn-info round mb-0"
+                                (click)="ReqComAccept(A,ReqComAcceptFrm);">
+                                <i class="icon icon-flag mr-1"></i>
+                                รับทราบ
+                              </button>
+                            </span>
+                            <span *ngIf="A.ChkDupState=='N'&&A.ReqAprRes!='-'">
+                              <span *ngIf="A.ReqAprRes=='Y'">อนมุัติ</span>
+                              <span *ngIf="A.ReqAprRes=='N'">ไม่อนุมัติ</span>
+                              <span *ngIf="A.ReqAprRes=='L'">ศึกษาเพิ่มเติม</span>
+                            </span>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbReqCom.length==0">
+                        <td colspan="2" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการคำขอสนับสนุนรายงานสถิติ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <span class="text-primary">
+            <i class="ft ft-slack mr-2"></i>
+            คำขอจัดสร้างโปรแกรม
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent pl-1 pr-1 pt-0 pb-0>
+
+          <div class="card mt-1 mb-0">
+            <div class="card-header m-0 p-1">
+              <div class="row p-0">
+                <span class="TxtCap mr-2 mt-1">ปี ค.ศ.</span>
+                <select name="inputYear" id="inputYear" class="form-control"
+                  style="width:90px;" [(ngModel)]="YearReg">
+                  <option *ngFor="let Y of YearList" value="{{Y.id}}">
+                    {{Y.name}}
+                  </option>
+                </select>
+                <span class="TxtCap mr-2 mt-1">ค้นหาตามหัวข้อ</span>
+                <input type="text" name="SearchTxt3" id="SearchTxt3"
+                  class="form-control text-center mr-2"
+                  [(ngModel)]="SearchTxt3" style="width:200px;">
+                <button type="button" (click)="SarchReqApp()"
+                  class="btn btn-raised btn-info round mb-0 mr-2">
+                  <i class="icon icon-magnifier mr-1"></i>
+                </button>
+                <a *ngIf="DbReqApp.length!=0" type="button"
+                  class="btn btn-raised btn-success round mb-0 mr-2"
+                  href="{{appConfig.urlApi}}report_reqapp_excel.php?txt={{SearchTxt3}}&yer={{YearReg}}">
+                  <i class="icon icon-grid mr-1"></i>
+                  Excel
+                </a>
+                <ngb-pagination
+                  class="mr-2"
+                  [(page)]="T3PageNbr"
+                  [pageSize]="T3RowPerPage"
+                  [collectionSize]="DbReqApp.length">
+                </ngb-pagination>
+              </div>
+            </div>
+            <div class="card-content p-1">
+              <div class="row">
+                <div class="col-md-12 p-0">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead class="TxtTableHead text-center bg-info text-white">
+                      <th>รายการคำขอ</th>
+                      <th style="width:15%;">สถานะดำเนินการ</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let A of DbReqApp|slice:(T3PageNbr-1)*T3RowPerPage
+                        :(T3PageNbr-1)*T3RowPerPage+T3RowPerPage; let i=index" class="TxtTableRow">
+                        <td class="text-left" style="cursor: pointer;" (click)="ReqAppAcceptInfoo(A,ReqAppAcceptInfo)">
+                          <span class="TxtCap">คำขอสนับสนุน:</span>
+                          <span class="TxtValue">{{A.ReqTitle}}</span>
+                          <span class="TxtCap">หน่วยงาน:</span>
+                          <span class="TxtValue">{{A.ReqUsrContact}}</span>
+                          <span class="TxtCap">เบอร์ภายใน:</span>
+                          <span class="TxtValue">{{A.ReqUsrContactTel}}</span>
+                          <br>
+                          <span class="TxtCapSubTxt ml-2 mr-1">เลขรายการ:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqNbr}}</span>
+                          <span class="TxtCapSubTxt mr-1">ผู้แจ้งขอสนับสนุน:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqUser}}</span>
+                          <span class="TxtCapSubTxt mr-1">เหตุผลและความจำเป็น:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqReason}}</span>
+                        </td>
+                        <td class="text-center">
+                          <span *ngIf="A.ChkDupState=='-'">
+                            <button type="button"
+                              class="btn btn-raised btn-info round mb-0"
+                              (click)="ReqAppAccept(A,ReqAppAcceptFrm);">
+                              <i class="icon icon-flag mr-1"></i>
+                              รับทราบ
+                            </button>
+                          </span>
+                          <span *ngIf="A.ChkDupState!='-'">
+                            <span *ngIf="A.ChkDupState=='Y'">ซ้ำซ้อน</span>
+                            <span *ngIf="A.ChkDupState=='N'&&A.ReqAprRes=='-'">
+                              <!-- รอพิจารณา -->
+                              <button type="button"
+                                class="btn btn-raised btn-info round mb-0"
+                                (click)="ReqAppAccept(A,ReqAppAcceptFrm);">
+                                <i class="icon icon-flag mr-1"></i>
+                                รับทราบ
+                              </button>
+                            </span>
+                            <span *ngIf="A.ChkDupState=='N'&&A.ReqAprRes!='-'">
+                              <span *ngIf="A.ReqAprRes=='Y'">อนมุัติ</span>
+                              <span *ngIf="A.ReqAprRes=='N'">ไม่อนุมัติ</span>
+                              <span *ngIf="A.ReqAprRes=='L'">ศึกษาเพิ่มเติม</span>
+                            </span>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbReqApp.length==0">
+                        <td colspan="2" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการคำขอสนับสนุน..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <span class="text-primary">
+            <i class="icon-energy mr-2"></i>
+            คำขอจัดทำรายงาน
+          </span>
+        </ng-template>
+        <ng-template ngbTabContent pl-1 pr-1 pt-0 pb-0>
+
+          <div class="card mt-1 mb-0">
+            <div class="card-header m-0 p-1">
+              <div class="row p-0">
+                <span class="TxtCap mr-2 mt-1">ปี ค.ศ.</span>
+                <select name="inputYear" id="inputYear" class="form-control"
+                  style="width:90px;" [(ngModel)]="YearReg">
+                  <option *ngFor="let Y of YearList" value="{{Y.id}}">
+                    {{Y.name}}
+                  </option>
+                </select>
+                <span class="TxtCap mr-2 mt-1">ค้นหาตามหัวข้อ</span>
+                <input type="text" name="SearchTxt4" id="SearchTxt4"
+                  class="form-control text-center mr-2"
+                  [(ngModel)]="SearchTxt4" style="width:200px;">
+                <button type="button" (click)="SarchReqReport()"
+                  class="btn btn-raised btn-info round mb-0 mr-2">
+                  <i class="icon icon-magnifier mr-1"></i>
+                </button>
+                <a *ngIf="DbReqRep.length!=0" type="button"
+                  class="btn btn-raised btn-success round mb-0 mr-2"
+                  href="{{appConfig.urlApi}}report_reqrep_excel.php?txt={{SearchTxt2}}&yer={{YearReg}}">
+                  <i class="icon icon-grid mr-1"></i>
+                  Excel
+                </a>
+                <ngb-pagination
+                  class="mr-2"
+                  [(page)]="T4PageNbr"
+                  [pageSize]="T4RowPerPage"
+                  [collectionSize]="DbReqRep.length">
+                </ngb-pagination>
+              </div>
+            </div>
+            <div class="card-content p-1">
+              <div class="row">
+                <div class="col-md-12 p-0">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead class="TxtTableHead text-center bg-info text-white">
+                      <th>รายการคำขอ</th>
+                      <th style="width:15%;">สถานะดำเนินการ</th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let A of DbReqRep|slice:(T4PageNbr-1)*T4RowPerPage
+                        :(T4PageNbr-1)*T4RowPerPage+T4RowPerPage; let i=index"
+                        class="TxtTableRow">
+                        <td class="text-left" style="cursor: pointer;"
+                          (click)="ReqRepAcceptInfo(A,ReqRepAcceptInf)">
+                          <span class="TxtCap">คำขอสนับสนุน:</span>
+                          <span class="TxtValue">{{A.ReqTitle}}</span>
+                          <span class="TxtCap">ผู้ประสานงาน:</span>
+                          <span class="TxtValue">{{A.ReqUsrContact}}</span>
+                          <span class="TxtCap">เบอร์ภายใน:</span>
+                          <span class="TxtValue">{{A.ReqUsrContactTel}}</span>
+                          <br>
+                          <span class="TxtCapSubTxt ml-2 mr-1">เลขรายการ:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqNbr}}</span>
+                          <span class="TxtCapSubTxt mr-1">ผู้แจ้งขอสนับสนุน:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqUser}}</span>
+                          <span class="TxtCapSubTxt mr-1">เหตุผลและความจำเป็น:</span>
+                          <span class="TxtValueSubTxt mr-2">{{A.ReqReason}}</span>
+                        </td>
+                        <td class="text-center">
+                          <span *ngIf="A.ChkDupState=='-'">
+                            <button type="button"
+                              class="btn btn-raised btn-info round mb-0"
+                              (click)="ReqRepAccept(A,ReqRepAcceptFrm);">
+                              <i class="icon icon-flag mr-1"></i>
+                              รับทราบ
+                            </button>
+                          </span>
+                          <span *ngIf="A.ChkDupState!='-'">
+                            <span *ngIf="A.ChkDupState=='Y'">ซ้ำซ้อน</span>
+                            <span *ngIf="A.ChkDupState=='N'&&A.ReqAprRes=='-'">
+                              <!-- รอพิจารณา -->
+                              <button type="button"
+                                class="btn btn-raised btn-info round mb-0"
+                                (click)="ReqRepAccept(A,ReqRepAcceptFrm);">
+                                <i class="icon icon-flag mr-1"></i>
+                                รับทราบ
+                              </button>
+                            </span>
+                            <span *ngIf="A.ChkDupState=='N'&&A.ReqAprRes!='-'">
+                              <span *ngIf="A.ReqAprRes=='Y'">อนมุัติ</span>
+                              <span *ngIf="A.ReqAprRes=='N'">ไม่อนุมัติ</span>
+                              <span *ngIf="A.ReqAprRes=='L'">ศึกษาเพิ่มเติม</span>
+                            </span>
+                          </span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbReqRep.length==0">
+                        <td colspan="5" class="text-center text-danger font-medium-2">
+                          ไม่พบรายการคำขอสนับสนุนรายงานสถิติ..!!
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>
+
+<ng-template #FeedbackAcceptFrm let-c="close" let-d="dismiss">
+  <form [formGroup]="FeedbackFrm">
+    <div class="modal-header bg-info">
+      <h5 class="modal-title" id="modal-basic-title">
+        <i class="icon icon-book-open"></i>&nbsp;
+        ฟอร์มการตอบรับคำแนะนำและข้อเสนอ
+      </h5>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="row">
+            <span class="pl-2 mr-2 TxtCapHead">เลขรายการ: </span>
+            <span class="TxtValue text-left">{{FeedbackFrm.getRawValue().FdID}}</span>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <span class="pl-2 mr-2 TxtCapHead">ระบบ/โปรแกรม: </span>
+            <span class="TxtValue text-left">{{FeedbackFrm.getRawValue().FdApp}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <span class="pl-2 mr-2 TxtCapHead">ช่องทางตอบกลับ: </span>
+            <span class="TxtValue text-left">{{FeedbackFrm.getRawValue().FdReturn}}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <span class="pl-2 mr-2 TxtCapHead">วันเวลาบันทึก: </span>
+            <span class="TxtValue text-left">{{FeedbackFrm.getRawValue().FdDatetime}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="pl-2 TxtCapHead">ข้อเสนอแนะ/คำแนะนำ</div>
+        <div class="col-md-12 text-left">
+          <textarea name="FdText" id="FdText" readonly
+            class="form-control TxtValue" rows="3"
+            formControlName="FdText">
+          </textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="pl-2 TxtCapHead">การดำเนินการและการตอบกลับ</div>
+        <div class="col-md-12 text-left">
+          <textarea name="RcProc" id="RcProc"
+            class="form-control TxtValue" rows="3"
+            formControlName="RcProc">
+          </textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="col-8 text-left">
+        <div class="row">
+          <span class="TxtCap mr-2">ชื่อผู้ตอบกลับ:</span>
+          <span class="TxtValue">{{FeedbackFrm.getRawValue().RcUser}}</span>
+        </div>
+        <div class="row">
+          <span class="TxtCap mr-2">วันเวลาบันทึก:</span>
+          <span class="TxtValue">{{FeedbackFrm.getRawValue().RcDatetime}}</span>
+        </div>
+        <!--
+          <span *ngIf="RequestFrm.invalid" class="TxtMyWay">
+            โปรดกรอกข้อมูลให้ครบทุกช่อง ก่อนกดปุ่ม "บันทึกคำขอใหม่"..!!
+          </span>
+        -->
+      </div>
+      <div class="col-2 text-right">
+        <button
+          type="button"
+          [disabled]="FeedbackFrm.invalid"
+          (click)="SaveAcceptFeedback();"
+          class="btn btn-raised btn-primary btn-block">
+          <i class="icon icon-check mr-1"></i>
+          บันทึกคำขอ
+        </button>
+      </div>
+      <div class="col-2 text-right">
+        <button
+          type="button"
+          (click)="c('Cancel-click')"
+          class="btn btn-raised btn-danger btn-block">
+          <i class="icon icon-close mr-1"></i>
+          ยกเลิก
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #ReqComAcceptFrm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp;
+      ฟอร์มการตอบรับคำขอสนับสนุน
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-1" style="background-color: whitesmoke;">
+    <div [formGroup]="RequestFrm">
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-tag mr-1"></i>คำขอสนับสนุน
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-2">
+              <span class="TxtCap">เลขที่คำขอ</span>
+              <input type="text" name="ReqNbr"
+                id="ReqNbr" readonly maxlength="30"
+                class="form-control text-center"
+                formControlName="ReqNbr">
+            </div>
+            <div class="col-md-4">
+              <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+              <input type="text" maxlength="80" readonly
+                name="ReqUser" id="ReqUser"
+                class="form-control text-center"
+                formControlName="ReqUser">
+            </div>
+            <div class="col-md-4">
+              <span class="TxtCap">กลุ่มงาน/ฝ่ายงาน/หน่วยงาน</span>
+              <input type="text" maxlength="60" readonly
+                name="ReqUsrContact" id="ReqUsrContact"
+                class="form-control text-center"
+                formControlName="ReqUsrContact">
+            </div>
+            <div class="col-md-2">
+              <span class="TxtCap">เบอร์ภายใน</span>
+              <input type="text" maxlength="15" readonly
+                name="ReqUsrContactTel"
+                id="ReqUsrContactTel"
+                class="form-control text-center"
+                formControlName="ReqUsrContactTel">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <span class="TxtCap">ชื่อคอมพิวเตอร์หรืออุปกรณ์ต่อพ่วงที่ต้องการ</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqTitle" id="ReqTitle"
+                class="form-control text-center"
+                formControlName="ReqTitle">
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">เหตุผลความต้องการ</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqReason" id="ReqReason"
+                class="form-control text-center"
+                formControlName="ReqReason">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <span class="TxtCap">ทรัพยากรที่ต้องใช้เพิ่มเติม</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqResource" id="ReqResource"
+                class="form-control text-center"
+                formControlName="ReqResource">
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">ผลที่คาดว่าจะได้รับ</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqReturn" id="ReqReturn"
+                class="form-control text-center"
+                formControlName="ReqReturn">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-flag mr-1"></i>การตรวจสอบและพิจารณา
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-3">
+              <span class="TxtCap">สถานะตรวจสอบ</span>
+              <select name="ChkDupState" id="ChkDupState" class="form-control" formControlName="ChkDupState">
+                <option *ngFor="let D of OptDupState" value="{{D.id}}">{{D.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">รายละเอียดความซ้ำซ้อน</span>
+              <input type="text" maxlength="200"
+                name="ChkDupNote" id="ChkDupNote"
+                class="form-control text-center"
+                formControlName="ChkDupNote">
+            </div>
+            <div class="col-md-3">
+              <span class="TxtCap">ชื่อผู้ตรวจรับคำร้อง</span>
+              <input type="text" maxlength="200"
+                name="ChkUsrReceipter" id="ChkUsrReceipter"
+                class="form-control text-center"
+                formControlName="ChkUsrReceipter">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3">
+              <span class="TxtCap">ผลการพิจารณา</span>
+              <select name="ReqAprRes" id="ReqAprRes"
+                class="form-control" formControlName="ReqAprRes">
+                <option *ngFor="let A of OptApproveState" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">เหตุผลประกอบผลพิจารณา</span>
+              <input type="text" maxlength="200"
+                name="ReqAprRemark" id="ReqAprRemark"
+                class="form-control text-center"
+                formControlName="ReqAprRemark">
+            </div>
+            <div class="col-md-3">
+              <span class="TxtCap">วันที่พิจารณา</span>
+              <input type="date" maxlength="200"
+                name="ReqAprDate" id="ReqAprDate"
+                class="form-control text-center"
+                formControlName="ReqAprDate">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+      <span *ngIf="RequestFrm.invalid" class="TxtMyWay">
+        โปรดกรอกข้อมูลให้ครบทุกช่อง ก่อนกดปุ่ม "บันทึกคำขอใหม่"..!!
+      </span>
+    </div>
+    <div class="col-2 text-right">
+      <button type="button"
+        [disabled]="RequestFrm.invalid"
+        (click)="SaveAcceptReqCom();"
+        class="btn btn-raised btn-primary btn-block">
+        <i class="icon icon-check mr-1"></i>
+        บันทึกสถานะ
+      </button>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ReqComAcceptDbInfo let-c="close" let-d="dismiss">
+  <div class="modal-header bg-info">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp;
+      ฟอร์มการตอบรับคำขอสนับสนุน
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-1" style="background-color: whitesmoke;">
+    <div [formGroup]="RequestFrm">
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-tag mr-1"></i>คำขอสนับสนุน
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-2">
+              <span class="TxtCap">เลขที่คำขอ</span>
+              <input type="text" name="ReqNbr"
+                id="ReqNbr" readonly maxlength="30"
+                class="form-control text-center"
+                formControlName="ReqNbr">
+            </div>
+            <div class="col-md-4">
+              <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+              <input type="text" maxlength="80" readonly
+                name="ReqUser" id="ReqUser"
+                class="form-control text-center"
+                formControlName="ReqUser">
+            </div>
+            <div class="col-md-4">
+              <span class="TxtCap">กลุ่มงาน/ฝ่ายงาน/หน่วยงาน</span>
+              <input type="text" maxlength="60" readonly
+                name="ReqUsrContact" id="ReqUsrContact"
+                class="form-control text-center"
+                formControlName="ReqUsrContact">
+            </div>
+            <div class="col-md-2">
+              <span class="TxtCap">เบอร์ภายใน</span>
+              <input type="text" maxlength="15" readonly
+                name="ReqUsrContactTel"
+                id="ReqUsrContactTel"
+                class="form-control text-center"
+                formControlName="ReqUsrContactTel">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <span class="TxtCap">ชื่อคอมพิวเตอร์หรืออุปกรณ์ต่อพ่วงที่ต้องการ</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqTitle" id="ReqTitle"
+                class="form-control text-center"
+                formControlName="ReqTitle">
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">เหตุผลความต้องการ</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqReason" id="ReqReason"
+                class="form-control text-center"
+                formControlName="ReqReason">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <span class="TxtCap">ทรัพยากรที่ต้องใช้เพิ่มเติม</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqResource" id="ReqResource"
+                class="form-control text-center"
+                formControlName="ReqResource">
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">ผลที่คาดว่าจะได้รับ</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqReturn" id="ReqReturn"
+                class="form-control text-center"
+                formControlName="ReqReturn">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-flag mr-1"></i>การตรวจสอบและพิจารณา
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-3">
+              <span class="TxtCap">สถานะตรวจสอบ</span>
+              <select name="ChkDupState" id="ChkDupState" readonly
+                class="form-control" formControlName="ChkDupState">
+                <option *ngFor="let D of OptDupState" value="{{D.id}}">{{D.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">รายละเอียดความซ้ำซ้อน</span>
+              <input type="text" maxlength="200" readonly
+                name="ChkDupNote" id="ChkDupNote"
+                class="form-control text-center"
+                formControlName="ChkDupNote">
+            </div>
+            <div class="col-md-3">
+              <span class="TxtCap">ชื่อผู้ตรวจรับคำร้อง</span>
+              <input type="text" maxlength="200" readonly
+                name="ChkUsrReceipter" id="ChkUsrReceipter"
+                class="form-control text-center"
+                formControlName="ChkUsrReceipter">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3">
+              <span class="TxtCap">ผลการพิจารณา</span>
+              <select name="ReqAprRes" id="ReqAprRes" readonly
+                class="form-control" formControlName="ReqAprRes">
+                <option *ngFor="let A of OptApproveState" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <span class="TxtCap">เหตุผลประกอบผลพิจารณา</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqAprRemark" id="ReqAprRemark"
+                class="form-control text-center"
+                formControlName="ReqAprRemark">
+            </div>
+            <div class="col-md-3">
+              <span class="TxtCap">วันที่พิจารณา</span>
+              <input type="date" maxlength="200" readonly
+                name="ReqAprDate" id="ReqAprDate"
+                class="form-control text-center"
+                formControlName="ReqAprDate">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+    </div>
+    <div class="col-2 text-right">
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ReqAppAcceptFrm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-success">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-rocket"></i>&nbsp;
+      ตอบรับคำขอจัดสร้างระบบฐานข้อมูลและโปรแกรมบริหารจัดการข้อมูล
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [formGroup]="RequestFrm">
+      <div class="card mt-0 mb-1" >
+        <!--
+          <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+            <span style="font-size: 1.3rem;">
+              <i class="fa fa-tag mr-1"></i>คำขอสนับสนุน
+            </span>
+          </div>
+        -->
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-2 pr-1">
+              <span class="TxtCap">เลขที่คำขอ</span>
+              <input type="text" name="ReqNbr"
+                id="ReqNbr" maxlength="30" readonly
+                class="form-control text-left"
+                formControlName="ReqNbr">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+              <input type="text" maxlength="80"
+                name="ReqUser" id="ReqUser" readonly
+                class="form-control text-left"
+                formControlName="ReqUser">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ประสานงานหลัก</span>
+              <input type="text" maxlength="60" readonly
+                name="ReqUsrContact" id="ReqUsrContact"
+                class="form-control text-left"
+                formControlName="ReqUsrContact">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">เบอร์ภายใน</span>
+              <input type="text" maxlength="15"
+                name="ReqUsrContactTel"
+                id="ReqUsrContactTel" readonly
+                class="form-control text-left"
+                formControlName="ReqUsrContactTel">
+            </div>
+            <div class="col-md-3 pl-1">
+              <span class="TxtCap">ชื่อผู้เสนอพัฒนาระบบ</span>
+              <input type="text" maxlength="80" readonly
+                name="ReqRequestor" id="ReqRequestor"
+                class="form-control text-left"
+                formControlName="ReqRequestor">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ชื่อระบบที่ขอพัฒนา
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqTitle" id="ReqTitle" readonly
+                class="form-control text-left"
+                formControlName="ReqTitle">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              เหตุผลความต้องการ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReason" id="ReqReason" readonly
+                class="form-control text-left"
+                formControlName="ReqReason">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ผลที่คาดว่าจะได้รับ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReturn" id="ReqReturn" readonly
+                class="form-control text-left"
+                formControlName="ReqReturn">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ความเสี่ยงที่อาจพบ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqRisks" id="ReqRisks" readonly
+                class="form-control text-left"
+                formControlName="ReqRisks">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ทรัพยากรที่ต้องใช้
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200" readonly
+                name="ReqResource" id="ReqResource"
+                class="form-control text-left"
+                formControlName="ReqResource">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              มีระบบที่เชื่อมโยง
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqAppConOrther"
+                id="ReqAppConOrther" readonly
+                class="form-control text-left"
+                formControlName="ReqAppConOrther">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              สอดคล้องกับยุทธศาสตร์
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" name="ReqForRM" id="ReqForRM" readonly
+                class="form-control text-left" formControlName="ReqForRM">
+            </div>
+          </div>
+          <div *ngIf="RequestFrm.getRawValue().ReqPartUI!='-'" class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ไฟล์งานประกอบ
+            </span>
+            <div class="col-md-9 pl-1">
+              <input type="text" name="ReqPartUI" id="ReqPartUI" readonly
+                class="form-control text-left" formControlName="ReqPartUI">
+            </div>
+            <div class="col-md-1 pl-0">
+              <a type="button" class="btn btn-raised btn-info btn-block round" target="_blank"
+               href="{{appConfig.urlApi}}uploads\file\{{RequestFrm.getRawValue().ReqPartUI}}">
+                <i class="fa fa-tag"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-flag mr-1"></i>การตรวจสอบและพิจารณา
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">สถานะตรวจสอบ</span>
+              <select name="ChkDupState" id="ChkDupState" class="form-control" formControlName="ChkDupState">
+                <option *ngFor="let D of OptDupState" value="{{D.id}}">{{D.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">รายละเอียดความซ้ำซ้อน</span>
+              <input type="text" maxlength="200"
+                name="ChkDupNote" id="ChkDupNote"
+                class="form-control text-center"
+                formControlName="ChkDupNote">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ตรวจรับคำร้อง</span>
+              <input type="text" maxlength="200"
+                name="ChkUsrReceipter" id="ChkUsrReceipter"
+                class="form-control text-center"
+                formControlName="ChkUsrReceipter">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ผลการพิจารณา</span>
+              <select name="ReqAprRes" id="ReqAprRes"
+                class="form-control" formControlName="ReqAprRes">
+                <option *ngFor="let A of OptApproveState" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">เหตุผลประกอบผลพิจารณา</span>
+              <input type="text" maxlength="200"
+                name="ReqAprRemark" id="ReqAprRemark"
+                class="form-control text-center"
+                formControlName="ReqAprRemark">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">วันที่พิจารณา</span>
+              <input type="date" maxlength="200"
+                name="ReqAprDate" id="ReqAprDate"
+                class="form-control text-center"
+                formControlName="ReqAprDate">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ความสำคัญและเร่งด่วน</span>
+              <select name="ReqImportance" id="ReqImportance" class="form-control" formControlName="ReqImportance">
+                <option value="-">รอพิจารณา</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">ผู้พัฒนาที่รับมอบหมาย</span>
+              <select name="ReqProgrammer" id="ReqProgrammer"
+                class="form-control" formControlName="ReqProgrammer">
+                <option *ngFor="let P of DbProgramer" value="{{P.id}}">{{P.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ระยะเวลาจัดสร้าง(วันทำงาน)</span>
+              <input type="number"
+                name="ReqCreateTime" id="ReqCreateTime"
+                class="form-control text-center"
+                formControlName="ReqCreateTime">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+      <span *ngIf="RequestFrm.invalid" class="TxtMyWay">
+        โปรดกรอกข้อมูลให้ครบทุกช่อง ก่อนกดปุ่ม "บันทึกคำขอใหม่"..!!
+      </span>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        [disabled]="RequestFrm.invalid"
+        (click)="SaveAcceptReqApp();"
+        class="btn btn-raised btn-primary btn-block">
+        <i class="icon icon-check mr-1"></i>
+        บันทึก&nbsp;
+      </button>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ReqAppAcceptInfo let-c="close" let-d="dismiss">
+  <div class="modal-header bg-success">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-rocket"></i>&nbsp;
+      ข้อมูลการตอบรับคำขอจัดสร้างระบบฐานข้อมูลและโปรแกรมบริหารจัดการข้อมูล
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [formGroup]="RequestFrm">
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-tag mr-1"></i>คำขอสนับสนุน
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-2 pr-1">
+              <span class="TxtCap">เลขที่คำขอ</span>
+              <input type="text" name="ReqNbr"
+                id="ReqNbr" maxlength="30" readonly
+                class="form-control text-left"
+                formControlName="ReqNbr">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+              <input type="text" maxlength="80"
+                name="ReqUser" id="ReqUser" readonly
+                class="form-control text-left"
+                formControlName="ReqUser">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ประสานงานหลัก</span>
+              <input type="text" maxlength="60" readonly
+                name="ReqUsrContact" id="ReqUsrContact"
+                class="form-control text-left"
+                formControlName="ReqUsrContact">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">เบอร์ภายใน</span>
+              <input type="text" maxlength="15"
+                name="ReqUsrContactTel"
+                id="ReqUsrContactTel" readonly
+                class="form-control text-left"
+                formControlName="ReqUsrContactTel">
+            </div>
+            <div class="col-md-3 pl-1">
+              <span class="TxtCap">ชื่อผู้เสนอพัฒนาระบบ</span>
+              <input type="text" maxlength="80" readonly
+                name="ReqRequestor" id="ReqRequestor"
+                class="form-control text-left"
+                formControlName="ReqRequestor">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ชื่อระบบที่ขอพัฒนา
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqTitle" id="ReqTitle" readonly
+                class="form-control text-left"
+                formControlName="ReqTitle">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              เหตุผลความต้องการ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReason" id="ReqReason" readonly
+                class="form-control text-left"
+                formControlName="ReqReason">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ผลที่คาดว่าจะได้รับ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReturn" id="ReqReturn" readonly
+                class="form-control text-left"
+                formControlName="ReqReturn">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ความเสี่ยงที่อาจพบ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqRisks" id="ReqRisks" readonly
+                class="form-control text-left"
+                formControlName="ReqRisks">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ทรัพยากรที่ต้องใช้
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200" readonly
+                name="ReqResource" id="ReqResource"
+                class="form-control text-left"
+                formControlName="ReqResource">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              มีระบบที่เชื่อมโยง
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqAppConOrther"
+                id="ReqAppConOrther" readonly
+                class="form-control text-left"
+                formControlName="ReqAppConOrther">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              สอดคล้องกับยุทธศาสตร์
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" name="ReqForRM" id="ReqForRM" readonly
+                class="form-control text-left" formControlName="ReqForRM">
+            </div>
+          </div>
+          <div *ngIf="RequestFrm.getRawValue().ReqPartUI!='-'" class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ไฟล์งานประกอบ
+            </span>
+            <div class="col-md-9 pl-1">
+              <input type="text" name="ReqPartUI" id="ReqPartUI" readonly
+                class="form-control text-left" formControlName="ReqPartUI">
+            </div>
+            <div class="col-md-1 pl-0">
+              <a type="button" class="btn btn-raised btn-info btn-block round" target="_blank"
+               href="{{appConfig.urlApi}}uploads\file\{{RequestFrm.getRawValue().ReqPartUI}}">
+                <i class="fa fa-tag"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-flag mr-1"></i>การตรวจสอบและพิจารณา
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">สถานะตรวจสอบ</span>
+              <select name="ChkDupState" id="ChkDupState" readonly class="form-control" formControlName="ChkDupState">
+                <option *ngFor="let D of OptDupState" value="{{D.id}}">{{D.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">รายละเอียดความซ้ำซ้อน</span>
+              <input type="text" maxlength="200" readonly
+                name="ChkDupNote" id="ChkDupNote"
+                class="form-control text-center"
+                formControlName="ChkDupNote">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ตรวจรับคำร้อง</span>
+              <input type="text" maxlength="200" readonly
+                name="ChkUsrReceipter" id="ChkUsrReceipter"
+                class="form-control text-center"
+                formControlName="ChkUsrReceipter">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ผลการพิจารณา</span>
+              <select name="ReqAprRes" id="ReqAprRes" readonly
+                class="form-control" formControlName="ReqAprRes">
+                <option *ngFor="let A of OptApproveState" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">เหตุผลประกอบผลพิจารณา</span>
+              <input type="text" maxlength="200" readonly
+                name="ReqAprRemark" id="ReqAprRemark"
+                class="form-control text-center"
+                formControlName="ReqAprRemark">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">วันที่พิจารณา</span>
+              <input type="date" maxlength="200" readonly
+                name="ReqAprDate" id="ReqAprDate"
+                class="form-control text-center"
+                formControlName="ReqAprDate">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ความสำคัญและเร่งด่วน</span>
+              <select name="ReqImportance" id="ReqImportance" readonly class="form-control" formControlName="ReqImportance">
+                <option value="-">รอพิจารณา</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">ผู้พัฒนาที่รับมอบหมาย</span>
+              <input type="text" readonly
+                name="ReqProgrammer" id="ReqProgrammer"
+                class="form-control text-center"
+                formControlName="ReqProgrammer">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ระยะเวลาจัดสร้าง(วันทำงาน)</span>
+              <input type="number" readonly
+                name="ReqCreateTime" id="ReqCreateTime"
+                class="form-control text-center"
+                formControlName="ReqCreateTime">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+      <!-- <span *ngIf="RequestFrm.invalid" class="TxtMyWay">
+        โปรดกรอกข้อมูลให้ครบทุกช่อง ก่อนกดปุ่ม "บันทึกคำขอใหม่"..!!
+      </span> -->
+    </div>
+    <div class="col-2 text-right">
+      &nbsp;
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ReqRepAcceptFrm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-success">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-rocket"></i>&nbsp;
+      ตอบรับคำขอจัดทำรายงานสถิติ
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [formGroup]="RequestFrm">
+      <div class="card mt-0 mb-1" >
+        <!--
+          <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+            <span style="font-size: 1.3rem;">
+              <i class="fa fa-tag mr-1"></i>คำขอสนับสนุน
+            </span>
+          </div>
+        -->
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-2 pr-1">
+              <span class="TxtCap">เลขที่คำขอ</span>
+              <input type="text" name="ReqNbr"
+                id="ReqNbr" maxlength="30" readonly
+                class="form-control text-left"
+                formControlName="ReqNbr">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+              <input type="text" maxlength="80"
+                name="ReqUser" id="ReqUser" readonly
+                class="form-control text-left"
+                formControlName="ReqUser">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ประสานงานหลัก</span>
+              <input type="text" maxlength="60" readonly
+                name="ReqUsrContact" id="ReqUsrContact"
+                class="form-control text-left"
+                formControlName="ReqUsrContact">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">เบอร์ภายใน</span>
+              <input type="text" maxlength="15"
+                name="ReqUsrContactTel"
+                id="ReqUsrContactTel" readonly
+                class="form-control text-left"
+                formControlName="ReqUsrContactTel">
+            </div>
+            <div class="col-md-3 pl-1">
+              <span class="TxtCap">ชื่อผู้เสนอพัฒนาระบบ</span>
+              <input type="text" maxlength="80" readonly
+                name="ReqRequestor" id="ReqRequestor"
+                class="form-control text-left"
+                formControlName="ReqRequestor">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ชื่อระบบที่ขอพัฒนา
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqTitle" id="ReqTitle" readonly
+                class="form-control text-left"
+                formControlName="ReqTitle">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              เหตุผลความต้องการ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReason" id="ReqReason" readonly
+                class="form-control text-left"
+                formControlName="ReqReason">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ผลที่คาดว่าจะได้รับ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReturn" id="ReqReturn" readonly
+                class="form-control text-left"
+                formControlName="ReqReturn">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ทรัพยากรที่ต้องใช้
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200" readonly
+                name="ReqResource" id="ReqResource"
+                class="form-control text-left"
+                formControlName="ReqResource">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              สอดคล้องกับยุทธศาสตร์
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" name="ReqForRM" id="ReqForRM" readonly
+                class="form-control text-left" formControlName="ReqForRM">
+            </div>
+          </div>
+          <div *ngIf="RequestFrm.getRawValue().ReqPartUI!='-'" class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ไฟล์ข้อมูลประกอบ
+            </span>
+            <div class="col-md-9 pl-1">
+              <input type="text" name="ReqPartUI" id="ReqPartUI" readonly
+                class="form-control text-left" formControlName="ReqPartUI">
+            </div>
+            <div class="col-md-1 pl-0">
+              <a type="button" class="btn btn-raised btn-info btn-block round" target="_blank"
+               href="{{appConfig.urlApi}}uploads\file\{{RequestFrm.getRawValue().ReqPartUI}}">
+                <i class="fa fa-tag"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-flag mr-1"></i>การตรวจสอบและพิจารณา
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">สถานะตรวจสอบ</span>
+              <select name="ChkDupState" id="ChkDupState" class="form-control" formControlName="ChkDupState">
+                <option *ngFor="let D of OptDupState" value="{{D.id}}">{{D.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">รายละเอียดความซ้ำซ้อน</span>
+              <input type="text" maxlength="200"
+                name="ChkDupNote" id="ChkDupNote"
+                class="form-control text-center"
+                formControlName="ChkDupNote">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ตรวจรับคำร้อง</span>
+              <input type="text" maxlength="200"
+                name="ChkUsrReceipter" id="ChkUsrReceipter"
+                class="form-control text-center"
+                formControlName="ChkUsrReceipter">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ผลการพิจารณา</span>
+              <select name="ReqAprRes" id="ReqAprRes"
+                class="form-control" formControlName="ReqAprRes">
+                <option *ngFor="let A of OptApproveState" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">เหตุผลประกอบผลพิจารณา</span>
+              <input type="text" maxlength="200"
+                name="ReqAprRemark" id="ReqAprRemark"
+                class="form-control text-center"
+                formControlName="ReqAprRemark">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">วันที่พิจารณา</span>
+              <input type="date" maxlength="200"
+                name="ReqAprDate" id="ReqAprDate"
+                class="form-control text-center"
+                formControlName="ReqAprDate">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ความสำคัญและเร่งด่วน</span>
+              <select name="ReqImportance" id="ReqImportance" class="form-control" formControlName="ReqImportance">
+                <option value="-">รอพิจารณา</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">ผู้จัดทำรายงาน</span>
+              <select name="ReqProgrammer" id="ReqProgrammer"
+                class="form-control" formControlName="ReqProgrammer">
+                <option *ngFor="let P of DbReporter" value="{{P.id}}">{{P.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ระยะเวลาจัดสร้าง(วันทำงาน)</span>
+              <input type="number"
+                name="ReqCreateTime" id="ReqCreateTime"
+                class="form-control text-center"
+                formControlName="ReqCreateTime">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+      <span *ngIf="RequestFrm.invalid" class="TxtMyWay">
+        โปรดกรอกข้อมูลให้ครบทุกช่อง ก่อนกดปุ่ม "บันทึกคำขอใหม่"..!!
+      </span>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        [disabled]="RequestFrm.invalid"
+        (click)="SaveAcceptReqRep();"
+        class="btn btn-raised btn-primary btn-block">
+        <i class="icon icon-check mr-1"></i>
+        บันทึก&nbsp;
+      </button>
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ReqRepAcceptInf let-c="close" let-d="dismiss">
+  <div class="modal-header bg-success">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-rocket"></i>&nbsp;
+      ข้อมูลการตอบรับคำขอจัดทำรายงานสถิติ
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [formGroup]="RequestFrm">
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-tag mr-1"></i>คำขอสนับสนุน
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-2 pr-1">
+              <span class="TxtCap">เลขที่คำขอ</span>
+              <input type="text" name="ReqNbr"
+                id="ReqNbr" maxlength="30" readonly
+                class="form-control text-left"
+                formControlName="ReqNbr">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้บันทึกคำขอ</span>
+              <input type="text" maxlength="80"
+                name="ReqUser" id="ReqUser" readonly
+                class="form-control text-left"
+                formControlName="ReqUser">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ประสานงานหลัก</span>
+              <input type="text" maxlength="60" readonly
+                name="ReqUsrContact" id="ReqUsrContact"
+                class="form-control text-left"
+                formControlName="ReqUsrContact">
+            </div>
+            <div class="col-md-2 pl-1 pr-1">
+              <span class="TxtCap">เบอร์ภายใน</span>
+              <input type="text" maxlength="15"
+                name="ReqUsrContactTel"
+                id="ReqUsrContactTel" readonly
+                class="form-control text-left"
+                formControlName="ReqUsrContactTel">
+            </div>
+            <div class="col-md-3 pl-1">
+              <span class="TxtCap">ชื่อผู้เสนอพัฒนาระบบ</span>
+              <input type="text" maxlength="80" readonly
+                name="ReqRequestor" id="ReqRequestor"
+                class="form-control text-left"
+                formControlName="ReqRequestor">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ชื่อระบบที่ขอพัฒนา
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqTitle" id="ReqTitle" readonly
+                class="form-control text-left"
+                formControlName="ReqTitle">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              เหตุผลความต้องการ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReason" id="ReqReason" readonly
+                class="form-control text-left"
+                formControlName="ReqReason">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ผลที่คาดว่าจะได้รับ
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200"
+                name="ReqReturn" id="ReqReturn" readonly
+                class="form-control text-left"
+                formControlName="ReqReturn">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ทรัพยากรที่ต้องใช้
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" maxlength="200" readonly
+                name="ReqResource" id="ReqResource"
+                class="form-control text-left"
+                formControlName="ReqResource">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              สอดคล้องกับยุทธศาสตร์
+            </span>
+            <div class="col-md-10 pl-1">
+              <input type="text" name="ReqForRM" id="ReqForRM" readonly
+                class="form-control text-left" formControlName="ReqForRM">
+            </div>
+          </div>
+          <div *ngIf="RequestFrm.getRawValue().ReqPartUI!='-'" class="row mt-2">
+            <span class="TxtCap col-md-2 mt-1 text-right">
+              ไฟล์ข้อมูลประกอบ
+            </span>
+            <div class="col-md-9 pl-1">
+              <input type="text" name="ReqPartUI" id="ReqPartUI" readonly
+                class="form-control text-left" formControlName="ReqPartUI">
+            </div>
+            <div class="col-md-1 pl-0">
+              <a type="button" class="btn btn-raised btn-info btn-block round" target="_blank"
+               href="{{appConfig.urlApi}}uploads\file\{{RequestFrm.getRawValue().ReqPartUI}}">
+                <i class="fa fa-tag"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-0 mb-1" >
+        <div class="card-header" style="padding-top: 10px;padding-left: 10px;padding-right: 10px;">
+          <span style="font-size: 1.3rem;">
+            <i class="fa fa-flag mr-1"></i>การตรวจสอบและพิจารณา
+          </span>
+        </div>
+        <div class="card-content m-2">
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">สถานะตรวจสอบ</span>
+              <select name="ChkDupState" id="ChkDupState" readonly class="form-control" formControlName="ChkDupState">
+                <option *ngFor="let D of OptDupState" value="{{D.id}}">{{D.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">รายละเอียดความซ้ำซ้อน</span>
+              <input type="text" readonly
+                name="ChkDupNote" id="ChkDupNote"
+                class="form-control text-center"
+                formControlName="ChkDupNote">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ชื่อผู้ตรวจรับคำร้อง</span>
+              <input type="text" readonly
+                name="ChkUsrReceipter" id="ChkUsrReceipter"
+                class="form-control text-center"
+                formControlName="ChkUsrReceipter">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ผลการพิจารณา</span>
+              <select name="ReqAprRes" id="ReqAprRes" readonly
+                class="form-control" formControlName="ReqAprRes">
+                <option *ngFor="let A of OptApproveState" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">เหตุผลประกอบผลพิจารณา</span>
+              <input type="text" readonly
+                name="ReqAprRemark" id="ReqAprRemark"
+                class="form-control text-center"
+                formControlName="ReqAprRemark">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">วันที่พิจารณา</span>
+              <input type="date" readonly
+                name="ReqAprDate" id="ReqAprDate"
+                class="form-control text-center"
+                formControlName="ReqAprDate">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-3 pr-1">
+              <span class="TxtCap">ความสำคัญและเร่งด่วน</span>
+              <select name="ReqImportance" id="ReqImportance" readonly
+                class="form-control" formControlName="ReqImportance">
+                <option value="-">รอพิจารณา</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="col-md-6 pl-1 pr-1">
+              <span class="TxtCap">ผู้จัดทำรายงาน</span>
+              <input type="text" readonly
+                name="ReqProgrammer" id="ReqProgrammer"
+                class="form-control text-center"
+                formControlName="ReqProgrammer">
+            </div>
+            <div class="col-md-3 pl-1 pr-1">
+              <span class="TxtCap">ระยะเวลาจัดสร้าง(วันทำงาน)</span>
+              <input type="number" readonly
+                name="ReqCreateTime" id="ReqCreateTime"
+                class="form-control text-center"
+                formControlName="ReqCreateTime">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="col-8 text-left">
+      &nbsp;
+    </div>
+    <div class="col-2 text-right">
+      &nbsp;
+    </div>
+    <div class="col-2 text-right">
+      <button
+        type="button"
+        (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-block">
+        <i class="icon icon-close mr-1"></i>
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>

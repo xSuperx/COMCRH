@@ -1,0 +1,589 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <ngb-tabset style="padding: 5px;">
+        <ngb-tab *ngIf="UsPosCode=='PM'">
+          <ng-template ngbTabTitle>
+            <i class="icon icon-layers"></i>&nbsp;
+            <span class="font-medium-1 text-success">โปรแกรมและโมดูล</span>
+          </ng-template>
+          <ng-template ngbTabContent>
+            <div class="row">
+
+              <div class="col-6">
+                <div *ngIf="ShowFormHead==1" class="card">
+                  <div class="row">
+                    <input type="hidden" name="AcHDevUser" id="AcHDevUser" [(ngModel)]="PrmModel.AcHDevUser" #AcHDevUser="ngModel">
+                    <input type="hidden" name="AcHGroup" id="AcHGroup" [(ngModel)]="PrmModel.AcHGroup" #AcHGroup="ngModel">
+                    <div class="col-sm-6">
+                      <label for="AcHCode">รหัส</label>
+                      <input type="text" class="form-control text-center" name="AcHCode" id="AcHCode"
+                        readonly [(ngModel)]="PrmModel.AcHCode" #AcHCode="ngModel">
+                    </div>
+                    <div class="col-sm-6">
+                      <label for="AcHUses">สถานะใช้งาน</label>
+                      <ng-select
+                        id="AcHUses" name="AcHUses" [items]="appConfig.UseState"
+                        bindValue="id" bindLabel="name" placeholder="เลือกสถานะ"
+                        [(ngModel)]="PrmModel.AcHUses">
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <label for="AcHName">ชื่อระบบ/ชื่อโปรแกรม</label>
+                      <input type="text" class="form-control text-center" name="AcHName" id="AcHName"
+                        [(ngModel)]="PrmModel.AcHName" #AcHName="ngModel">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12" style="padding-top: 10px;">
+                      <div class="row">
+                        <div class="col-sm-3">&nbsp;</div>
+                        <div class="col-sm-3">
+                          <button type="button" (click)="SaveSystemData()"
+                            class="btn btn-block btn-raised btn-primary">
+                            <i class="icon icon-check"></i>&nbsp;บันทึก
+                          </button>
+                        </div>
+                        <div class="col-sm-3">
+                          <button type="button" (click)="CloseFormSystem();"
+                            class="btn btn-block btn-raised btn-warning">
+                            <i class="icon icon-close"></i>&nbsp;ยกเลิก
+                          </button>
+                        </div>
+                        <div class="col-sm-3">&nbsp;</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr class="bg-info">
+                        <th class="text-center align-middle" width="70%">ระบบหรือโปรแกรม</th>
+                        <th class="text-center align-middle" width="10%">โมดูล</th>
+                        <th class="text-center align-middle" width="10%">แก้ไข</th>
+                        <th class="text-center align-middle" width="10%">
+                          <button type="button" (click)="FormSystemData('N',0);"
+                            style="margin: 0rem;" class="btn btn-block btn-raised btn-warning">
+                            <i class="ft-plus-square"></i>
+                          </button>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let P of DbProgram | slice:(PagesHead-1)*RowPerPage:(PagesHead-1)*RowPerPage+RowPerPage; let p=index">
+                        <td class="text-left align-middle">
+                          <span class="text-primary" title="{{P.AcHCode}}">&nbsp;
+                            {{(p+1+((RowPerPage*PagesHead)-RowPerPage))}}.&nbsp;{{P.AcHName}}
+                          </span>
+                        </td>
+                        <td class="text-center align-middle">
+                          <span class="text-primary">
+                            {{P.PrgCnt}}
+                          </span>
+                        </td>
+                        <td>
+                          <button type="button" title="แก้ไขข้อมูล"
+                            (click)="FormSystemData('E',P)" style="margin: 0rem;"
+                            class="btn btn-sm btn-block btn-raised btn-info">
+                            <i class="ft-settings"></i>
+                          </button>
+                        </td>
+                        <td>
+                          <button type="button" title="เลือกรายการ" style="margin: 0rem;"
+                            class="btn btn-sm btn-block btn-raised btn-primary"
+                            (click)="GetModuleByPrmCode(P.AcHSub,P.AcHName,UsCode);">
+                            <i class="ft-fast-forward"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbProgram.length==0">
+                        <td colspan="4" class="text-center text-info bg-wanning font-medium-1 align-middle">
+                          ไม่พบข้อมูลระบบหรือโปรแกรมสำหรับ {{UsFName}}
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="5">
+                          <div class="row">
+                            <div class="col-sm-12 text-center">
+                              <ngb-pagination
+                                [(page)]="PagesHead"
+                                [pageSize]="RowPerPage"
+                                class="d-flex justify-content-center"
+                                [collectionSize]="DbProgram.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div *ngIf="ShowFormSubs==1" class="card">
+                  <div class="row">
+                    <input type="hidden" name="AcDDevUser" id="AcDDevUser" [(ngModel)]="MduModel.AcDDevUser" #AcDDevUser="ngModel">
+                    <input type="hidden" name="AcHCode" id="AcHCode" [(ngModel)]="MduModel.AcHCode" #AcHCode="ngModel">
+                    <div class="col-sm-6">
+                      <label for="AcDCode">รหัส</label>
+                      <input type="text" class="form-control text-center" name="AcDCode" id="AcDCode"
+                        readonly [(ngModel)]="MduModel.AcDCode" #AcDCode="ngModel">
+                    </div>
+                    <div class="col-sm-6">
+                      <label for="AcDUses">สถานะใช้งาน</label>
+                      <ng-select
+                        id="AcDUses" name="AcDUses" [items]="appConfig.UseState"
+                        bindValue="id" bindLabel="name" placeholder="เลือกสถานะ"
+                        [(ngModel)]="MduModel.AcDUses">
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <label for="AcDName">ชื่อระบบย่อย/ชื่อโมดูล</label>
+                      <input type="text" class="form-control text-center" name="AcDName" id="AcDName"
+                        [(ngModel)]="MduModel.AcDName" #AcDName="ngModel">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12" style="padding-top: 10px;">
+                      <div class="row">
+                        <div class="col-sm-3">&nbsp;</div>
+                        <div class="col-sm-3">
+                          <button type="button" (click)="SaveModuleData()"
+                            class="btn btn-block btn-raised btn-primary">
+                            <i class="icon icon-check"></i>&nbsp;บันทึก
+                          </button>
+                        </div>
+                        <div class="col-sm-3">
+                          <button type="button" (click)="CloseFormModule();"
+                            class="btn btn-block btn-raised btn-warning">
+                            <i class="icon icon-close"></i>&nbsp;ยกเลิก
+                          </button>
+                        </div>
+                        <div class="col-sm-3">&nbsp;</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <table class="table table-bordered table-striped table-sm">
+                    <thead>
+                      <tr class="bg-warning">
+                        <th class="text-center align-middle">
+                          <span *ngIf="DbProgram.length==0">ไม่พบระบบย่อย/โมดูล !!</span>
+                          <span *ngIf="DbProgram.length!=0">ระบบย่อย/โมดูล: {{SelectProgram}}</span>
+                        </th>
+                        <th class="text-center align-middle">
+                          <button type="button" (click)="FormModuleData('N',0);"
+                            style="margin: 0rem;" class="btn btn-block btn-raised btn-info">
+                            <i class="ft-plus-square"></i>
+                          </button>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let M of DbModules | slice:(PagesSubs-1)*RowPerPage:(PagesSubs-1)*RowPerPage+RowPerPage; let m=index">
+                        <td class="text-left align-middle">
+                          <span class="text-info" title="{{M.AcDCode}}">
+                            {{(m+1+((RowPerPage*PagesSubs)-RowPerPage))}}.&nbsp;{{M.AcDName}}
+                          </span>
+                        </td>
+                        <td class="align-middle">
+                          <button type="button" title="แก้ไขข้อมูล"
+                            (click)="FormModuleData('E',M);" style="margin: 0rem;"
+                            class="btn btn-sm btn-block btn-raised btn-info">
+                            <i class="icon icon-settings"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="DbModules.length==0">
+                        <td colspan="2" class="text-center text-info bg-wanning font-medium-1 align-middle">
+                          ไม่พบข้อมูลระบบย่อยหรือโมดูล
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="2">
+                          <div class="row">
+                            <div class="col-sm-12 text-center">
+                              <ngb-pagination
+                                [(page)]="PagesSubs"
+                                [pageSize]="RowPerPage"
+                                class="d-flex justify-content-center"
+                                [collectionSize]="DbModules.length">
+                              </ngb-pagination>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab *ngIf="UsPosCode=='PM'">
+          <ng-template ngbTabTitle>
+            <i class="icon icon-star"></i>&nbsp;
+            <span class="font-medium-1 text-muted">ข้อมูลกิจกรรมบริการ</span>
+          </ng-template>
+          <ng-template ngbTabContent>
+            <div class="row">
+              <table class="table table-bordered table-striped table-sm">
+                <thead>
+                  <tr class="bg-warning">
+                    <th class="text-center text-muted">กิจกรรมบริการ</th>
+                    <th class="text-center text-muted">ตำแหน่งงาน</th>
+                    <th class="text-center text-muted">ประกันเวลา-P4P</th>
+                    <th class="text-center text-muted">ประกันเวลา-SLA</th>
+                    <th class="text-center text-muted">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let A of DbActivities | slice:(PagesMain-1)*RowPerPage:(PagesMain-1)*RowPerPage+RowPerPage; let a=index">
+                    <td class="text-left align-middle">
+                      <span class="text-muted">&nbsp;{{a+((RowPerPage*PagesMain)-RowPerPage)+1}}.&nbsp;{{A.ActName}}</span>
+                    </td>
+                    <td class="text-left align-middle">
+                      <span class="text-info">&nbsp;{{A.EmpTypeName}}</span>
+                    </td>
+                    <td class="text-left align-middle">
+                      <span class="text-warning">&nbsp;{{A.TimeP4P}}&nbsp;{{A.TimeP4PUnit}}</span>
+                    </td>
+                    <td class="text-left align-middle">
+                      <span class="text-danger">&nbsp;{{A.TimeInsure}}&nbsp;{{A.TimeInsureUnit}}</span>
+                    </td>
+                    <td>
+                      <button type="button" [disabled]="UsAdmin!='Y'" title="แก้ไขปรับปรุงข้อมูล"
+                        class="btn btn-sm btn-block btn-raised btn-primary"
+                        (click)="UpdateActivitie(A,ActivitieForm);">
+                        <i class="icon icon-settings"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5">
+                      <div class="row">
+                        <div class="col-sm-12 text-center">
+                          <ngb-pagination
+                            [(page)]="PagesMain"
+                            [pageSize]="RowPerPage"
+                            class="d-flex justify-content-center"
+                            [collectionSize]="DbActivities.length">
+                          </ngb-pagination>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+          <ng-template ngbTabTitle>
+            <i class="icon icon-earphones-alt"></i>&nbsp;
+            <span class="font-medium-1 text-info">หน่วยงานและเบอร์โทรศัพท์</span>
+          </ng-template>
+          <ng-template ngbTabContent>
+            <div class="row">
+              <table class="table table-bordered table-striped table-sm">
+                <thead>
+                  <tr class="bg-warning">
+                    <th class="text-center">ลำดับ</th>
+                    <th class="text-center">รายชื่อหน่วยงาน</th>
+                    <th class="text-center">หัวหน้าหน่วยงาน</th>
+                    <th class="text-center">เบอร์ภายใน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let P of DbDeptPhone | slice:(PagesMain-1)*RowPerPage:(PagesMain-1)*RowPerPage+RowPerPage; let p=index">
+                    <td class="text-center align-middle">
+                      <span class="text-muted">{{p+((RowPerPage*PagesMain)-RowPerPage)+1}}</span>
+                    </td>
+                    <td class="text-left align-middle">
+                      <span class="text-warning">{{P.ORG_DESC}}</span>
+                    </td>
+                    <td class="text-left align-middle">
+                      <span class="text-info">{{P.HEAD_EMP}}</span>
+                    </td>
+                    <td>
+                      <input type="text" class="form-control text-center" [value]="P.Phone"
+                        name="edptphne{{p+((RowPerPage*PagesMain)-RowPerPage)}}"
+                        id="edptphne{{p+((RowPerPage*PagesMain)-RowPerPage)}}"
+                        (change)="UpdateDeptPhone( p+((RowPerPage*PagesMain)-RowPerPage) )">
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="4">
+                      <div class="row">
+                        <div class="col-sm-12 text-center">
+                          <ngb-pagination
+                            [(page)]="PagesMain"
+                            [pageSize]="RowPerPage"
+                            class="d-flex justify-content-center"
+                            [collectionSize]="DbDeptPhone.length">
+                          </ngb-pagination>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
+  </div>
+</div>
+
+<ng-template #ActivitieForm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-book-open"></i>&nbsp;
+      ข้อมูลกิจกรรมบริการ
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ngb-tabset>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <i class="icon-notebook"></i>&nbsp;
+          <b>กิจกรรมบริการ</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <div class="form-body">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="ActCode">เลขรายการ</label>
+                  <input id="ActCode" name="ActCode" class="form-control border-success text-center"
+                    type="text" readonly [(ngModel)]="ActModel.ActCode" #ActCode="ngModel">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="ActType">ประเภทกิจกรรม</label>
+                  <ng-select
+                    id="ActType" name="ActType" [items]="DbActType"
+                    bindValue="id" bindLabel="name" placeholder="เลือกประเภทกิจกรรม"
+                    [(ngModel)]="ActModel.ActType">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="form-group">
+                  <label for="EmpType">ประเภทบุคลากร</label>
+                  <ng-select
+                    id="EmpType" name="EmpType" [items]="DbEmpType"
+                    bindValue="id" bindLabel="name" placeholder="เลือกประเภทบุคลากร"
+                    [(ngModel)]="ActModel.EmpType">
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="ActName">ชื่อกิจกรรม</label>
+                  <input id="ActName" name="ActName" class="form-control border-success"
+                  maxlength="100" type="text" [(ngModel)]="ActModel.ActName" #ActName="ngModel">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="ActMeans">ความหมายกิจกรรม</label>
+                  <input id="ActMeans" name="ActMeans" class="form-control border-success"
+                  maxlength="200" type="text" [(ngModel)]="ActModel.ActMeans" #ActMeans="ngModel">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="TimeP4P">P4P-เวลา</label>
+                  <input id="TimeP4P" name="TimeP4P" type="number"
+                    class="form-control border-success text-center" maxlength="5"
+                    [(ngModel)]="ActModel.TimeP4P" #TimeP4P="ngModel">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="TimeP4PUnit">P4P-หน่วยนับ</label>
+                  <input id="TimeP4PUnit" name="TimeP4PUnit" type="text"
+                    class="form-control border-success text-center" maxlength="20"
+                    [(ngModel)]="ActModel.TimeP4PUnit" #TimeP4PUnit="ngModel">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="TimeInsure">SLA-เวลา</label>
+                  <input id="TimeInsure" name="TimeInsure" type="number"
+                    class="form-control border-success text-center" maxlength="5"
+                    [(ngModel)]="ActModel.TimeInsure" #TimeInsure="ngModel">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="TimeInsureUnit">SLA-หน่วยนับ</label>
+                  <input id="TimeInsureUnit" name="TimeInsureUnit" type="text"
+                    class="form-control border-success text-center" maxlength="20"
+                    [(ngModel)]="ActModel.TimeInsureUnit" #TimeInsureUnit="ngModel">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="ActUses">สถานะใช้งาน</label>
+                  <ng-select
+                    id="ActUses" name="ActUses" [items]="LstUseFlag"
+                    bindValue="id" bindLabel="name" placeholder="เลือกสถานะใช้งาน"
+                    [(ngModel)]="ActModel.ActUses">
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-8 text-rigth">
+                <label>&nbsp;</label><br>
+                <button type="button" (click)="SaveUpdateActivitie();"
+                  class="btn btn-raised btn-primary">
+                  <i class="icon icon-check"></i>&nbsp;
+                  <span *ngIf="ActModel.SevAction=='N'">บันทึกข้อมูลกิจกรรม</span>
+                  <span *ngIf="ActModel.SevAction=='E'">ปรับปรุงข้อมูลกิจกรรม</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <i class="icon-book-open"></i>&nbsp;
+          <b>กิจกรรมรองและกิจกรรมย่อย</b>
+        </ng-template>
+        <ng-template ngbTabContent>
+          <div class="row">
+            <div class="col-sm-6">
+              <table class="table table-bordered table-striped table-sm">
+                <thead>
+                  <tr class="bg-info">
+                    <th class="text-center">กิจกรรมรอง รหัส: {{SelectActHead}}</th>
+                    <th class="text-center">เลือก</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let H of DbActionH | slice:(PagesHead-1)*RowPerPage:(PagesHead-1)*RowPerPage+RowPerPage; let h=index">
+                    <td class="text-left align-middle">
+                      <span class="text-info">
+                        {{(h+1+((RowPerPage*PagesHead)-RowPerPage))}}.&nbsp;{{H.AcHName}}
+                      </span>
+                    </td>
+                    <td>
+                      <!--
+                      <button type="button" title="แก้ไขข้อมูล"
+                        class="btn btn-sm btn-raised btn-warning" >
+                        <i class="icon icon-settings"></i>
+                      </button>&nbsp;
+                      -->
+                      <button type="button" title="เลือกรายการ"
+                        class="btn btn-sm btn-raised btn-success"
+                        (click)="GetActionDByActCodeUsCode(H.AcHSub);">
+                        <i class="icon icon-control-forward"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5">
+                      <div class="row">
+                        <div class="col-sm-12 text-center">
+                          <ngb-pagination
+                            [(page)]="PagesHead"
+                            [pageSize]="RowPerPage"
+                            class="d-flex justify-content-center"
+                            [collectionSize]="DbActivities.length">
+                          </ngb-pagination>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="col-sm-6">
+              <table class="table table-bordered table-striped table-sm">
+                <thead>
+                  <tr class="bg-warning">
+                    <th class="text-center">กิจกรรมย่อย รหัส: {{SelectActSubs}}</th>
+                    <th class="text-center">เลือก</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let D of DbActionD | slice:(PagesSubs-1)*RowPerPage:(PagesSubs-1)*RowPerPage+RowPerPage; let d=index">
+                    <td class="text-left align-middle">
+                      <span class="text-info">
+                        {{(d+1+((RowPerPage*PagesSubs)-RowPerPage))}}.&nbsp;{{D.AcDName}}
+                      </span>
+                    </td>
+                    <td>
+                      <!--
+                      <button type="button" title="แก้ไขข้อมูล"
+                        class="btn btn-sm btn-block btn-raised btn-warning">
+                        <i class="icon icon-settings"></i>
+                      </button>
+                      -->
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="2">
+                      <div class="row">
+                        <div class="col-sm-12 text-center">
+                          <ngb-pagination
+                            [(page)]="PagesSubs"
+                            [pageSize]="RowPerPage"
+                            class="d-flex justify-content-center"
+                            [collectionSize]="DbActivities.length">
+                          </ngb-pagination>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="c('Cancel-click')"
+      class="btn btn-raised btn-danger btn-outline-dark">
+      <i class="icon icon-close"></i>&nbsp;
+      ยกเลิก - ปิดฟอร์ม
+    </button>
+  </div>
+</ng-template>

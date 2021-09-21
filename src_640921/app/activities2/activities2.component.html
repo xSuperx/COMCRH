@@ -1,0 +1,163 @@
+<!-- <ngx-spinner></ngx-spinner> -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="ft ft-calendar"></i> ข้อมูลบันทึกกิจกรรมประจำวัน</h3>
+      </div>
+      <div class="card-content">
+        <form class="form" action="">
+          <div class="form-body">
+            <div class="col-sm-12">
+              <div class="row">
+                <label class="searchdate text-right">วันที่</label>
+                <form #SearchForm="ngForm" class="form-inline">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input ngbDatepicker class="form-control round"
+                        id="dt" name="dt" [(ngModel)]="SearchDate" #dt="ngbDatepicker"
+                        (ngModelChange)="OnChangeDatePicker($event)"/>
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary btn-success round"
+                          (click)="dt.toggle();" type="button">
+                          <i class="icon icon-calendar"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                &nbsp;
+                <button type="button" (click)="GetDbNotifiedByDate()"
+                  class="btn btn-raised btn-info round">
+                  <i class="icon icon-magnifier"></i>&nbsp;ค้นหา
+                </button>
+                &nbsp; &nbsp;
+                <span *ngIf="!CheckIsHoliday">
+                  <button type="button" class="btn btn-raised btn-success round"
+                    (click)="t.select('tab-activitie'); NewActivitie(ActivitieForm)">
+                    <i class="ft ft-slack"></i>&nbsp;เพิ่มกิจกรรมประจำวัน
+                  </button>
+                </span>
+                <span *ngIf="CheckIsHoliday" style="font-weight: bold; color: red;">
+                  ระบบงดการบันทึกกิจกรรมใดๆ ในช่วงวันหยุดและนอกเวลาราชการ..!!
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div style="padding: 5px;">
+
+          <div class="row">
+            <table class="table table-bordered table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>กิจกรรม</th>
+                  <th>รายละเอียด</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let D of DbListDaily|
+                  slice:(NotiPages-1)*RowPerPage:(NotiPages-1)*RowPerPage+RowPerPage">
+                  <td class="text-center">
+                    <span *ngIf="D.SevType == 'A'">
+                      <img
+                        src="assets/img/ActActivity.png"
+                        style="height: 60px;"
+                        title="{{ D.SevTypeTXT }}"
+                        alt="{{ D.SevTypeTXT }}"
+                      />
+                    </span>
+                    <span *ngIf="D.SevType == 'S'">
+                      <img
+                        src="assets/img/ActService.jpg"
+                        style="height: 60px;"
+                        title="{{ D.SevTypeTXT }}"
+                        alt="{{ D.SevTypeTXT }}"
+                      />
+                    </span>
+                  </td>
+                  <td class="text-left">
+                    <!-- <span class="TxtCap">วันที่:</span> -->
+                    <!-- <span class="TxtValue">{{D.SevCode | Custom:"fDateTime2"}}</span> -->
+                    <!-- <span class="TxtValue">{{D.SevDateSave | Custom: "fDate"}}</span> -->
+                    <span class="TxtCap">ช่วงเวลา:</span>
+                    <span class="TxtValue">{{ D.SevTimeAtDept }}-{{ D.SevTimeDoFinish }}</span>
+                    <span class="TxtCap">เวลารวม:</span>
+                    <span class="TxtValue">{{ D.SevTimeTotal }}</span>
+                    <span class="TxtCap">นาที</span>
+                    <!-- <span class="TxtCap">กิจกรรม:</span><span class="TxtValue">{{D.SevTypeTXT}}</span> -->
+                    <span class="TxtCap">หน่วยงานประสาน:</span>
+                    <span class="TxtValue">{{ D.SevReqDeptName }}</span>
+                    <span class="TxtCap">ผู้ประสาน:</span>
+                    <span class="TxtValue">{{ D.SevReqUser }}</span>
+                    <span class="TxtCap">โทรกลับ:</span>
+                    <span class="TxtValue">{{ D.SevReqCallBack }}</span>
+                    <span class="TxtCap">ผู้บันทึก:</span>
+                    <span class="TxtValue">{{ D.UserMendName }}</span>
+                    <br/>
+                    <span class="TxtCap">รายละเอียดกิจกรรม:</span>
+                    <span class="TxtValue text-danger">{{ D.SevReqMend }}</span>
+                    <br/>
+                    <span class="TxtCap">กิจกรรมบริการ:</span>
+                    <span class="TxtValue">{{ D.ActGrpName }}</span>
+                    <span class="TxtValue">, {{ D.ActHName }}</span>
+                    <span class="TxtValue">, {{ D.ActDName }}</span>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-raised btn-info" title="ดูข้อมูลกิจกรรม"
+                      (click)="ShowActivitieInfo(ActivitieInfo, D)">
+                      <i class="icon icon-screen-tablet"></i>
+                    </button>
+                    <span *ngIf="D.SevType == 'A'">
+                      &nbsp;
+                      <button type="button" class="btn btn-raised btn-primary"
+                        title="แก้ไขข้อมูลกิจกรรม" (click)="SetActivitieUpdate2(D, ActivitieForm)">
+                        <i class="icon icon-note"></i>
+                      </button>
+                    </span>
+                    <span *ngIf="D.SevType == 'S'">
+                      &nbsp;
+                      <button type="button" class="btn btn-raised btn-warning"
+                        title="แก้ไขข้อมูลปัญหาประจำวัน" (click)="SetServiceUpdate2(D, ServiceForm)">
+                        <i class="ft ft-hash"></i>
+                      </button>
+                    </span> &nbsp;
+                    <button type="button" class="btn btn-raised btn-danger"
+                      title="ลบข้อมูลกิจกรรม" (click)="DeleteActivitie(D)">
+                      <i class="icon icon-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="DbListDaily.length == 0">
+                    <td colspan="3" class="text-center text-danger font-medium-2">
+                        ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
+                    </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3">
+                    <div class="row">
+                      <div class="col-sm-6 text-left">
+                          <span class="TxtCap">จำนวนทั้งหมด </span>
+                          <span class="TxtValue">{{DbListDaily.length}}</span>
+                          <span class="TxtCap">รายการ</span>
+                      </div>
+                      <div class="col-sm-6">
+                          <ngb-pagination [(page)]="NotiPages" [pageSize]="RowPerPage" class="d-flex justify-content-end" [collectionSize]="DbListDaily.length">
+                          </ngb-pagination>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

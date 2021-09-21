@@ -1,0 +1,43 @@
+<!--Login Page Starts-->
+  <section id="login">
+    <div class="container-fluid">
+      <div class="row" style="margin-top: 10%">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+          <div class="card">
+            <div class="card-content">
+              <div class="card-body login-img">
+                <div class="row m-0">
+                  <div class="col-lg-6 d-lg-block d-none py-2 px-3 text-center align-middle">
+                    <img src="assets/img/gallery/login.png" class="img-fluid mt-5" width="400" height="230"/>
+                  </div>
+                  <div class="col-lg-6 col-md-12 bg-white px-4 pt-3">
+                    <h4 class="card-title mb-2">เข้าสู่ระบบ/ตรวจสอบสิทธิ์ผู้ใช้งาน</h4>
+                    <p class="card-text mb-3">
+                      ยินดีต้อนรับ. โปรดเข้าสู่ระบบด้วยรหัสใช้งานอินเตอร์เน็ต
+                    </p>
+                    <form role="form" name="form" #f="ngForm" (ngSubmit)="onUserLogin(f)" novalidate>
+                      <input type="text" class="form-control mb-3" placeholder="รหัสผู้ใช้งาน" name="xUser" [(ngModel)]="model.xUser" #xUser="ngModel" required />
+                      <input type="password" class="form-control mb-3" placeholder="รหัสผ่าน" name="xPass" [(ngModel)]="model.xPass" #xPass="ngModel" required />
+                      <div *ngIf="model.LogIncheck!=''"
+                        class="col-12 d-flex align-items-center justify-content-center"
+                        style="background-color:rgba(230, 219, 219, 0.623); margin-bottom: 10px;">
+                        <span class="text-alert">{{model.LogIncheck}}</span>
+                      </div>
+                      <div class="fg-actions d-flex justify-content-center">
+                        <div class="recover-pass">
+                          <button type="submit" class="btn btn-primary">
+                            ตรวจสอบสิทธิ์ใช้งาน
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<!--Login Page Ends-->

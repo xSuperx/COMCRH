@@ -1,0 +1,154 @@
+<div class="row pt-0 p-1">
+  <div class="col-md-12 p-0">
+    <div class="card">
+      <div class="card-header p-2">
+        <div class="row">
+          <div class="col-md-5 mt-2 text-left">
+            <h5>
+              <i class="ft ft-message-circle"></i>
+              ข้อเสนอแนะ คำแนะนำ เพื่อพัฒนา
+            </h5>
+          </div>
+          <div class="col-md-7 mt-2">
+            <div class="row">
+              <div class="col-md-9 text-center">
+                <span *ngIf="DbFeedback.length!=0">
+                  <ngb-pagination
+                    [(page)]="NbrPages"
+                    [pageSize]="RowPerPage"
+                    class="d-flex justify-content-end"
+                    [collectionSize]="DbFeedback.length">
+                  </ngb-pagination>
+                </span>
+              </div>
+              <div class="col-md-3">
+                <button type="button"
+                  class="btn btn-raised btn-primary btn-block round"
+                  (click)="NewFeedback(FeedbackForm)">
+                  <i class="ft ft-file-plus"></i>&nbsp;เพิ่มคำแนะนำ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+
+        <div class="row m-1">
+          <table class="table table-bordered table-striped table-sm">
+            <thead><th class="text-center">รายการคำแนะนำ</th></thead>
+            <tbody>
+              <tr *ngFor="let N of DbFeedback |
+                slice:(NbrPages-1)*RowPerPage:(NbrPages-1)*RowPerPage+RowPerPage;">
+                <td class="text-left">
+                  <span class="TxtCap2">ข้อเสนอแนะ: </span>
+                  <span class="TxtTitle">{{N.FdText}}</span><br>
+                  <span class="TxtCap2">เลขรายการ: </span>
+                  <span class="TxtCapHead">{{N.FdID}}</span>
+                  <span class="TxtCap2">ระบบ/โปรแกรม: </span>
+                  <span class="TxtCapHead">{{N.FdApp}}</span>
+                  <span class="TxtCap2">วันเวลาบันทึก: </span>
+                  <span class="TxtCapHead">{{N.FdDatetime}}</span>
+                </td>
+              </tr>
+              <tr *ngIf="DbFeedback.length == 0">
+                <td colspan="3" class="text-center text-danger font-medium-2">
+                  ไม่พบรายการคำแนะนำ/ข้อเสนอแนะ..!!
+                </td>
+              </tr>
+            </tbody>
+            <!--
+            <tfoot>
+              <tr>
+                <td colspan="6">
+                  <div class="row">
+                    <div class="col-sm-12 text-left">
+                      <span class="TxtCap">จำนวนทั้งหมด </span>
+                      <span class="TxtValue">{{DbListNotified.length}}</span>
+                      <span class="TxtCap">รายการ</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+            -->
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #FeedbackForm let-c="close" let-d="dismiss">
+  <div class="modal-header bg-warning">
+    <h5 class="modal-title" id="modal-basic-title">
+      <i class="icon icon-speech mr-1"></i>
+      ข้อเสนอแนะ คำแนะนำ เพื่อพัฒนา/ปรับปรุงระบบใหม่
+    </h5>
+    <button type="button" class="close"
+      aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="FeedbackFrm">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="row">
+            <div class="pl-2 mt-1">เลขรายการ</div>
+            <div class="col-md-12 text-left">
+              <input type="text" name="FdID" id="FdID" readonly
+              class="form-control text-center" formControlName="FdID">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="pl-2 mt-1">ระบบ/โปรแกรม</div>
+            <div class="col-md-12 text-left">
+              <select name="FdApp" id="FdApp"
+                class="form-control" formControlName="FdApp">
+                <option *ngFor="let A of AppOpt" value="{{A.id}}">{{A.text}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="pl-2 mt-1">ข้อเสนอแนะ/คำแนะนำ</div>
+        <div class="col-md-12 text-left">
+          <textarea name="FdText" id="FdText"
+            class="form-control" rows="5"
+            formControlName="FdText">
+          </textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="pl-2 mt-1">ช่องทางตอบกลับ</div>
+        <div class="col-md-12 text-left">
+          <input type="text" name="FdReturn" id="FdReturn"
+            class="form-control text-left" formControlName="FdReturn">
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="col-6 text-left">&nbsp;
+      <span *ngIf="FeedbackFrm.invalid" class="TxtMyWay">
+        โปรดป้อนข้อมูลให้ครบทุกช่อง ..!!
+      </span>
+    </div>
+    <div class="col-6 text-right">
+      <button type="button" (click)="SaveFeedback()"
+        [disabled]="FeedbackFrm.invalid"
+        class="btn btn-raised btn-primary">
+        <i class="icon icon-check"></i>&nbsp; บันทึกคำแนะนำ
+      </button>
+      <button type="button" (click)="c('Cancel-click')"
+        class="btn btn-raised btn-danger btn-outline-dark">
+        <i class="icon icon-close"></i>&nbsp; ยกเลิก
+      </button>
+    </div>
+  </div>
+</ng-template>

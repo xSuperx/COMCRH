@@ -84,3 +84,30 @@
   height: 2rem;
   background-color: transparent !important ;
 }
+
+::ng-deep .PaggnationUL ul {
+  display: block;
+  list-style-type: disc;
+  margin-block-start: 5px;
+  margin-block-end: 5px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0px;
+}
+
+::ng-deep .ngx-pagination {
+  margin-left: 0px;
+  padding-left: 0px;
+  margin-bottom: 3px !important;
+}
+
+::ng-deep .ngb-pagination {
+  margin-left: 0px;
+  padding-left: 0px;
+  margin-bottom: 3px !important;
+}
+
+::ng-deep .my-class .modal-dialog {
+  max-width: 75%;
+  width: 60%;
+}

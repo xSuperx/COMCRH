@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbCalendar, NgbModal, NgbModalConfig, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbModal, NgbModalConfig, NgbDateStruct, NgbModalRef, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { AppConfig } from 'app/shared/configs/app-config';
-import { NgxSpinnerService } from 'ngx-spinner';
 import swal from 'sweetalert2';
 
 @Component({
@@ -20,13 +19,14 @@ export class Activities2Component implements OnInit {
     private calendar: NgbCalendar,
     private appConfig :AppConfig,
     private modalService :NgbModal,
-    // private spinner: NgxSpinnerService
   ){
     config.backdrop = 'static';
     config.keyboard = false;
-    setTimeout( () => { this.loadingIndicator = false; }, 1500 );
+    setTimeout(()=>{ this.loadingIndicator = false;},1500);
   }
 
+  Mr: NgbModalRef;
+  CloseResult: string;
   loadingIndicator :boolean = true;
   reorderable :boolean = true;
   SearchDate :NgbDateStruct;
@@ -37,8 +37,9 @@ export class Activities2Component implements OnInit {
   CheckIsHoliday: boolean = false;
   CheckIsHolidayOnForm: boolean = false;
   ActvPages = 1;
-  RowPerPage = 1;
+  RowPerPage = 10;
 
+  DbOptActTopic = [];
   DbListNotified = [];
   DbListDaily = [];
 
@@ -46,25 +47,62 @@ export class Activities2Component implements OnInit {
     ActCode: new FormControl('-', Validators.required),
     ActDate: new FormControl('-', Validators.required),
     ActUser: new FormControl('-', Validators.required),
+    ActUserName: new FormControl('-', Validators.required),
     ActUserType: new FormControl('-', Validators.required),
     ActTopic: new FormControl('-', Validators.required),
     ActJobs: new FormControl('-', Validators.required),
     ActBegin: new FormControl('-', Validators.required),
     ActEnd: new FormControl('-', Validators.required),
     ActTotal: new FormControl('-', Validators.required),
+    ActState: new FormControl('N', Validators.required),
   });
 
-  ngOnInit(){
-    // this.spinner.show();
-    this.SearchDate = this.calendar.getToday();
-    this.UsCode = localStorage.getItem( 'LgUserCode' );
-    this.UsFName = localStorage.getItem( 'LgUsrFullName' );
-    this.UsPosCode = localStorage.getItem( 'LgUsrPosCode' );
-    this.ActivitieFrm.patchValue({
-      ActUser : this.UsCode,
-      ActUserType : this.UsPosCode,
-    });
-    // setTimeout(()=>{this.spinner.hide();},300);
+  async ngOnInit(){
+    this.loadingIndicator = true;
+      this.SearchDate = this.calendar.getToday();
+      this.UsCode = localStorage.getItem( 'LgUserCode' );
+      this.UsFName = localStorage.getItem( 'LgUsrFullName' );
+      this.UsPosCode = localStorage.getItem( 'LgUsrPosCode' );
+      await this.ActivitieFrm.patchValue({
+        ActUser : this.UsCode,
+        ActUserName: this.UsFName,
+        ActUserType : this.UsPosCode,
+      });
+      // console.log( this.ActivitieFrm.getRawValue() );
+      await this.GetOptActTopic(this.UsPosCode);
+      await this.GetDailyByDate();
+    setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
+  }
+
+  GetDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  ShowContent(content) {
+    var option: NgbModalOptions = {
+      size: 'lg',
+      backdrop: 'static',
+      windowClass: 'my-class',
+    };
+    this.Mr = this.modalService.open(content, option);
+    this.Mr.result.then(
+      (result) => {
+        this.CloseResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.CloseResult = `Dismissed ${this.GetDismissReason(reason)}`;
+      }
+    );
+  }
+
+  CloseModal(){
+    this.Mr.dismiss('Close click');
   }
 
   CheckHoliday(){
@@ -133,6 +171,19 @@ export class Activities2Component implements OnInit {
     }
   }
 
+  GetOptActTopic(UserType:string){
+    this.http.get(
+      this.appConfig.urlApi +
+      "GetOptActTopic.php" +
+      "?ut=" + UserType
+    ).subscribe(
+      (data:any)=>{
+        this.DbOptActTopic = data;
+        // console.log( this.DbOptActTopic  );
+      }
+    )
+  }
+
   GetDailyByDate(){
     var zYear =""+this.SearchDate.year;
         zYear = zYear.substr(2, 2);
@@ -150,26 +201,6 @@ export class Activities2Component implements OnInit {
         this.DbListDaily = data;
         this.CheckIsHoliday = await this.CheckHoliday();
         this.CheckIsHolidayOnForm = this.CheckIsHoliday;
-        // console.log( this.DbListDaily );
-        // this.TimeSumry.TimeSum = 0;
-        // this.TimeSumry.TimeActn = 0;
-        // this.TimeSumry.TimeIncd = 0;
-        // this.TimeSumry.TimeDelp = 0;
-        // this.TimeSumry.Timeothr = 0;
-        // for(let index = 0; index < this.DbListDaily.length; index++){
-        //   var ServTime :number = parseInt(this.DbListDaily[index].SevTimeTotal);
-        //   this.TimeSumry.TimeSum = this.TimeSumry.TimeSum + ServTime;
-        //   if(this.DbListDaily[index].SevTypeHA=='Activitie'){
-        //     this.TimeSumry.TimeActn = this.TimeSumry.TimeActn + ServTime;
-        //   }else if(this.DbListDaily[index].SevTypeHA=='Incedent'){
-        //     this.TimeSumry.TimeIncd = this.TimeSumry.TimeIncd + ServTime;
-        //   }else if(this.DbListDaily[index].SevTypeHA=='Develop'){
-        //     this.TimeSumry.TimeDelp = this.TimeSumry.TimeDelp + ServTime;
-        //   }else{
-        //     this.TimeSumry.Timeothr = this.TimeSumry.Timeothr + ServTime;
-        //   }
-        // }
-        // console.log( this.TimeSumry );
       }
     )
   }
@@ -193,6 +224,46 @@ export class Activities2Component implements OnInit {
         await this.GetDailyByDate();
       }
     )
+  }
+
+  NewActivitie( content ){
+    const ServCode = this.appConfig.getCurDateTime2Db();
+    //console.log( ServCode );
+    this.ActivitieFrm.reset();
+    this.ActivitieFrm.patchValue({
+      ActCode : ServCode,
+      ActDate : '22/09/2021',
+      ActUser : this.UsCode,
+      ActUserName: this.UsFName,
+      ActUserType : this.UsPosCode,
+      ActTopic : '',
+      ActJobs : '',
+      ActBegin : '',
+      ActEnd : '',
+      ActTotal : '',
+      ActState : 'N'
+    });
+    console.log( this.ActivitieFrm.getRawValue() );
+    this.ShowContent( content );
+  }
+
+  SaveActivitie(){
+    this.loadingIndicator = true;
+    // console.log( this.ActivitieFrm.getRawValue() );
+    setTimeout(()=>{ this.loadingIndicator = true; }, 1000 );
+    this.http.post(
+      this.appConfig.urlApi +
+      "SaveDbActivitie.php",
+      { prm: this.ActivitieFrm.getRawValue() },
+      { responseType:"text" }
+    ).subscribe(
+      async ()=>{
+        await this.GetDailyByDate();
+        this.ActivitieFrm.reset();
+        setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
+        this.modalService.dismissAll( 'ServiceForm' );
+      }
+    );
   }
 
 }

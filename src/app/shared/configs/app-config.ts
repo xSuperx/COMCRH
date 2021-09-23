@@ -10,6 +10,7 @@ export class AppConfig
   urlImage = "http://172.16.1.32:80/ComAPI/uploads/timthumb.php?src=api/uploads/";
   urlSpecFile = "http://172.16.1.32:80/ComAPI/uploads/file/";
   reportUrl = "http://172.16.1.32:80/ComAPI/reports/";
+  WorkTimePerDay = 420;
 
   getYear( value: any ){
     // console.log(value);

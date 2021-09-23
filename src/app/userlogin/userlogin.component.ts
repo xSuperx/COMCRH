@@ -12,21 +12,21 @@ import { Router, ActivatedRoute } from "@angular/router";
 export class UserloginComponent implements OnInit {
   LoginSub: any;
   islogin: boolean;
-
-  constructor( private AthService :AuthService,
-               private router :Router,
-               private authService :AuthService
-             ){}
-  model:any = { xUser:'', xPass:'', LogIncheck:'' };
   LoginState :boolean;
+  model:any = { xUser:'', xPass:'', LogIncheck:'' };
 
-  ngOnInit() {
+  constructor(
+    private AthService :AuthService,
+    private router :Router,
+    private authService :AuthService
+  ){}
+
+  ngOnInit(){
     this.LoginSub = this.authService.SubjectLoginChangeEmitted$.subscribe(
       islogin =>{
         this.islogin = islogin;
         // console.log(this.islogin);
-        if( this.islogin )
-        {
+        if( this.islogin ){
           //console.log( localStorage );
           var ChkUsName = localStorage.getItem( 'LgUsrFullName' );
           var ChkUsPos = localStorage.getItem( 'LgUsrPosCode' );

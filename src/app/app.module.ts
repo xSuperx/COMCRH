@@ -25,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileUploadModule } from 'ng2-file-upload';
 import { ReqanswerComponent } from './reqanswer/reqanswer.component';
 import { Activities2Component } from './activities2/activities2.component';
+import { DoServiceComponent } from './do-service/do-service.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true, wheelPropagation: false,
@@ -43,7 +44,8 @@ export function createTranslateLoader(http: HttpClient){
     ReqcomComponent,
     ReqrepComponent,
     ReqanswerComponent,
-    Activities2Component
+    Activities2Component,
+    DoServiceComponent
   ],
   imports: [
     BrowserAnimationsModule,

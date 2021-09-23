@@ -22,6 +22,7 @@ export class AuthService {
 
   signinUser( xUser: string, xPass: string ){
     if( xUser!='' && xPass!='' ){
+      xUser = xUser.toLowerCase();
       this.http.post( this.Config.urlApi + "authen.php", { username: xUser, password: xPass }
       //this.http.get( this.Config.urlApi + "authen.php?us="+xUser+"&pw="+xPass
       ).subscribe(

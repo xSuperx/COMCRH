@@ -3,8 +3,8 @@
     <div class="card">
       <div class="card-header pt-2">
         <h4>
-          <i class="ft ft-clipboard mr-1"></i>
-          บันทึกกิจกรรมประจำวัน
+          <i class="ft ft-cloud-lightning mr-1"></i>
+          บันทึกการแก้ปัญหาประจำวัน
         </h4>
       </div>
       <div class="card-content p-0">
@@ -36,7 +36,7 @@
               <span *ngIf="!CheckIsHoliday">
                 <button type="button"
                   class="btn btn-raised btn-primary round"
-                  (click)="NewActivitie(ActivitieForm)">
+                  (click)="NewService(ActivitieForm)">
                   <i class="ft ft-slack mr-1"></i>เพิ่ม
                 </button>
               </span>
@@ -50,7 +50,7 @@
                 class="row p-0 m-0">
                 <div class="col-sm-7 pb-0 text-left">
                   <span class="TxtCap">รวม </span>
-                  <span class="TxtValue">{{DbListDaily.length}}</span>
+                  <span class="TxtValue">{{DbServDaily.length}}</span>
                   <span class="TxtCap">รายการ /</span>
                   <span *ngIf="WorkTotal<this.WorkPerDay" class="m-1 bg-danger">
                     <span class="mr-2" style="color: blue;">เวลารวม</span>
@@ -65,9 +65,9 @@
                 </div>
                 <div class="col-sm-5 pb-0">
                   <ngb-pagination
-                    [(page)]="ActvPages" [pageSize]="RowPerPage"
-                    class="d-flex justify-content-end mb-0"
-                    [collectionSize]="DbListDaily.length">
+                    [(page)]="ServPages" [pageSize]="RowPerPage"
+                    class="d-flex justify-content-end pb-0 mb-0"
+                    [collectionSize]="DbServDaily.length">
                   </ngb-pagination>
                 </div>
               </div>
@@ -79,37 +79,38 @@
           <table class="table table-bordered table-striped table-sm mb-0">
             <thead>
               <th class="text-center">กิจกรรมประจำวัน</th>
-              <th class="text-center" style="width:16%;">กลุ่มกิจกรรม</th>
+              <th class="text-center" style="width:16%;">ประเภทกิจกรรม</th>
               <th class="text-center" style="width:10%;">ช่วงเวลา</th>
               <th class="text-center" style="width:7%;">เวลารวม</th>
               <th class="text-center" style="width:8%;">จัดการ</th>
             </thead>
             <tbody>
-              <tr *ngFor="let D of DbListDaily|slice:(ActvPages-1)*RowPerPage:(ActvPages-1)*RowPerPage+RowPerPage">
+              <!-- <tr *ngFor="let D of DbServDaily|
+                slice:(ServPages-1)*RowPerPage:(ServPages-1)*RowPerPage+RowPerPage">
                 <td class="text-left">
-                  <span class="TxtValue">{{D.ActNote}}</span>
+                  <span class="TxtValue">{{D.ActJobs}}</span>
                 </td>
-                <td class="text-left">{{D.ActJobName}}</td>
+                <td class="text-left">{{D.ActTopic}}</td>
                 <td class="text-center">{{D.ActBegin}}-{{D.ActEnd}}</td>
                 <td class="text-center">{{D.ActTotal}}</td>
                 <td class="text-center">
-                  <button type="button" title="แก้ไขข้อมูลกิจกรรม"
+                  <button type="button" title="แก้ไขรายการปัญหา"
                     class="btn btn-raised btn-primary btn-sm mb-0 mr-1"
-                    (click)="EditActivitie(D, ActivitieForm)">
+                    (click)="EditService(D,ServiceForm)">
                     <i class="icon icon-note"></i>
                   </button>
-                  <button type="button" title="ลบข้อมูลกิจกรรม"
+                  <button type="button" title="ลบรายการปัญหา"
                     class="btn btn-raised btn-danger btn-sm mb-0"
-                    (click)="DeleteActivitie(D)">
+                    (click)="DeleteService(D)">
                     <i class="icon icon-trash"></i>
                   </button>
                 </td>
               </tr>
-              <tr *ngIf="DbListDaily.length == 0">
+              <tr *ngIf="DbServDaily.length == 0">
                 <td colspan="5" class="text-center text-danger font-medium-2">
                   ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -119,48 +120,16 @@
   </div>
 </div>
 
-<ng-template #ActivitieForm let-c="close" let-d="dismiss">
+<ng-template #ServiceForm let-c="close" let-d="dismiss">
   <div class="modal-header bg-primary p-2">
     <h5 class="modal-title" id="modal-basic-title">
       <i class="icon icon-book-open mr-1"></i>
-      ฟอร์มบันทึกกิจกรรมประจำวัน
+      ฟอร์มบันทึกการแก้ปัญหาประจำวัน
     </h5>
-    <!--
-      <button type="button" class="close"
-        aria-label="Close" (click)="d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    -->
   </div>
   <div class="modal-body p-2">
 
-    <div class="col-md-12 p-0 mb-2">
-      <table class="table table-bordered table-striped table-sm mb-0">
-        <thead>
-          <th class="text-center">กิจกรรมประจำวัน</th>
-          <th class="text-center" style="width:24%;">กลุ่มกิจกรรม</th>
-          <th class="text-center" style="width:15%;">ช่วงเวลา</th>
-          <th class="text-center" style="width:10%;">เวลารวม</th>
-        </thead>
-        <tbody>
-          <tr *ngFor="let D of DbListDaily|slice:(ActvPages-1)*RowPerPage:(ActvPages-1)*RowPerPage+RowPerPage">
-            <td class="text-left">
-              <span class="TxtValue">{{D.ActNote}}</span>
-            </td>
-            <td class="text-left">{{D.ActJobName}}</td>
-            <td class="text-center">{{D.ActBegin}}-{{D.ActEnd}}</td>
-            <td class="text-center">{{D.ActTotal}}</td>
-          </tr>
-          <tr *ngIf="DbListDaily.length == 0">
-            <td colspan="4" class="text-center text-danger font-medium-2">
-              ไม่พบรายการกิจกรรมในวันที่ระบุ..!!
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <form [formGroup]="ActivitieFrm" (ngSubmit)="SaveActivitie()">
+    <!-- <form [formGroup]="ActivitieFrm" (ngSubmit)="SaveActivitie()">
       <div class="row mb-0 pl-1 pr-0 pt-0 pb-0">
         <div class="col-md-4 p-0">
           <div class="input-group mb-0 p-1">
@@ -186,33 +155,43 @@
               <div class="input-group-text p-1">วันที่บันทึก</div>
             </div>
             <input type="date" formControlName="ActDate"
-              class="form-control text-center bg-white mr-1"
-              (ngModelChange)="OnChangeActDate()">
+              class="form-control text-center bg-white mr-1">
           </div>
         </div>
       </div>
       <div class="row mb-0 pl-1 pr-0 pt-1 pb-0">
-        <div class="col-md-6 p-0">
+        <div class="col-md-4 p-0">
           <div class="input-group mb-0 p-1">
             <div class="input-group-prepend">
               <div class="input-group-text p-1">กิจกรรม</div>
             </div>
-            <select class="form-control mr-1"
-              formControlName="ActJobCode"
-              (change)="OnActJobChange($event);">
-              <option *ngFor="let T of DbOptActTopic" value="{{T.ActCode}}">
-                {{T.ActName}}
+            <select class="form-control" formControlName="ActTopic"
+              (change)="OnActTopicChange();">
+              <option *ngFor="let M of DbOptMainTop" value="{{M.text}}">
+                {{M.text}}
               </option>
             </select>
           </div>
         </div>
-        <div class="col-md-6 p-0">
+        <div class="col-md-8 p-0">
           <div class="input-group mb-0 p-1">
             <div class="input-group-prepend">
               <div class="input-group-text p-1">หมายเหตุ</div>
             </div>
-            <input type="text" formControlName="ActNote"
+
+            <select class="form-control mr-1" formControlName="ActJobs"
+              *ngIf="ActivitieFrm.getRawValue().ActTopic=='กิจกรรมตามตำแหน่งงาน'
+                   &&ActivitieFrm.getRawValue().ActJobs==''">
+              <option *ngFor="let T of DbOptActTopic" value="{{T.ActName}}">
+                {{T.ActName}}
+              </option>
+            </select>
+
+            <input *ngIf="ActivitieFrm.getRawValue().ActTopic!=''&&
+                          ActivitieFrm.getRawValue().ActJobs!=''"
+              type="text" formControlName="ActJobs"
               class="form-control text-center bg-white mr-1">
+
           </div>
         </div>
       </div>
@@ -245,33 +224,21 @@
           </div>
         </div>
       </div>
-    </form>
+    </form> -->
 
   </div>
   <div class="modal-footer p-2">
-    <div class="col-md-8 text-left p-0">
-      <span *ngIf="CheckIsHolidayOnForm" class="ml-2"
-        style="font-weight:bold; color: red;">
-        งดการบันทึกกิจกรรมใดๆ ในช่วงวันหยุดและนอกเวลาราชการ..!!
-      </span>
-      &nbsp;
-    </div>
-    <div class="col-md-4 text-right p-0">
-      <button type="button" (click)="SaveActivitie()"
-        [disabled]="ActivitieFrm.invalid||CheckIsHolidayOnForm"
-        class="btn btn-raised btn-primary round">
-        <i class="icon icon-check mr-1"></i>
-        <span *ngIf="ActivitieFrm.getRawValue().ActState=='N'">
-          บันทึกข้อมูล
-        </span>
-        <span *ngIf="ActivitieFrm.getRawValue().ActState!='N'">
-          ปรับปรุงข้อมูล
-        </span>
-      </button>
-      <button type="button" (click)="c('Cancel-click')"
-        class="btn btn-raised btn-danger btn-outline-dark round">
-        <i class="icon icon-close mr-1"></i>ยกเลิก
-      </button>
-    </div>
+    <!--
+    <button *ngIf="!CheckIsHolidayOnForm" type="button"
+      (click)="SaveActivitie()" class="btn btn-raised btn-primary round">
+      <i class="icon icon-check mr-1"></i>
+      <span *ngIf="ActivitieFrm.getRawValue().ActState == 'N'">บันทึก</span>
+      <span *ngIf="ActivitieFrm.getRawValue().ActState != 'N'">ปรับปรุง</span>
+    </button>
+    <button type="button" (click)="c('Cancel-click')"
+      class="btn btn-raised btn-danger btn-outline-dark round">
+      <i class="icon icon-close mr-1"></i>ยกเลิก
+    </button>
+    -->
   </div>
 </ng-template>

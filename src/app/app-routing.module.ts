@@ -8,6 +8,7 @@ import { ReqcomComponent } from './reqcom/reqcom.component';
 import { ReqrepComponent } from './reqrep/reqrep.component';
 import { ReqanswerComponent } from './reqanswer/reqanswer.component';
 import { Activities2Component } from './activities2/activities2.component';
+import { DoServiceComponent } from './do-service/do-service.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'infopanel', pathMatch: 'full', },
@@ -27,6 +28,7 @@ const appRoutes: Routes = [
   { path: 'reqcom', component: ReqcomComponent },
   { path: 'reqrep', component: ReqrepComponent },
   { path: 'reqanswer', component: ReqanswerComponent },
+  { path: 'doservice', component: DoServiceComponent },
 ];
 
 @NgModule({

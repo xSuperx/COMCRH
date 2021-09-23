@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbCalendar, NgbModal, NgbModalConfig, NgbDateStruct, NgbModalRef, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { AppConfig } from 'app/shared/configs/app-config';
 import swal from 'sweetalert2';
+import { value } from '../shared/data/dropdowns';
 
 @Component({
   selector: 'app-activities2',
@@ -38,9 +39,10 @@ export class Activities2Component implements OnInit {
   CheckIsHolidayOnForm: boolean = false;
   ActvPages = 1;
   RowPerPage = 10;
+  WorkPerDay :number = 0;
+  WorkTotal :number = 0;
 
   DbOptActTopic = [];
-  DbListNotified = [];
   DbListDaily = [];
 
   DbOptMainTop = [
@@ -55,8 +57,9 @@ export class Activities2Component implements OnInit {
     ActUser: new FormControl('-', Validators.required),
     ActUserName: new FormControl('-', Validators.required),
     ActUserType: new FormControl('-', Validators.required),
-    ActTopic: new FormControl('-', Validators.required),
-    ActJobs: new FormControl('-', Validators.required),
+    ActJobCode: new FormControl('-', Validators.required),
+    ActJobName: new FormControl('-', Validators.required),
+    ActNote: new FormControl('-', Validators.required),
     ActBegin: new FormControl('-', Validators.required),
     ActEnd: new FormControl('-', Validators.required),
     ActTotal: new FormControl('-', Validators.required),
@@ -65,19 +68,24 @@ export class Activities2Component implements OnInit {
 
   async ngOnInit(){
     this.loadingIndicator = true;
-      this.SearchDate = this.calendar.getToday();
-      this.UsCode = localStorage.getItem( 'LgUserCode' );
-      this.UsFName = localStorage.getItem( 'LgUsrFullName' );
-      this.UsPosCode = localStorage.getItem( 'LgUsrPosCode' );
-      await this.ActivitieFrm.patchValue({
-        ActUser : this.UsCode,
-        ActUserName: this.UsFName,
-        ActUserType : this.UsPosCode,
-      });
-      // console.log( this.ActivitieFrm.getRawValue() );
-      await this.GetOptActTopic(this.UsPosCode);
-      await this.GetDailyByDate();
-    setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
+    await this.GetDataFromStorage();
+    await this.ActivitieFrm.patchValue({
+      ActUser : this.UsCode,
+      ActUserName: this.UsFName,
+      ActUserType : this.UsPosCode,
+    });
+    // console.log( this.ActivitieFrm.getRawValue() );
+    await this.GetOptActTopic(this.UsPosCode);
+    await this.GetDailyByDate();
+    await setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
+  }
+
+  GetDataFromStorage(){
+    this.WorkPerDay = this.appConfig.WorkTimePerDay;
+    this.SearchDate = this.calendar.getToday();
+    this.UsCode = localStorage.getItem( 'LgUserCode' );
+    this.UsFName = localStorage.getItem( 'LgUsrFullName' );
+    this.UsPosCode = localStorage.getItem( 'LgUsrPosCode' );
   }
 
   GetDismissReason(reason: any): string {
@@ -135,6 +143,26 @@ export class Activities2Component implements OnInit {
     return promise;
   }
 
+  CheckHolidayOnForm(){
+    const promise =  new Promise<boolean>((res:any, rej:any)=>{
+      var ActDate = this.ActivitieFrm.getRawValue().ActDate;
+      var DateDb  = ActDate.substr(0,4) + ActDate.substr(5,2) + ActDate.substr(8,2);
+      // 2021-09-23
+      console.log( DateDb );
+      this.http.get(
+        this.appConfig.urlApi +
+        'getHolidayHomc.php' +
+        '?cdate=' + DateDb
+      ).toPromise().then(
+        (data:any)=>{
+          // console.log( data );
+          res(data);
+        }
+      ),error=>rej(false)
+    });
+    return promise;
+  }
+
   CheckHoliday2(cDate){
     // yyyymmdd
     const promise =  new Promise<boolean>((res:any, rej:any)=>{
@@ -156,6 +184,10 @@ export class Activities2Component implements OnInit {
     // console.log(event);
     this.CheckIsHoliday = await this.CheckHoliday();
     // console.log(this.CheckIsHoliday);
+  }
+
+  async OnChangeActDate(){
+    this.CheckIsHolidayOnForm = await this.CheckHolidayOnForm();
   }
 
   async OnChangeDateEdit(event){
@@ -185,58 +217,39 @@ export class Activities2Component implements OnInit {
     ).subscribe(
       (data:any)=>{
         this.DbOptActTopic = data;
-        console.log( this.DbOptActTopic  );
+        // console.log( this.DbOptActTopic  );
       }
     )
   }
 
-  OnActTopicChange(){
-    if(this.ActivitieFrm.getRawValue().ActTopic=='กิจกรรมตามตำแหน่งงาน'){
-      this.ActivitieFrm.patchValue({ ActJobs: '' });
-    }else{
-      this.ActivitieFrm.patchValue({ ActJobs: '-' });
-    }
-    // console.log( this.ActivitieFrm.getRawValue().ActTopic );
+  OnActJobChange(event:any){
+    this.ActivitieFrm.patchValue({
+      ActJobName : event.target.options[event.target.options.selectedIndex].text
+    });
   }
 
   GetDailyByDate(){
     var zYear =""+this.SearchDate.year;
-        zYear = zYear.substr(2, 2);
+        // zYear = zYear.substr(2, 2);
     var DateDb=""+ zYear
                  + this.appConfig.padLeft( this.SearchDate.month, 2, "0")
                  + this.appConfig.padLeft( this.SearchDate.day, 2, "0");
     // console.log( DateDb );
+    this.WorkTotal = 0;
     this.http.get(
       this.appConfig.urlApi +
-      "getDailyByDate.php" +
+      "getActivitieDailyByDate.php" +
       "?dt=" + DateDb +
       "&us=" + this.UsCode
     ).subscribe(
-       async (data:Array<any>) => {
+      async (data:Array<any>) => {
+        // console.log( data );
         this.DbListDaily = data;
+        for(let i=0; i<this.DbListDaily.length; i++){
+          this.WorkTotal = this.WorkTotal + parseFloat(this.DbListDaily[i].ActTotal);
+        }
         this.CheckIsHoliday = await this.CheckHoliday();
         this.CheckIsHolidayOnForm = this.CheckIsHoliday;
-      }
-    )
-  }
-
-  GetDbNotifiedByDate(){
-    var zYear =""+this.SearchDate.year;
-        zYear = zYear.substr(2, 2);
-    var DateDb=""+ zYear
-                 + this.appConfig.padLeft( this.SearchDate.month, 2, "0")
-                 + this.appConfig.padLeft( this.SearchDate.day, 2, "0");
-    // console.log( DateDb );
-    this.http.get(
-      this.appConfig.urlApi +
-      // "getDbNotifiedByDate.php" +
-      "getDbNotifiedWaitByYesterday.php" +
-      "?dt=" + DateDb
-    ).subscribe(
-      async (data:any)=>{
-        this.DbListNotified = data;
-        // console.log( this.DbListNotified );
-        await this.GetDailyByDate();
       }
     )
   }
@@ -255,14 +268,54 @@ export class Activities2Component implements OnInit {
       ActUser : this.UsCode,
       ActUserName: this.UsFName,
       ActUserType : this.UsPosCode,
-      ActTopic : 'กิจกรรมตามตำแหน่งงาน',
-      ActJobs : '',
+      ActJobCode : '',
+      ActJobName : '',
+      ActNote : '',
       ActBegin : this.appConfig.getCurTimeNow(),
       ActEnd : this.appConfig.getCurTimeNow(),
       ActTotal : '1'
     });
     // console.log( this.ActivitieFrm.getRawValue() );
     this.ShowContent( content );
+  }
+
+  EditActivitie( RowDb:any, Content ){
+    swal({
+      title: 'แจ้งเตือน.!',
+      text: "คุณต้องการแก้ไขข้อมูลกิจกรรมหรือไม่.",
+      type: 'question',
+      allowOutsideClick: false,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: '#0CC27E',
+      cancelButtonColor: '#FF586B',
+      confirmButtonText: '<i class="icon icon-check"></i> ใช่, ฉันแน่ใจ',
+      cancelButtonText: '<i class="icon icon-close"></i> ไม่, ยกเลิก',
+      confirmButtonClass: 'btn btn-success btn-raised mr-5',
+      cancelButtonClass: 'btn btn-danger btn-raised',
+      buttonsStyling: true
+    }).then(async isConfirm => {
+      if( isConfirm.value ){
+        this.CheckIsHolidayOnForm = false;
+        this.ActivitieFrm.reset();
+        this.ActivitieFrm.patchValue({
+          ActState : 'E',
+          ActCode : RowDb.ActCode,
+          ActDate : RowDb.ActDate,
+          ActUser : RowDb.ActUser,
+          ActUserName: this.UsFName,
+          ActUserType : RowDb.ActUserType,
+          ActNote : RowDb.ActNote,
+          ActJobCode : RowDb.ActJobCode,
+          ActJobName : RowDb.ActJobName,
+          ActBegin : RowDb.ActBegin,
+          ActEnd : RowDb.ActEnd,
+          ActTotal : RowDb.ActTotal
+        });
+        // console.log( this.ActivitieFrm.getRawValue() );
+        this.ShowContent( Content );
+      }
+    });
   }
 
   CalTimeServ(){
@@ -276,7 +329,6 @@ export class Activities2Component implements OnInit {
       CalTime = "0"
       this.ActivitieFrm.patchValue({ ActTotal : CalTime });
     }
-    // console.log( tBegin, tEnd, CalTime );
   }
 
   SaveActivitie(){
@@ -290,11 +342,53 @@ export class Activities2Component implements OnInit {
     ).subscribe(
       async ()=>{
         await this.GetDailyByDate();
-        this.ActivitieFrm.reset();
-        setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
-        this.CloseModal();
+        await this.ActivitieFrm.reset();
+        await setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
+        await this.CloseModal();
       }
     );
+  }
+
+  DeleteActivitie( item:any ){
+    var ActCode = item.ActCode;
+    // console.log( ActCode );
+    swal({
+      title: 'แจ้งเตือน.!',
+      text: "คุณต้องการลบรายการนี้..จากรายการกิจกรรมของคุณหรือไม่.",
+      type: 'question',
+      allowOutsideClick: false,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: '#0CC27E',
+      cancelButtonColor: '#FF586B',
+      confirmButtonText: '<i class="icon icon-check"></i> ใช่, ฉันแน่ใจ',
+      cancelButtonText: '<i class="icon icon-close"></i> ไม่, ยกเลิก',
+      confirmButtonClass: 'btn btn-success btn-raised mr-5',
+      cancelButtonClass: 'btn btn-danger btn-raised',
+      buttonsStyling: true
+    }).then(async isConfirm => {
+      if( isConfirm.value ){
+        await this.http.post(
+          this.appConfig.urlApi +
+          "DeleteActivitie.php",
+          { nfc: ActCode },
+          { responseType: "text" }
+        ).subscribe(
+          async ()=>{
+            // console.log(data);
+            await this.GetDailyByDate();
+            swal({
+              title: 'ระบบได้ดำเนินการลบข้อมูลกิจกรรม.. เสร็จสมบูรณ์แล้ว',
+              text:  'ยืนยันการลบข้อมูลกิจกรรม !!', type: 'success',
+              allowOutsideClick: false, showConfirmButton: true,
+              buttonsStyling: true, confirmButtonColor: '#0CC27E',
+              confirmButtonText: '<i class="icon icon-star"></i> ตกลง',
+              confirmButtonClass: 'btn btn-success btn-raised mr-5'
+            });
+          }
+        )
+      }
+    });
   }
 
 }

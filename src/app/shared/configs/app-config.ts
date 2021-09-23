@@ -164,7 +164,7 @@ export class AppConfig
     // cFullDatetime = cDay +"-"+ cMonth +"-"+ cYear;
     cFullDatetime = cYear +"-"+ cMonth +"-"+ cDay;
     return cFullDatetime;
-  } // Current Time -> YYYY/MM/DD 2019/10/19
+  } // Current Date -> YYYY-MM-DD 2019-10-19
 
   getCurDateTimeNow(){
     const ToDay = new Date();
@@ -182,6 +182,14 @@ export class AppConfig
     cFullDatetime = cDay +"/"+ cMonth +"/"+ cYear +"-"+ cTime;
     return cFullDatetime;
   } // Current Time -> DD/MM/YYYY-HHmmss 19/10/2019-09:23:25
+
+  getCurTimeNow(){
+    const ToDay = new Date();
+    var cTime :string;
+    cTime  = "" + this.padLeft(ToDay.getHours(), 2, "0") +
+             ":" + this.padLeft(ToDay.getMinutes(), 2, "0") ;
+    return cTime;
+  } // Current Time -> HH:mm -09:23
 
   ConvDb2DateTime( zDateTime ){
     var sYear  = zDateTime.substr( 0, 2 );
@@ -267,7 +275,7 @@ export class AppConfig
     }
 
     return diff_min;
-  } // "0800", "0915" -> 75 Minite
+  } // "08:00", "09:15" -> 75 Minite
 
   MonthList = [
     {id: '01', name: 'มกราคม' },

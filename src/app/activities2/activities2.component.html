@@ -177,16 +177,18 @@
       <i class="icon icon-book-open mr-1"></i>
       ฟอร์มบันทึกกิจกรรมประจำวัน
     </h5>
-    <button type="button" class="close"
-      aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <!--
+      <button type="button" class="close"
+        aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    -->
   </div>
   <div class="modal-body p-2">
     <form [formGroup]="ActivitieFrm" (ngSubmit)="SaveActivitie()">
-      <div class="row m-1">
+      <div class="row mb-0 pl-1 pr-0 pt-0 pb-0">
         <div class="col-md-4 p-0">
-          <div class="input-group p-1">
+          <div class="input-group mb-0 p-1">
             <div class="input-group-prepend">
               <div class="input-group-text p-1">เลขรายการ</div>
             </div>
@@ -195,7 +197,7 @@
           </div>
         </div>
         <div class="col-md-4 p-0">
-          <div class="input-group p-1">
+          <div class="input-group mb-0 p-1">
             <div class="input-group-prepend">
               <div class="input-group-text p-1">ผู้บันทึก</div>
             </div>
@@ -204,7 +206,7 @@
           </div>
         </div>
         <div class="col-md-4 p-0">
-          <div class="input-group p-1">
+          <div class="input-group mb-0 p-1">
             <div class="input-group-prepend">
               <div class="input-group-text p-1">วันที่บันทึก</div>
             </div>
@@ -213,13 +215,76 @@
           </div>
         </div>
       </div>
+      <div class="row mb-0 pl-1 pr-0 pt-1 pb-0">
+        <div class="col-md-4 p-0">
+          <div class="input-group mb-0 p-1">
+            <div class="input-group-prepend">
+              <div class="input-group-text p-1">กิจกรรม</div>
+            </div>
+            <select class="form-control" formControlName="ActTopic"
+              (change)="OnActTopicChange();">
+              <option *ngFor="let M of DbOptMainTop" value="{{M.text}}">
+                {{M.text}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-8 p-0">
+          <div class="input-group mb-0 p-1">
+            <div class="input-group-prepend">
+              <div class="input-group-text p-1">หมายเหตุ</div>
+            </div>
+
+            <select class="form-control mr-1" formControlName="ActJobs"
+              *ngIf="ActivitieFrm.getRawValue().ActTopic=='กิจกรรมตามตำแหน่งงาน'
+                   &&ActivitieFrm.getRawValue().ActJobs==''">
+              <option *ngFor="let T of DbOptActTopic" value="{{T.ActName}}">
+                {{T.ActName}}
+              </option>
+            </select>
+
+            <input *ngIf="ActivitieFrm.getRawValue().ActTopic!=''&&
+                          ActivitieFrm.getRawValue().ActJobs!=''"
+              type="text" formControlName="ActJobs"
+              class="form-control text-center bg-white mr-1">
+
+          </div>
+        </div>
+      </div>
+      <div class="row mb-0 pl-1 pr-0 pt-0 pb-0">
+        <div class="col-md-4 p-0">
+          <div class="input-group mb-0 p-1">
+            <div class="input-group-prepend">
+              <div class="input-group-text p-1">เริ่มเวลา</div>
+            </div>
+            <input type="time" formControlName="ActBegin"
+              (change)="CalTimeServ()" class="form-control text-center bg-white mr-1">
+          </div>
+        </div>
+        <div class="col-md-4 p-0">
+          <div class="input-group mb-0 p-1">
+            <div class="input-group-prepend">
+              <div class="input-group-text p-1">เสร็จสิ้นเวลา</div>
+            </div>
+            <input type="time" formControlName="ActEnd"
+              (change)="CalTimeServ()" class="form-control text-center bg-white mr-1">
+          </div>
+        </div>
+        <div class="col-md-4 p-0">
+          <div class="input-group mb-0 p-1">
+            <div class="input-group-prepend">
+              <div class="input-group-text p-1">รวมเวลา(นาที)</div>
+            </div>
+            <input type="number" formControlName="ActTotal" readonly
+              class="form-control text-center bg-lith mr-1">
+          </div>
+        </div>
+      </div>
     </form>
   </div>
   <div class="modal-footer p-2">
-    <button type="button"
-      *ngIf="!CheckIsHolidayOnForm"
-      (click)="SaveActivitie()"
-      class="btn btn-raised btn-primary round">
+    <button *ngIf="!CheckIsHolidayOnForm" type="button"
+      (click)="SaveActivitie()" class="btn btn-raised btn-primary round">
       <i class="icon icon-check mr-1"></i>
       <span *ngIf="ActivitieFrm.getRawValue().ActState == 'N'">บันทึกกิจกรรม</span>
       <span *ngIf="ActivitieFrm.getRawValue().ActState != 'N'">ปรับปรุงกิจกรรม</span>

@@ -43,6 +43,12 @@ export class Activities2Component implements OnInit {
   DbListNotified = [];
   DbListDaily = [];
 
+  DbOptMainTop = [
+    { 'id': '01' , 'text': 'กิจกรรมตามตำแหน่งงาน' },
+    { 'id': '02' , 'text': 'กิจกรรมที่ได้รับมอบหมาย' },
+    { 'id': '03' , 'text': 'กิจกรรมพัฒนาและวิชาการ' },
+  ];
+
   ActivitieFrm = new FormGroup ({
     ActCode: new FormControl('-', Validators.required),
     ActDate: new FormControl('-', Validators.required),
@@ -179,9 +185,18 @@ export class Activities2Component implements OnInit {
     ).subscribe(
       (data:any)=>{
         this.DbOptActTopic = data;
-        // console.log( this.DbOptActTopic  );
+        console.log( this.DbOptActTopic  );
       }
     )
+  }
+
+  OnActTopicChange(){
+    if(this.ActivitieFrm.getRawValue().ActTopic=='กิจกรรมตามตำแหน่งงาน'){
+      this.ActivitieFrm.patchValue({ ActJobs: '' });
+    }else{
+      this.ActivitieFrm.patchValue({ ActJobs: '-' });
+    }
+    // console.log( this.ActivitieFrm.getRawValue().ActTopic );
   }
 
   GetDailyByDate(){
@@ -228,40 +243,56 @@ export class Activities2Component implements OnInit {
 
   NewActivitie( content ){
     const ServCode = this.appConfig.getCurDateTime2Db();
-    //console.log( ServCode );
+    var DateDb = ""+ this.SearchDate.year +
+                 "-"+ this.appConfig.padLeft( this.SearchDate.month, 2, "0") +
+                 "-"+ this.appConfig.padLeft( this.SearchDate.day, 2, "0");
+    // console.log( DateDb );
     this.ActivitieFrm.reset();
     this.ActivitieFrm.patchValue({
+      ActState : 'N',
       ActCode : ServCode,
-      ActDate : '22/09/2021',
+      ActDate : DateDb,
       ActUser : this.UsCode,
       ActUserName: this.UsFName,
       ActUserType : this.UsPosCode,
-      ActTopic : '',
+      ActTopic : 'กิจกรรมตามตำแหน่งงาน',
       ActJobs : '',
-      ActBegin : '',
-      ActEnd : '',
-      ActTotal : '',
-      ActState : 'N'
+      ActBegin : this.appConfig.getCurTimeNow(),
+      ActEnd : this.appConfig.getCurTimeNow(),
+      ActTotal : '1'
     });
-    console.log( this.ActivitieFrm.getRawValue() );
+    // console.log( this.ActivitieFrm.getRawValue() );
     this.ShowContent( content );
   }
 
+  CalTimeServ(){
+    const tBegin = this.ActivitieFrm.getRawValue().ActBegin;
+    const tEnd = this.ActivitieFrm.getRawValue().ActEnd;
+    var CalTime :string = "0";
+    if( tBegin != null && tEnd != null ){
+      CalTime = "" + this.appConfig.GetDiffTime( tBegin, tEnd );
+      this.ActivitieFrm.patchValue({ ActTotal : CalTime });
+    }else{
+      CalTime = "0"
+      this.ActivitieFrm.patchValue({ ActTotal : CalTime });
+    }
+    // console.log( tBegin, tEnd, CalTime );
+  }
+
   SaveActivitie(){
-    this.loadingIndicator = true;
     // console.log( this.ActivitieFrm.getRawValue() );
-    setTimeout(()=>{ this.loadingIndicator = true; }, 1000 );
+    this.loadingIndicator = true;
     this.http.post(
       this.appConfig.urlApi +
-      "SaveDbActivitie.php",
+      "SaveDbActivitie2.php",
       { prm: this.ActivitieFrm.getRawValue() },
-      { responseType:"text" }
+      { responseType : "text" }
     ).subscribe(
       async ()=>{
         await this.GetDailyByDate();
         this.ActivitieFrm.reset();
         setTimeout(()=>{ this.loadingIndicator = false; }, 1500 );
-        this.modalService.dismissAll( 'ServiceForm' );
+        this.CloseModal();
       }
     );
   }
